@@ -22,6 +22,7 @@ impl Factorial {
  (IO.out_str("\n"));
  }
 }
+
 start {
  Factorial fact;
  Int num;

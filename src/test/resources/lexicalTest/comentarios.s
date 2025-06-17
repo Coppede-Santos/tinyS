@@ -1,5 +1,5 @@
 // Esto es un comentario de una línea
-Int x = 5; /* Esto es
+Int x = 5; /* Esto es€
 un comentario de bloque */
 Int a = 123;
 String s = "Hola mundo";
