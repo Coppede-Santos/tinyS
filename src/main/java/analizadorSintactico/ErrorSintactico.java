@@ -1,7 +1,9 @@
 package analizadorSintactico;
 
-public class ErrorSintactico extends RuntimeException {
+import ErrorManage.ErrorTiny;
+
+public class ErrorSintactico extends ErrorTiny {
   ErrorSintactico(int line, int column, String descripcion){
-    super ("| LINEA " + line + "( COLUMNA: " + column + ") | " + descripcion  );
+    super (line, column, descripcion,"");
   }
 }
