@@ -38,7 +38,7 @@ public class TestEtapa2 {
     }
 
     /**
-     * Método auxiliar para ejecutar una prueba de análisis sintáctico.
+     * Metodo auxiliar para ejecutar una prueba de análisis sintáctico.
      * 
      * @param testName Nombre del test (usado para nombrar archivos)
      * @param inputFileName Nombre del archivo de entrada
