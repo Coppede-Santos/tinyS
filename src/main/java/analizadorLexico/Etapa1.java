@@ -4,9 +4,27 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * La clase {@code Etapa1} es la clase principal que realiza el análisis léxico de un archivo de entrada
+ * y guarda los tokens resultantes en un archivo de salida.
+ */
+
 public class Etapa1 {
+
     static Escaner escaner = new Escaner();
     static LectorCF lector = new LectorCF();
+
+    /**
+     * Metodo principal que ejecuta el análisis léxico.
+     *
+     * @param args Un array de argumentos de línea de comandos. Se espera que el primer argumento sea la ruta
+     *             del archivo de entrada. Opcionalmente, el segundo argumento puede ser la ruta del archivo de salida.
+     * @throws IOException Si ocurre un error de entrada/salida durante la lectura o escritura de archivos.
+     * @throws ErrorLex Si ocurre un error léxico durante el análisis.
+     */
+
+
     public static void main(String[] args) throws IOException, ErrorLex {
         String source;
         escaner.setEscaner(lector);
@@ -52,10 +70,8 @@ public class Etapa1 {
                             break; // Salir del bucle si no se puede obtener un token válido
                         }
                     } catch (ErrorLex e) {
-                        if (writer != null) {
-                            writer.close();
-                            writer = new BufferedWriter(new FileWriter(nombreArchivoSalida, false));
-                        }
+                        writer.close();
+                        writer = new BufferedWriter(new FileWriter(nombreArchivoSalida, false));
                         writer.write("ERROR: LEXICO\n" + e.getMessage());
                         System.err.println("Error: " + e.getMessage()); // Mostrar el error en la consola
                         tokenActual = new Token(TokenType.EOF, "", 0, 0);

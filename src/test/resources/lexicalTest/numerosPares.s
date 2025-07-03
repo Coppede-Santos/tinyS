@@ -18,7 +18,7 @@ impl SecuenciaPares {
  limite = 0;
  }
  fn imprimir(Int valor){
- (IO.out_str("par: "));
+ (IO.out_str("par: €"));
  (IO.out_int(valor));
  (IO.out_str("\n"));
  }

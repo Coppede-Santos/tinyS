@@ -1,8 +1,6 @@
 package analizadorSintactico;
 
 import ErrorManage.ErrorTiny;
-import analizadorLexico.ErrorLex;
-import ErrorManage.ErrorTiny;
 import analizadorLexico.Escaner;
 import analizadorLexico.Token;
 import analizadorLexico.TokenType;
@@ -11,6 +9,14 @@ import java.io.IOException;
 
 import static analizadorLexico.TokenType.*;
 
+/**
+ * Clase que implementa el analizador sintáctico para el lenguaje TinyS.
+ *
+ * El analizador sintáctico (Parser) toma como entrada el flujo de tokens
+ * producido por el analizador léxico (Scanner) y verifica si la secuencia
+ * de tokens se ajusta a la gramática del lenguaje TinyS.
+ */
+
 public class Parser {
 
     private Token currentToken;
@@ -18,13 +24,31 @@ public class Parser {
     private Token lookaheadToken;
     private boolean hasLookahead = false;
 
+    /**
+     * Establece el escáner que proporcionará los tokens al parser.
+     *
+     * @param escaner El escáner a utilizar.
+     */
+
     public void setEscaner(Escaner escaner){
         this.escaner = escaner;
     }
 
+    /**
+     * Establece el token actual.
+     *
+     * @param currentToken El token actual.
+     */
     public void setCurrentToken (Token currentToken) {
         this.currentToken = currentToken;
     }
+    /**
+     * Comprueba si el token actual coincide con el tipo de token esperado y avanza al siguiente token.
+     *
+     * @param tokenType El tipo de token esperado.
+     * @throws IOException  Si ocurre un error de E/S durante la lectura del siguiente token.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     public void macheo(TokenType tokenType) throws IOException, ErrorTiny {
         if (currentToken.getType() == tokenType){
@@ -35,10 +59,15 @@ public class Parser {
                 currentToken = escaner.nextToken();
             }
         }
-
     }
 
-    //Leer token sin consumirlo
+    /**
+     * Lee el siguiente token sin consumirlo.
+     *
+     * @throws IOException Si ocurre un error de E/S durante la lectura del siguiente token.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void peekToken() throws IOException, ErrorTiny {
 
         if (!hasLookahead) {
@@ -47,6 +76,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para el símbolo inicial 's' de la gramática.
+     *
+     * @return true si la regla se aplica con éxito, false en caso contrario.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     * @throws IOException Si ocurre un error de E/S.
+     */
+
     public boolean s() throws ErrorTiny, IOException {
         TokenType type = currentToken.getType();
         if (type == CLASS || type == IMPL){
@@ -54,8 +91,15 @@ public class Parser {
             macheo(EOF);
             return true;
         }
-        throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba class/impl, se encontró " + currentToken.getLexema());
+        throw new IOException("TOKEN INVALIDO en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
     }
+
+    /**
+     * Implementa la regla de producción para 'program' de la gramática.
+     *
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     * @throws IOException Si ocurre un error de E/S.
+     */
 
     private void program() throws ErrorTiny, IOException {
         TokenType type = currentToken.getType();
@@ -63,16 +107,33 @@ public class Parser {
             lista_definiciones();
             start();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba class/impl/start, se encontró " + currentToken.getLexema());        }
+            throw new IOException("TOKEN INVALIDO en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción para 'start' de la gramática.
+     *
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     * @throws IOException Si ocurre un error de E/S.
+     */
+
     private void start() throws ErrorTiny, IOException {
         if (currentToken.getType() == START){
             macheo(START);
             bloque_metodo();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba start, se encontró " + currentToken.getLexema());        }
+            throw new IOException("Se espera un metodo start en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
 
+
+    /**
+     * Implementa la regla de producción para 'lista_definiciones' de la gramática.
+     *
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     * @throws IOException Si ocurre un error de E/S.
+     */
 
     private void lista_definiciones() throws ErrorTiny, IOException {
         TokenType type = currentToken.getType();
@@ -85,29 +146,52 @@ public class Parser {
                     if (type == IMPL){
                         impl_lista_recursivo();
                     }else{
-                        throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba start/class/impl, se encontró " + currentToken.getLexema());                    }
+                        throw new IOException("Se espera un metodo start, la definición de una clase o una implementación en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+                    }
             }
         }
 
     }
+
+    /**
+     * Implementa la regla de producción recursiva para 'class_lista_recursivo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void class_lista_recursivo() throws IOException, ErrorTiny {
         if (currentToken.getType() == CLASS){
             clas();
             lista_factorizacion();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba class, se encontró " + currentToken.getLexema());        }
+            throw new IOException("Se espera la palabra clave class en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción recursiva para 'impl_lista_recursivo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void impl_lista_recursivo() throws IOException, ErrorTiny {
         if(currentToken.getType()==IMPL){
             impl();
             lista_factorizacion();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba impl, se encontró " + currentToken.getLexema());
+            throw new IOException("Se espera una implementación en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'lista_factorizacion' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void lista_factorizacion() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
@@ -120,10 +204,18 @@ public class Parser {
                 if(type == START){
                     return;
                 }else{
-                    throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba class/impl/start, se encontró " + currentToken.getLexema());                }
+                    throw new IOException("Se espera un metodo start en línea, la definición de una clase o una implementación en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+                }
             }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'clas' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void clas() throws IOException, ErrorTiny {
         if(currentToken.getType()==CLASS){
@@ -131,8 +223,16 @@ public class Parser {
             macheo(IDCLASS);
             clas_factorizado();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba class, se encontró " + currentToken.getLexema());        }
+            throw new IOException("Se espera la definición de una clase en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción para 'clas_factorizado' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void clas_factorizado() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
@@ -147,9 +247,17 @@ public class Parser {
                 atributo_class_recursivo();
                 macheo(RIGHT_BRACE);
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba {/:, se encontró " + currentToken.getLexema());            }
+                throw new IOException("Se espera la definición de una clase o una herencia en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción recursiva para 'atributo_class_recursivo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void atributo_class_recursivo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
@@ -161,9 +269,17 @@ public class Parser {
             if(type == RIGHT_BRACE){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/pub/Str/Bool/Int/Double/Array, se encontró " + currentToken.getLexema());            }
+                throw new IOException("Se espera una definicion en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'impl' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void impl() throws IOException, ErrorTiny {
         if(currentToken.getType() == IMPL){
@@ -174,8 +290,16 @@ public class Parser {
             miembro_impl_recursivo();
             macheo(RIGHT_BRACE);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba impl, se encontró " + currentToken.getLexema());        }
+            throw new IOException("Se espera un impl en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción recursiva para 'miembro_impl_recursivo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void miembro_impl_recursivo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
@@ -186,16 +310,33 @@ public class Parser {
             if(type == RIGHT_BRACE){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba fn/st/./}, se encontró " + currentToken.getLexema());            }
+                throw new IOException("La implementación esta incompleta en línea" + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'herencia' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void herencia() throws IOException, ErrorTiny {
         if(currentToken.getType() == DOBLE_DOT){
             macheo(DOBLE_DOT);
             tipo();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba :, se encontró " + currentToken.getLexema());        }
+            throw new IOException("Se esperan dos puntos en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción para 'miembro' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void miembro() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
@@ -205,9 +346,17 @@ public class Parser {
             if(type == DOT){
                 constructor();
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba fn/st/., se encontró " + currentToken.getLexema());            }
+                throw new IOException("Se espera finalizar el miembro en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'constructor' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void constructor() throws IOException, ErrorTiny {
         if (currentToken.getType()==DOT){
@@ -215,8 +364,16 @@ public class Parser {
             argumentos_formales();
             bloque_metodo();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba ., se encontró " + currentToken.getLexema());        }
+            throw new IOException("Se espera un punto en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción para 'atributo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void atributo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
@@ -231,9 +388,17 @@ public class Parser {
                 lista_declaraciones_variables();
                 macheo(SEMICOLON);
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/Str/Bool/Int/Double/Array/pub, se encontró " + currentToken.getLexema());            }
+                throw new IOException("Se espera un atributo en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'metodo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void metodo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
@@ -252,9 +417,17 @@ public class Parser {
                 argumentos_formales();
                 bloque_metodo();
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba fn/st, se encontró " + currentToken.getLexema());            }
+                throw new IOException("Se espera un punto en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'tipo_metodo_factorizacion' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void tipo_metodo_factorizacion() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
@@ -264,23 +437,47 @@ public class Parser {
             if(type == IDOBJETS){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/Str/Bool/Int/Double/Array/void/idMetodo/idAtributo, se encontró " + currentToken.getLexema());              }
+                throw new IOException("Se espera un tipo para el método en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'visibilidad' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void visibilidad() throws IOException, ErrorTiny {
         if (currentToken.getType() == PUB){
             macheo(PUB);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba pub, se encontró " + currentToken.getLexema());          }
+            throw new IOException("Se espera una asignacion de visibilidad en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción para 'forma_metodo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void forma_metodo() throws IOException, ErrorTiny {
         if (currentToken.getType() == ST){
             macheo(ST);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba st, se encontró " + currentToken.getLexema());          }
+            throw new IOException("Se espera la palabra st en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción para 'bloque_metodo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void bloque_metodo() throws IOException, ErrorTiny {
         if(currentToken.getType()==LEFT_BRACE){
@@ -289,8 +486,16 @@ public class Parser {
             sentencia_bloque_recursivo();
             macheo(RIGHT_BRACE);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba {, se encontró " + currentToken.getLexema());          }
+            throw new IOException("Se espera un corchete que abre en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción recursiva para 'decl_var_loc_bloque_recursivo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void decl_var_loc_bloque_recursivo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
@@ -302,11 +507,19 @@ public class Parser {
             if(type == LEFT_BRACE || type == RIGHT_BRACE || type == SEMICOLON || type == LEFT_PAREN || type == IF || type == WHILE || type == RET || type == IDOBJETS || type == PUB || type == NEW || type == FN || type == ST || type == DOT || type == SELF){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/Str/Bool/Int/Double/Array/{/}/;/(/if/while/ret/idObject/pub/new/fn/st/./self, se encontró " + currentToken.getLexema());              }
+                throw new IOException("Se espera una declaracion de variables en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
-// Corroborar id
 
+
+    /**
+     * Implementa la regla de producción recursiva para 'sentencia_bloque_recursivo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+//corroborar id
     private void sentencia_bloque_recursivo() throws IOException, ErrorTiny {
       
         TokenType type = currentToken.getType();
@@ -317,9 +530,17 @@ public class Parser {
             if(type == RIGHT_BRACE){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba {/;/(/if/while/ret/idObjects/self, se encontró " + currentToken.getLexema());              }
+                throw new IOException("Se espera una sentencia en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'decl_var_locales' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void decl_var_locales() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
@@ -328,18 +549,34 @@ public class Parser {
             lista_declaraciones_variables();
             macheo(SEMICOLON);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/Str/Bool/Int/Double/Array, se encontró " + currentToken.getLexema());          }
+            throw new IOException("Se espera una declaracion de variables locales en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción para 'lista_declaraciones_variables' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void lista_declaraciones_variables() throws IOException, ErrorTiny {
         if(currentToken.getType()==IDOBJETS){
             macheo(IDOBJETS);
-            lista_declaraciones_variables_Pr();
+            lista_declaraciones_variables_prima();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idObjects, se encontró " + currentToken.getLexema());          }
+            throw new IOException("Se espera una lista de declaraciones de variables en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
 
-    private void lista_declaraciones_variables_Pr() throws IOException, ErrorTiny {
+    /**
+     * Implementa la regla de producción para 'lista_declaraciones_variables_prima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void lista_declaraciones_variables_prima() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if (type == COMMA){
             macheo(COMMA);
@@ -348,7 +585,8 @@ public class Parser {
             if(type == SEMICOLON){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba ,/;, se encontró " + currentToken.getLexema());              }
+                throw new IOException("Se espera una nueva declaración o que se finalize la lista en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
 
@@ -358,8 +596,16 @@ public class Parser {
             lista_argumentos_formales_factorizado();
             macheo(RIGHT_PAREN);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba (, se encontró " + currentToken.getLexema());          }
+            throw new IOException("Se espera un parentesis en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
+
+    /**
+     * Implementa la regla de producción para 'lista_argumentos_formales_factorizado' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void lista_argumentos_formales_factorizado() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -369,21 +615,37 @@ public class Parser {
             if(type == RIGHT_PAREN){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/Str/Bool/Int/Double/Array, se encontró " + currentToken.getLexema());              }
+                throw new IOException("Se espera la lista de argumentos en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'lista_argumentos_formales' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void lista_argumentos_formales() throws IOException, ErrorTiny{
 
         TokenType type = currentToken.getType();
         if(type==IDCLASS || type==STR || type==BOOL || type==INT || type==DOUBLE || type==ARRAY){
             argumento_formal();
-            lista_argumentos_formales_pr();
+            lista_argumentos_formales_prima();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/Str/Bool/Int/Double/Array, se encontró " + currentToken.getLexema());          }
+            throw new IOException("Se espera una lista de argumentos formales en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
 
-    private void lista_argumentos_formales_pr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'lista_argumentos_formales_prima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void lista_argumentos_formales_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type==COMMA){
             macheo(COMMA);
@@ -392,18 +654,36 @@ public class Parser {
             if(type==RIGHT_PAREN){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba ,/), se encontró " + currentToken.getLexema());              }
+                throw new IOException("Se espera un nuevo argumento o la finalizacion de la lista en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'argumento_formal' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void argumento_formal() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type==IDCLASS || type==STR || type==BOOL || type==INT || type==DOUBLE || type==ARRAY ){
             tipo();
             macheo(IDOBJETS);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/Str/Bool/Int/Double/Array, se encontró " + currentToken.getLexema());
+            throw new IOException("Se espera un argumento formal en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'tipo_metodo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
 
     private void tipo_metodo() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -413,10 +693,19 @@ public class Parser {
             if (type == VOID){
                 macheo(VOID);
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/Str/Bool/Int/Double/Array/void, se encontró " + currentToken.getLexema());
+                throw new IOException("Se espera un tipo en la declaracion del metodo, en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+
             }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'tipo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
 
     private void tipo() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -429,10 +718,20 @@ public class Parser {
                 if(type == ARRAY){
                     tipo_arreglo();
                 }else{
-                    throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/Str/Bool/Int/Double/Array, se encontró " + currentToken.getLexema());                  }
+                    throw new IOException("Se espera un tipo valido en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+                }
             }
         }
     }
+
+
+    /**
+     * Implementa la regla de producción para 'tipo_primitivo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
 
     private void tipo_primitivo() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -448,26 +747,41 @@ public class Parser {
                     if(type==DOUBLE){
                         macheo(DOUBLE);
                     }else{
-                        throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba Str/Bool/Int/Double, se encontró " + currentToken.getLexema());                      }
+                        throw new IOException("Se espera un tipo primitivo en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+                    }
                 }
             }
         }
     }
+    /**
+     * Implementa la regla de producción para 'tipo_referencia' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void tipo_referencia() throws IOException, ErrorTiny{
         if(currentToken.getType()==IDCLASS){
             macheo(IDCLASS);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass, se encontró " + currentToken.getLexema());          }
+            throw new IOException("Se espera un tipo de referecia en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
 
     private void tipo_arreglo() throws IOException, ErrorTiny{
         if(currentToken.getType() == ARRAY){
             macheo(ARRAY);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba Array, se encontró " + currentToken.getLexema());          }
+            throw new IOException("Se espera un tipo arreglo en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        }
     }
 // corroborar asignacion ID
+    /**
+     * Implementa la regla de producción para 'sentencia' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void sentencia() throws IOException, ErrorTiny{
 
@@ -506,7 +820,8 @@ public class Parser {
                                 if(type==SEMICOLON){
                                     macheo(SEMICOLON);
                                 }else{
-                                    throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba if/while/ret/idObjects/self/(/{/;, se encontró " + currentToken.getLexema());                                  }
+                                    throw new IOException("Se espera una sentencia en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+                                }
                             }
                         }
                     }
@@ -514,6 +829,14 @@ public class Parser {
             }
         }
     }
+
+
+    /**
+     * Implementa la regla de producción para 'ExpOr_factorizado' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void ExpOr_factorizado() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -523,9 +846,17 @@ public class Parser {
             if(type == SEMICOLON){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba idClass/idObjects/+/-/!/++/--/nil/true/false/int_literal/double_literal/str_literal/new/(, se encontró " + currentToken.getLexema());              }
+                throw new IOException("Se espera una experesion o la finalización de la sentencia en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'sentencia_else' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void sentencia_else()throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -536,9 +867,17 @@ public class Parser {
             if( type == RIGHT_BRACE){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba else/}, se encontró " + currentToken.getLexema());              }
+                throw new IOException("Se espera la finalizacion de la sentencia en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'bloque' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void bloque() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -547,9 +886,16 @@ public class Parser {
             sentencia_bloque_recursivo();
             macheo(RIGHT_BRACE);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(), currentToken.getColumn(),"Se esperaba {, se encontró " + currentToken.getLexema());
+            throw new IOException("Se espera un bloque en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'asignacion' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void asignacion() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -569,12 +915,19 @@ public class Parser {
     }
 
 
+    /**
+     * Implementa la regla de producción para 'accesoVar_simple' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void accesoVar_simple() throws IOException, ErrorTiny{
 
         TokenType type = currentToken.getType();
         if(type == IDOBJETS){
             macheo(IDOBJETS);
-            accesoVar_simple_pr();
+            accesoVar_simple_prima();
 
         }else{
 
@@ -585,7 +938,14 @@ public class Parser {
         }
     }
 
-    private void accesoVar_simple_pr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'accesoVar_simple_prima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void accesoVar_simple_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT || type == EQUAL){
             encadenado_simple_recursivo();
@@ -599,6 +959,13 @@ public class Parser {
             }
         }
     }
+
+    /**
+     * Implementa la regla de producción recursiva para 'encadenado_simple_recursivo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void encadenado_simple_recursivo() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -614,6 +981,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'accesoSelf_simple' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void accesoSelf_simple() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == SELF){
@@ -624,6 +998,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'encadeado_simple' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void encadeado_simple() throws IOException, ErrorTiny{
         if(currentToken.getType() == DOT){
             macheo(DOT);
@@ -632,6 +1013,13 @@ public class Parser {
             throw new IOException("Se espera un punto en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'sentencia_simple' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void sentencia_simple() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -644,21 +1032,35 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'expOr' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void expOr() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
             expAnd();
-            expOrPr();
+            expOrPrima();
         }else{
             throw new IOException("Se espera una expresion en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
 
-    private void expOrPr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'expOrPrima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void expOrPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == OR) {
             expAnd();
-            expOrPr();
+            expOrPrima();
         }else {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET) {
                 return;
@@ -668,17 +1070,31 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'expAnd' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void expAnd() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
             expIgual();
-            expAndPr();
+            expAndPrima();
         }else{
             throw new IOException("Se espera una expresion en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
 
-    private void expAndPr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'expAndPrima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void expAndPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == AND) {
             expIgual();
@@ -691,22 +1107,36 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'expIgual' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void expIgual() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
             expCompuesta();
-            expIgualPr();
+            expIgualPrima();
         }else{
             throw new IOException("Se espera una expresion en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
 
-    private void expIgualPr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'expIgualPrima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void expIgualPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == EQUAL_EQUAL || type == NOT_EQUAL) {
             opIgual();
             expCompuesta();
-            expIgualPr();
+            expIgualPrima();
         }else {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND) {
                 return;
@@ -716,17 +1146,31 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'expCompuesta' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void expCompuesta() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
             expAd();
-            expCompuestaPr();
+            expCompuestaPrima();
         }else{
             throw new IOException("Se espera una expresion en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
 
-    private void expCompuestaPr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'expCompuestaPrima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void expCompuestaPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL) {
             opCompuesta();
@@ -740,22 +1184,36 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'expAd' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void expAd() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
             expMul();
-            expAdPr();
+            expAdPrima();
         }else{
             throw new IOException("Se espera una expresion en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
 
-    private void expAdPr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'expAdPrima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void expAdPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == PLUS || type == MINUS) {
             opAd();
             expMul();
-            expAdPr();
+            expAdPrima();
         }else {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL) {
                 return;
@@ -765,22 +1223,36 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'expMul' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void expMul() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
             expUn();
-            expMulPr();
+            expMulPrima();
         }else{
             throw new IOException("Se espera una expresion en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
 
-    private void expMulPr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'expMulPrima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void expMulPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == MULT || type == SLASH || type == DIV || type == PERCENTAGE) {
             opMul();
             expUn();
-            expMulPr();
+            expMulPrima();
         }else {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS) {
                 return;
@@ -789,6 +1261,13 @@ public class Parser {
             }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'expUn' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void expUn() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -814,6 +1293,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'opIgual' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void opIgual() throws IOException, ErrorTiny{
         if (currentToken.getType() == EQUAL_EQUAL){
             macheo(EQUAL_EQUAL);
@@ -826,6 +1312,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'opAd' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void opAd() throws IOException, ErrorTiny{
         if (currentToken.getType() == PLUS){
             macheo(PLUS);
@@ -837,6 +1330,13 @@ public class Parser {
             }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'opCompuesta' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void opCompuesta() throws IOException, ErrorTiny{
         if (currentToken.getType() == GREATER){
@@ -857,6 +1357,13 @@ public class Parser {
             }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'opUnario' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void opUnario() throws IOException, ErrorTiny{
         if (currentToken.getType() == PLUS){
@@ -888,6 +1395,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'opMul' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void opMul() throws IOException, ErrorTiny{
         if (currentToken.getType() == MULT){
             macheo(MULT);
@@ -908,6 +1422,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'operando' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void operando() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == IDOBJETS || type == LEFT_PAREN  || type == SELF || type == NEW){
@@ -922,6 +1443,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'encadenado_factorizado' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void encadenado_factorizado() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT) {
@@ -934,6 +1462,13 @@ public class Parser {
             }
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'literal' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void literal() throws IOException, ErrorTiny{
         if (currentToken.getType() == NIL){
@@ -963,6 +1498,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'primario' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void primario() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == LEFT_PAREN){
@@ -989,6 +1531,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'expresionParentizada' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void expresionParentizada() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == LEFT_PAREN ) {
@@ -1001,6 +1550,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'accesoSelf' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void accesoSelf() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == SELF ) {
@@ -1011,7 +1567,14 @@ public class Parser {
         }
     }
 
-    private void accesoVar_pr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'accesoVar_prima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void accesoVar_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT || type == SEMICOLON || type == COMMA  || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == EQUAL_EQUAL || type == NOT_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == MULT || type == SLASH || type == DIV || type == PERCENTAGE){
             encadenado_factorizado();
@@ -1027,6 +1590,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'llamada_metodo' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void llamada_metodo() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == LEFT_PAREN ) {
@@ -1036,6 +1606,13 @@ public class Parser {
             throw new IOException("Se espera una experesion o la finalización de la sentencia en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'llamada_metodo_estatico' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void llamada_metodo_estatico() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -1050,17 +1627,31 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'llamada_conclasor' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void llamada_conclasor() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == NEW ) {
             macheo(NEW);
-            llamada_conclasor_pr();
+            llamada_conclasor_prima();
         }else {
             throw new IOException("Se espera una experesion o la finalización de la sentencia en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
 
-    private void llamada_conclasor_pr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'llamada_conclasor_prima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void llamada_conclasor_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS){
             macheo(IDCLASS);
@@ -1078,6 +1669,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'argumentos_actuales' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void argumentos_actuales() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == LEFT_PAREN) {
@@ -1088,6 +1686,13 @@ public class Parser {
             throw new IOException("Se espera una experesion o la finalización de la sentencia en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
+
+    /**
+     * Implementa la regla de producción para 'lista_expresiones_factorizado' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
 
     private void lista_expresiones_factorizado() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
@@ -1102,17 +1707,31 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'lista_expresiones' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void lista_expresiones() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == LEFT_PAREN || type == SELF || type == NEW) {
             expOr();
-            lista_expresiones_pr();
+            lista_expresiones_prima();
         }else {
             throw new IOException("Se espera una experesion o la finalización de la sentencia en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
 
-    private void lista_expresiones_pr() throws IOException, ErrorTiny{
+    /**
+     * Implementa la regla de producción para 'lista_expresiones_prima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void lista_expresiones_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == COMMA) {
             macheo(COMMA);
@@ -1126,17 +1745,32 @@ public class Parser {
         }
     }
 
+    /**
+     * Implementa la regla de producción para 'encadenado' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void encadenado() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT) {
             macheo(DOT);
-            encadenado_pr();
+            encadenado_prima();
         }else {
             throw new IOException("Se espera una experesion en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
         }
     }
 
-    private void encadenado_pr() throws IOException, ErrorTiny{
+
+    /**
+     * Implementa la regla de producción para 'encadenado_prima' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
+    private void encadenado_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDOBJETS) {
             macheo(IDOBJETS);
@@ -1146,10 +1780,18 @@ public class Parser {
         }
     }
 
+
+    /**
+     * Implementa la regla de producción para 'id_factor' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     private void id_factor() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT || type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == LEFT_BRACKET || type == RIGHT_BRACKET || type == OR || type == AND || type == EQUAL_EQUAL || type == NOT_EQUAL || type == LESS || type == GREATER || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == MULT || type == SLASH || type == PERCENTAGE || type == DIV ) {
-            accesoVar_pr();
+            accesoVar_prima();
         }else {
             if (type == LEFT_PAREN) {
                 llamada_metodo();
@@ -1158,12 +1800,6 @@ public class Parser {
             }
         }
     }
-
- 
-
-
-
-
 }
 
 

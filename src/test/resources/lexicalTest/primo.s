@@ -23,6 +23,7 @@ impl VerificadorPrimo {
  numero = 0;
  esPrimo = true;
  }
+
  fn mensaje_primo(){
  (IO.out_str("Es primo\n"));
  }
