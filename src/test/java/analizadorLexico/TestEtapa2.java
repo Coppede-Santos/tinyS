@@ -72,7 +72,7 @@ public class TestEtapa2 {
         assertEquals(expectedOutput.trim(), actualOutput.trim(), "La salida no coincide");
     }
 
-    // Método auxiliar para leer el contenido de un archivo
+    // Metodo auxiliar para leer el contenido de un archivo
     private String readFile(String filePath) throws IOException {
         StringBuilder content = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
