@@ -1,5 +1,6 @@
 package analizadorSintactico;
 
+import ErrorManage.ErrorTiny;
 import analizadorLexico.*;
 
 import java.io.BufferedWriter;
@@ -66,12 +67,14 @@ public class Etapa2 {
 
                 try {
                     if (parser.s()) {
-                        writer.write("CORRECTO: ANALISIS LEXICO\n");
+                        writer.write("CORRECTO: ANALISIS SINTACTICO\n");
                     }
                 } catch (ErrorSintactico e) {
                     reemplazarConError(writer, nombreArchivoSalida, "ERROR: SINTACTICO\n" + e.getMessage());
                 } catch (ErrorLex e) {
                     reemplazarConError(writer, nombreArchivoSalida, "ERROR: LEXICO\n" + e.getMessage());
+                } catch (ErrorTiny e) {
+                    throw new RuntimeException(e);
                 }
 
             } catch (IOException e) {

@@ -21,12 +21,11 @@ public class Token {
      * @param line   La línea en la que aparece el token.
      */
 
-    public Token(TokenType type, String lexema, Object column, Object line) {
+    public Token(TokenType type, String lexema, int column, int line) {
         this.type = type;
         this.lexema = lexema;
-
-        this.column = (int) column;
-        this.line = (int) line;
+        this.column = column;
+        this.line = line;
     }
 
     /**
