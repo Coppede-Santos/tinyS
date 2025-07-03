@@ -86,12 +86,12 @@ public class Parser {
 
     public boolean s() throws ErrorTiny, IOException {
         TokenType type = currentToken.getType();
-        if (type == CLASS || type == IMPL){
+        if (type == CLASS || type == IMPL || type == START){
             program();
             macheo(EOF);
             return true;
         }
-        throw new IOException("TOKEN INVALIDO en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+        throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, se espera la definición de una clase o una implementación.");
     }
 
     /**
@@ -107,7 +107,7 @@ public class Parser {
             lista_definiciones();
             start();
         }else{
-            throw new IOException("TOKEN INVALIDO en línea " + currentToken.getLine() + ", columna " + currentToken.getColumn());
+            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definicion de una clase o implementación.");
         }
     }
 
