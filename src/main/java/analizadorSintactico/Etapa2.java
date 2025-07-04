@@ -1,11 +1,11 @@
 package analizadorSintactico;
 
-import ErrorManage.ErrorTiny;
 import analizadorLexico.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+
 
 /**
  * La clase {@code Etapa2} realiza el análisis sintáctico y léxico de un archivo de entrada en lenguaje TinyS.
@@ -15,30 +15,22 @@ import java.io.IOException;
  * </p>
  */
 
-
 public class Etapa2 {
-    static Parser parser = new Parser();
-    static Escaner escaner = new Escaner();
-    static LectorCF lector = new LectorCF();
 
 
     /**
-     * Método principal que ejecuta el análisis sintáctico y léxico del archivo de entrada.
+     * Metodo principal que ejecuta el análisis sintáctico y léxico del archivo de entrada.
      *
      * @param args Un array de argumentos de línea de comandos.
      *             Se espera que el primer argumento sea la ruta al archivo de entrada TinyS (con extensión .s).
      *             Opcionalmente, el segundo argumento puede ser la ruta al archivo de salida donde se escribirán los resultados.
      *             Si no se proporciona un archivo de salida, se utilizará un nombre basado en el archivo de entrada,
      *             cambiando la extensión a .txt.
-     * @throws IOException Si ocurre un error de entrada/salida durante la lectura o escritura de archivos.
      */
-
-    public static void main(String[] args) throws IOException {
-        escaner.setEscaner(lector);
-
+    public static void main(String[] args) {
         // ────────────── Validación de argumentos ──────────────
         if (args.length < 1 || args.length > 2) {
-            System.out.println("Uso: java analizadorLexico.Etapa2 <archivo_entrada.s> [archivo_salida.txt]");
+            System.out.println("Uso: java analizadorSintactico.Etapa2 <archivo_entrada.s> [archivo_salida.txt]");
             return;
         }
 
@@ -52,38 +44,62 @@ public class Etapa2 {
                 ? args[1]
                 : rutaArchivoEntrada.replace(".s", ".txt");
 
-        // ────────────── Preparar analizador ──────────────
-        lector.lectorArchivo(rutaArchivoEntrada);
-        String source = lector.rechargeBuffer();
-        escaner.setBuffer(source);
-        parser.setEscaner(escaner);
+        String resultadoAnalisis;
 
-        // ────────────── Procesamiento ──────────────
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivoSalida))) {
-            try {
+        try {
+            // ────────────── Preparación de componentes ──────────────
+            // Se instancian los componentes localmente para evitar problemas con el estado estático.
+            LectorCF lector = new LectorCF();
+            Escaner escaner = new Escaner();
+            Parser parser = new Parser();
 
-                Token firstToken = escaner.nextToken();
-                parser.setCurrentToken(firstToken);
+            // Configuración de los componentes
+            lector.lectorArchivo(rutaArchivoEntrada);
+            String source = lector.rechargeBuffer();
+            escaner.setBuffer(source);
+            escaner.setEscaner(lector); // El escáner puede necesitar el lector para contexto (ej. números de línea)
+            parser.setEscaner(escaner);
 
-                try {
-                    if (parser.s()) {
-                        writer.write("CORRECTO: ANALISIS SINTACTICO\n");
-                    }
-                } catch (ErrorSintactico e) {
-                    reemplazarConError(writer, nombreArchivoSalida, "ERROR: SINTACTICO\n" + e.getMessage());
-                } catch (ErrorLex e) {
-                    reemplazarConError(writer, nombreArchivoSalida, "ERROR: LEXICO\n" + e.getMessage());
-                } catch (ErrorTiny e) {
-                    throw new RuntimeException(e);
-                }
+            // ────────────── Análisis ──────────────
+            Token firstToken = escaner.nextToken();
+            parser.setCurrentToken(firstToken);
 
-            } catch (IOException e) {
-                System.err.println("Error al abrir o escribir en el archivo: " + e.getMessage());
-            } catch (ErrorLex e) {
-                throw new RuntimeException(e);
+            // Se ejecuta el parser. Arrojará una excepción si encuentra un error.
+            if (parser.s()) {
+                resultadoAnalisis = "CORRECTO: ANALISIS SINTACTICO\n";
+            } else {
+                // Este caso maneja una falla sin excepción, que podría indicar un parseo incompleto.
+                resultadoAnalisis = "ERROR: SINTACTICO\nEl análisis sintáctico ha fallado sin un error específico.\n";
             }
+
+        } catch (ErrorSintactico e) {
+            resultadoAnalisis = "ERROR: SINTACTICO\n" + e.getMessage();
+        } catch (ErrorLex e) {
+            resultadoAnalisis = "ERROR: LEXICO\n" + e.getMessage();
         } catch (IOException e) {
-            System.err.println("Error al cerrar el archivo de salida: " + e.getMessage());
+            // Este error ocurre si hay problemas leyendo el archivo de entrada.
+            System.err.println("Error de E/S al leer el archivo de entrada: " + e.getMessage());
+            return; // Salir, no tiene caso escribir un archivo de salida.
+        } catch (Exception e) {
+            // Captura cualquier otro error inesperado durante el análisis.
+            resultadoAnalisis = "ERROR: INESPERADO\nSe ha producido un error no controlado durante el análisis.\n" + e.getMessage();
+            e.printStackTrace(); // Es buena idea imprimir el stack trace para depuración.
+        }
+
+        // ────────────── Escritura de resultados ──────────────
+        // Este bloque ahora solo se encarga de escribir el resultado final en el archivo.
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivoSalida))) {
+            writer.write(resultadoAnalisis);
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo de salida '" + nombreArchivoSalida + "': " + e.getMessage());
+        }
+
+        // Proporcionar feedback en la consola también es una buena práctica.
+        if (resultadoAnalisis.startsWith("ERROR")) {
+            System.err.println(resultadoAnalisis.trim());
+        } else {
+            System.out.println(resultadoAnalisis.trim());
+
         }
     }
 
