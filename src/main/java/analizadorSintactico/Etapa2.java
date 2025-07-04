@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+
 /**
  * La clase {@code Etapa2} realiza el análisis sintáctico y léxico de un archivo de entrada en lenguaje TinyS.
  * <p>
@@ -13,7 +14,9 @@ import java.io.IOException;
  * para verificar la validez del código fuente TinyS proporcionado en un archivo de entrada.
  * </p>
  */
+
 public class Etapa2 {
+
 
     /**
      * Metodo principal que ejecuta el análisis sintáctico y léxico del archivo de entrada.
@@ -96,6 +99,26 @@ public class Etapa2 {
             System.err.println(resultadoAnalisis.trim());
         } else {
             System.out.println(resultadoAnalisis.trim());
+
         }
     }
+
+    /**
+     * Función auxiliar para escribir un mensaje de error en el archivo de salida, reemplazando cualquier contenido previo.
+     *
+     * @param writer  El {@link BufferedWriter} utilizado para escribir en el archivo.
+     * @param archivo La ruta del archivo en el que se escribirá el mensaje de error.
+     * @param mensaje El mensaje de error que se escribirá en el archivo.
+     * @throws IOException Si ocurre un error de entrada/salida durante la escritura en el archivo.
+     */
+
+    // Función auxiliar para escribir un mensaje de error, reemplazando el archivo
+    private static void reemplazarConError(BufferedWriter writer, String archivo, String mensaje) throws IOException {
+        if (writer != null) writer.close();
+        try (BufferedWriter newWriter = new BufferedWriter(new FileWriter(archivo, false))) {
+            newWriter.write(mensaje);
+        }
+        System.err.println(mensaje.trim());
+    }
+
 }

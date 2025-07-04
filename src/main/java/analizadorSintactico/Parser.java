@@ -147,7 +147,6 @@ public class Parser {
                         impl_lista_recursivo();
                     }else{
                         throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una clase o una implementación.");
-
                     }
             }
         }
@@ -167,7 +166,6 @@ public class Parser {
             lista_factorizacion();
         }else{
             throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una clase.");
-
         }
     }
 
@@ -1701,6 +1699,13 @@ public class Parser {
             }
         }
     }
+    /**
+     * Implementa la regla de producción para 'lista_expresiones' de la gramática.
+     *
+     * @throws IOException Si ocurre un error de E/S.
+     * @throws ErrorTiny Si se encuentra un error léxico.
+     */
+
     /**
      * Implementa la regla de producción para 'lista_expresiones' de la gramática.
      *
