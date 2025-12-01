@@ -12,9 +12,6 @@ import java.util.List;
 
 public class Etapa1 {
 
-    static Escaner escaner = new Escaner();
-    static LectorCF lector = new LectorCF();
-
     /**
      * Metodo principal que ejecuta el análisis léxico.
      *
@@ -27,6 +24,8 @@ public class Etapa1 {
 
     public static void main(String[] args) throws IOException, ErrorLex {
         String source;
+        Escaner escaner = new Escaner();
+        LectorCF lector = new LectorCF();
         escaner.setEscaner(lector);
         // Verificar si se proporcionan los argumentos de línea de comandos necesarios
         if (args.length < 1) {

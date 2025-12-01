@@ -33,7 +33,7 @@ public class TestUnit {
     void testCasoExitoso() throws IOException, ErrorLex {
         String source;
         escaner.setEscaner(lector);
-        lector.lectorArchivo("/home/nacho/IdeaProjects/tinyS/src/test/resources/lexicalTest/comentarios.s");
+        lector.lectorArchivo("C:\\Users\\nacho\\IdeaProjects\\tinyS/src/test/resources/lexicalTest/comentarios.s");
         source = lector.rechargeBuffer();
         escaner.setBuffer(source);
 
@@ -64,14 +64,18 @@ public class TestUnit {
 
 
     }
-/*
     @Test
-    void testCasoFallido() {
-        // Ejemplo de una prueba que podría fallar
+    void testPrueba () throws IOException, ErrorLex{
+        // Obtener la ruta del archivo de recursos usando el ClassLoader
+        String resourcePath = getClass().getClassLoader()
+                .getResource("test/testPalabrasClaves.s")
+                .getPath();
+
+        // Ruta del archivo de salida (puedes cambiarla)
+        String outputPath = "src/test/resources/lexicalTest/assert/resultado_testPalabrasClaves.txt";
+
+        // Llamar a Etapa1.main con el archivo de entrada y salida
+        Etapa1.main(new String[]{resourcePath, outputPath});
     }
-
- */
-
-
 
 }
