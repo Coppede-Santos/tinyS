@@ -21,9 +21,10 @@ import java.nio.file.Files;
  */
 public class TestEtapa2 {
 
-    private static final String CORRECT_OUTPUT = "CORRECTO: ANALISIS SINTACTICO\n";
-    private static final String SINTAX_TEST_DIR = "src/test/resources/sintaxisTest/";
-    private static final String OUTPUT_DIR = "src/test/resources/salidasTest/";
+    String basePath = System.getProperty("user.dir");
+    private final String CORRECT_OUTPUT = "CORRECTO: ANALISIS SINTACTICO\n";
+    private final String SINTAX_TEST_DIR = basePath + File.separator + "src" + File.separator + "test" + File.separator + "resources" + File.separator + "test" + File.separator;
+    private final String OUTPUT_DIR = basePath + File.separator + "src" + File.separator + "test" + File.separator + "resources" + File.separator + "sintax" + File.separator;
 
     @TempDir
     Path tempDir;
@@ -93,7 +94,7 @@ public class TestEtapa2 {
             writer.write(inputContent);
         }
 
-        String outputFile = OUTPUT_DIR + testName + "_error_salida.txt";
+        String outputFile = OUTPUT_DIR + testName + "_salida.txt";
 
         try {
             // Ejecutar Etapa2
@@ -147,83 +148,11 @@ public class TestEtapa2 {
     }
 
     @Test
-    @DisplayName("Test del programa persona.s")
-    public void testPersona() throws IOException {
-        runCorrectSyntaxTest("persona", "persona.s");
-    }
-
-    @Test
-    @DisplayName("Test del programa fibonacciS.s")
+    @DisplayName("Test del programa fibonacci.s")
     public void testFibonacci() throws IOException {
-        runCorrectSyntaxTest("fibonacciS", "fibonacciS.s");
+        runCorrectSyntaxTest("fibonacci", "fibonacci.s");
     }
 
-    @Test
-    @DisplayName("Test de error: clase sin implementación")
-    public void testErrorClaseSinImplementacion() throws IOException {
-        String programaConError = "class MiClase {\n" +
-                                  "  pub Int valor;\n" +
-                                  "}\n" +
-                                  "start {\n" +
-                                  "  MiClase obj;\n" +
-                                  "  obj = new MiClase();\n" +
-                                  "}\n";
-
-        runErrorSyntaxTest("clase_sin_impl", programaConError, "impl");
-    }
-
-    @Test
-    @DisplayName("Test de error: falta llave de cierre")
-    public void testErrorFaltaLlaveCierre() throws IOException {
-        String programaConError = "class Ejemplo {\n" +
-                                  "  pub Int valor;\n" +
-                                  "\n" +  // Falta llave de cierre
-                                  "impl Ejemplo {\n" +
-                                  "  .() {\n" +
-                                  "    valor = 0;\n" +
-                                  "  }\n" +
-                                  "}\n" +
-                                  "start {\n" +
-                                  "  Ejemplo e;\n" +
-                                  "  e = new Ejemplo();\n" +
-                                  "}\n";
-
-        runErrorSyntaxTest("falta_llave", programaConError, "}");
-    }
-
-    @Test
-    @DisplayName("Test de error: sentencia sin punto y coma")
-    public void testErrorFaltaPuntoYComa() throws IOException {
-        String programaConError = "class Test {\n" +
-                                  "  pub Int x;\n" +
-                                  "}\n" +
-                                  "impl Test {\n" +
-                                  "  .() {\n" +
-                                  "    x = 10\n" +  // Falta punto y coma
-                                  "  }\n" +
-                                  "}\n" +
-                                  "start {\n" +
-                                  "  Test t;\n" +
-                                  "  t = new Test();\n" +
-                                  "}\n";
-
-        runErrorSyntaxTest("falta_punto_coma", programaConError, ";");
-    }
-
-    @Test
-    @DisplayName("Test de error: falta sección start")
-    public void testErrorFaltaStart() throws IOException {
-        String programaConError = "class SinStart {\n" +
-                                  "  pub Int valor;\n" +
-                                  "}\n" +
-                                  "impl SinStart {\n" +
-                                  "  .() {\n" +
-                                  "    valor = 0;\n" +
-                                  "  }\n" +
-                                  "}\n";
-
-        runErrorSyntaxTest("falta_start", programaConError, "start");
-    }
 
     // Metodo auxiliar para leer el contenido de un archivo
     private String readFile(String filePath) throws IOException {

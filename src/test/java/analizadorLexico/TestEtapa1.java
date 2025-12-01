@@ -1,5 +1,6 @@
 package analizadorLexico;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
@@ -15,11 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestEtapa1 {
 
+
     private void testLexicalFile(String fileName) throws IOException, ErrorLex {
         String basePath = System.getProperty("user.dir");
         String testFilePath = basePath + "/src/test/resources/test/" + fileName + ".s";
         String assertFilePath = basePath + "/src/test/resources/lexical/resultado_" + fileName + ".txt";
-        String outputFilePath = basePath + "/src/test/resources/test/" + fileName + ".txt";
+        String outputFilePath = basePath + "/src/test/resources/output/" + fileName + ".txt";
 
         // Ejecutar el analizador léxico
         Etapa1.main(new String[]{testFilePath, outputFilePath});
@@ -42,24 +44,59 @@ public class TestEtapa1 {
                     "Error en la línea " + (i + 1) + " del archivo " + fileName);
         }
     }
-
-
     @Test
-    public void testTotal() throws IOException, ErrorLex{
-        String[] test = {"comentarios",
-                "contador",
-                "factorial",
-                "identificadoresErroneos",
-                "numerosPares",
-                "primo",
-                "testBuffer",
-                "testPalabrasClaves",
-                "secuenciasCompletasIO",
-                "testFibonacci"};
-        for (String i : test) {
-            testLexicalFile(i);
-        }
+    @DisplayName("Test del programa comentarios.s")
+    public void testComentarios() throws IOException, ErrorLex {
+        testLexicalFile("comentarios");
     }
+    @Test
+    @DisplayName("Test del programa contador.s")
+    public void testContador() throws IOException, ErrorLex {
+        testLexicalFile("contador");
+    }
+    @Test
+    @DisplayName("Test del programa factorial.s")
+    public void testFactorial() throws IOException, ErrorLex {
+        testLexicalFile("factorial");
+    }
+    @Test
+    @DisplayName("Test del programa identificadoresErroneos.s")
+    public void testIdentificadoresErroneos() throws IOException, ErrorLex {
+        testLexicalFile("identificadoresErroneos");
+    }
+    @Test
+    @DisplayName("Test del programa numerosPares.s")
+    public void testNumerosPares() throws IOException, ErrorLex {
+        testLexicalFile("numerosPares");
+    }
+    @Test
+    @DisplayName("Test del programa primo.s")
+    public void testprimo() throws IOException, ErrorLex {
+        testLexicalFile("primo");
+    }
+    @Test
+    @DisplayName("Test del programa buffer.s")
+    public void testBuffer() throws IOException, ErrorLex {
+        testLexicalFile("buffer");
+    }
+    @Test
+    @DisplayName("Test del programa secuenciasCompletasIO.s")
+    public void testsecuenciasCompletasIO() throws IOException, ErrorLex {
+        testLexicalFile("secuenciasCompletasIO");
+    }
+    @Test
+    @DisplayName("Test del programa palabrasClaves.s")
+    public void testPalabrasClaves() throws IOException, ErrorLex {
+        testLexicalFile("palabrasClaves");
+    }
+    @Test
+    @DisplayName("Test del programa fibonacci.s")
+    public void testFibonacci() throws IOException, ErrorLex {
+        testLexicalFile("fibonacci");
+    }
+
+
+
 
     @Test
     public void testSimple() throws IOException, ErrorLex {

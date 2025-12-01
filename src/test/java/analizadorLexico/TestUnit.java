@@ -68,11 +68,11 @@ public class TestUnit {
     void testPrueba () throws IOException, ErrorLex{
         // Obtener la ruta del archivo de recursos usando el ClassLoader
         String resourcePath = getClass().getClassLoader()
-                .getResource("test/testPalabrasClaves.s")
+                .getResource("test/palabrasClaves.s")
                 .getPath();
 
         // Ruta del archivo de salida (puedes cambiarla)
-        String outputPath = "src/test/resources/lexicalTest/assert/resultado_testPalabrasClaves.txt";
+        String outputPath = "src/test/resources/lexicalTest/assert/resultado_palabrasClaves.txt";
 
         // Llamar a Etapa1.main con el archivo de entrada y salida
         Etapa1.main(new String[]{resourcePath, outputPath});
