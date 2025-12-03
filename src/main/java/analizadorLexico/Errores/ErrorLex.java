@@ -1,5 +1,7 @@
-package analizadorLexico;
+package analizadorLexico.Errores;
+
 import ErrorManage.ErrorTiny;
+
 public class ErrorLex extends ErrorTiny {
 
     ErrorLex(int line, int column, String descripcion, String lexema){
