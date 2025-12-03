@@ -1,6 +1,7 @@
 package analizadorLexico;
 
 
+import analizadorLexico.Errores.ErrorLex;
 import org.junit.jupiter.api.*;
 
 import java.io.BufferedWriter;

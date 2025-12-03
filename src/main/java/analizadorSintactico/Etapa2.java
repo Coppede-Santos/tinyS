@@ -1,5 +1,6 @@
 package analizadorSintactico;
 
+import analizadorLexico.Errores.ErrorLex;
 import analizadorLexico.*;
 
 import java.io.BufferedWriter;
