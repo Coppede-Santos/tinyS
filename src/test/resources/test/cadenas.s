@@ -1,0 +1,11 @@
+"hola", "soy", "cadena"
+
+"otra cadena"
+"cadena con espacios    "
+"cadena-con-guiones"
+"cadena_con_guiones_bajos"
+"cadenaConCamelCase"
+"1234567890"
+"!@#$%^&*()_+"
+"""   "
+"cadena\ncon\nsaltos\nde\nlinea"
