@@ -1,4 +1,4 @@
-package analizadorLexico;
+package scripts;
 
 import analizadorLexico.Errores.ErrorLex;
 import org.junit.jupiter.api.DisplayName;

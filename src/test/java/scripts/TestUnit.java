@@ -1,4 +1,4 @@
-package analizadorLexico;
+package scripts;
 
 
 import analizadorLexico.Errores.ErrorLex;
