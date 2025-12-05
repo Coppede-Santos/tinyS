@@ -19,14 +19,23 @@ public class TestEtapa1 {
         String assertFilePath = basePath + "/src/test/resources/lexical/resultado_" + fileName + ".txt";
         String outputFilePath = basePath + "/src/test/resources/output/" + fileName + ".txt";
 
+        System.out.println("empieza el test");
+
         // Ejecutar el analizador léxico
         Etapa1.main(new String[]{testFilePath, outputFilePath});
+
+        System.out.println("termina el test");
 
         // Leer el archivo generado
         String actualOutput = Files.readString(Paths.get(outputFilePath));
 
+        System.out.println("actualOutput: " + actualOutput);
+
         // Leer el archivo esperado
         String expectedOutput = Files.readString(Paths.get(assertFilePath));
+
+        System.out.println("expectedOutput: " + expectedOutput);
+
 
         // Comparar línea por línea
         String[] actualLines = actualOutput.split("\n");
@@ -91,11 +100,10 @@ public class TestEtapa1 {
         testLexicalFile("fibonacci");
     }
 
-
-
-
     @Test
-    public void testSimple() throws IOException, ErrorLex {
-        testLexicalFile("contador");
+    @DisplayName("Test de comentarioSinCerrar.s")
+    public void testComentarioSinCerrrar() throws IOException, ErrorLex {
+        testLexicalFile("comentarioSinCerrar");
     }
+
 }
