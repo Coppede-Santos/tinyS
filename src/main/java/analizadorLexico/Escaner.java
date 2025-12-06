@@ -402,7 +402,7 @@ public class Escaner {
             advance();
         }
         if (isAtEnd()) {
-            throw new StringSinCerrarError(line, column, buffer.substring(start + 1, current - 1));
+            throw new StringSinCerrarError(line, column, buffer.substring(start, current));
         }
 
         advance();

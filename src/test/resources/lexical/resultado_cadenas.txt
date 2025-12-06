@@ -1,80 +1,17 @@
 CORRECTO: ANALISIS LEXICO
 | STRING_LITERAL | "hola" | LINEA 1 (COLUMNA 6) |
 | COMMA | , | LINEA 1 (COLUMNA 7) |
-| STRING_LITERAL | , "soy" | LINEA 1 (COLUMNA 13) |
+| STRING_LITERAL | "soy" | LINEA 1 (COLUMNA 13) |
 | COMMA | , | LINEA 1 (COLUMNA 14) |
-| STRING_LITERAL | , "cadena" | LINEA 1 (COLUMNA 23) |
-| STRING_LITERAL | , "cadena"
-
-"otra cadena" | LINEA 3 (COLUMNA 13) |
-| STRING_LITERAL | , "cadena"
-
-"otra cadena"
-"cadena con espacios    " | LINEA 4 (COLUMNA 25) |
-| STRING_LITERAL | , "cadena"
-
-"otra cadena"
-"cadena con espacios    "
-"cadena-con-guiones" | LINEA 5 (COLUMNA 20) |
-| STRING_LITERAL | , "cadena"
-
-"otra cadena"
-"cadena con espacios    "
-"cadena-con-guiones"
-"cadena_con_guiones_bajos" | LINEA 6 (COLUMNA 26) |
-| STRING_LITERAL | , "cadena"
-
-"otra cadena"
-"cadena con espacios    "
-"cadena-con-guiones"
-"cadena_con_guiones_bajos"
-"cadenaConCamelCase" | LINEA 7 (COLUMNA 20) |
-| STRING_LITERAL | , "cadena"
-
-"otra cadena"
-"cadena con espacios    "
-"cadena-con-guiones"
-"cadena_con_guiones_bajos"
-"cadenaConCamelCase"
-"1234567890" | LINEA 8 (COLUMNA 12) |
-| STRING_LITERAL | , "cadena"
-
-"otra cadena"
-"cadena con espacios    "
-"cadena-con-guiones"
-"cadena_con_guiones_bajos"
-"cadenaConCamelCase"
-"1234567890"
-"!@#$%^&*()_+" | LINEA 9 (COLUMNA 14) |
-| STRING_LITERAL | , "cadena"
-
-"otra cadena"
-"cadena con espacios    "
-"cadena-con-guiones"
-"cadena_con_guiones_bajos"
-"cadenaConCamelCase"
-"1234567890"
-"!@#$%^&*()_+"
-"" | LINEA 10 (COLUMNA 2) |
-| STRING_LITERAL | , "cadena"
-
-"otra cadena"
-"cadena con espacios    "
-"cadena-con-guiones"
-"cadena_con_guiones_bajos"
-"cadenaConCamelCase"
-"1234567890"
-"!@#$%^&*()_+"
-"""   " | LINEA 10 (COLUMNA 7) |
-| STRING_LITERAL | , "cadena"
-
-"otra cadena"
-"cadena con espacios    "
-"cadena-con-guiones"
-"cadena_con_guiones_bajos"
-"cadenaConCamelCase"
-"1234567890"
-"!@#$%^&*()_+"
-"""   "
-"cadena\ncon\nsaltos\nde\nlinea" | LINEA 11 (COLUMNA 32) |
+| STRING_LITERAL | "cadena" | LINEA 1 (COLUMNA 23) |
+| STRING_LITERAL | "otra cadena" | LINEA 3 (COLUMNA 13) |
+| STRING_LITERAL | "cadena con espacios    " | LINEA 4 (COLUMNA 25) |
+| STRING_LITERAL | "cadena-con-guiones" | LINEA 5 (COLUMNA 20) |
+| STRING_LITERAL | "cadena_con_guiones_bajos" | LINEA 6 (COLUMNA 26) |
+| STRING_LITERAL | "cadenaConCamelCase" | LINEA 7 (COLUMNA 20) |
+| STRING_LITERAL | "1234567890" | LINEA 8 (COLUMNA 12) |
+| STRING_LITERAL | "!@#$%^&*()_+" | LINEA 9 (COLUMNA 14) |
+| STRING_LITERAL | "" | LINEA 10 (COLUMNA 2) |
+| STRING_LITERAL | "   " | LINEA 10 (COLUMNA 7) |
+| STRING_LITERAL | "cadena\ncon\nsaltos\nde\nlinea" | LINEA 11 (COLUMNA 32) |
 | EOF |  | LINEA 11 (COLUMNA 32) |
