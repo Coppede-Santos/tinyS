@@ -1,6 +1,7 @@
 package scripts;
 
 
+import analizadorLexico.*;
 import analizadorLexico.Errores.ErrorLex;
 import org.junit.jupiter.api.*;
 

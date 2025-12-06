@@ -1,6 +1,7 @@
 package scripts;
 
 import analizadorLexico.Errores.ErrorLex;
+import analizadorLexico.Etapa1;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

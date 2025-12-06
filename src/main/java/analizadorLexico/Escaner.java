@@ -272,6 +272,7 @@ public class Escaner {
                 }
                 //literales cadenas
             case '"':
+                start = current - 1;
                 return string();
 
 
