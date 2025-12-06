@@ -1,6 +1,7 @@
-package analizadorLexico;
+package scripts;
 
 import analizadorLexico.Errores.ErrorLex;
+import analizadorLexico.Etapa1;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,19 +20,14 @@ public class TestEtapa1 {
         String assertFilePath = basePath + "/src/test/resources/lexical/resultado_" + fileName + ".txt";
         String outputFilePath = basePath + "/src/test/resources/output/" + fileName + ".txt";
 
-
         // Ejecutar el analizador léxico
         Etapa1.main(new String[]{testFilePath, outputFilePath});
-
 
         // Leer el archivo generado
         String actualOutput = Files.readString(Paths.get(outputFilePath));
 
-
         // Leer el archivo esperado
         String expectedOutput = Files.readString(Paths.get(assertFilePath));
-
-
 
         // Comparar línea por línea
         String[] actualLines = actualOutput.split("\n");
@@ -97,15 +93,67 @@ public class TestEtapa1 {
     }
 
     @Test
-    @DisplayName("Test de comentarioSinCerrar.s")
-    public void testComentarioSinCerrrar() throws IOException, ErrorLex {
+    public void testSimple() throws IOException, ErrorLex {
+        testLexicalFile("contador");
+    }
+
+    @Test
+    @DisplayName("Test del programa archivoVacio.s")
+    public void testArchivoVacio() throws IOException, ErrorLex {
+        testLexicalFile("archivoVacio");
+    }
+
+    @Test
+    @DisplayName("Test del programa areaDeUnCirculo.s")
+    public void testAreaDeUnCirculo() throws IOException, ErrorLex {
+        testLexicalFile("areaDeUnCirculo");
+    }
+
+    @Test
+    @DisplayName("Test del programa cadenas.s")
+    public void testCadenas() throws IOException, ErrorLex {
+        testLexicalFile("cadenas");
+    }
+
+    @Test
+    @DisplayName("Test del programa cadenasIncorrectas.s")
+    public void testCadenasIncorrectas() throws IOException, ErrorLex {
+        testLexicalFile("cadenasIncorrectas");
+    }
+
+    @Test
+    @DisplayName("Test del programa calculosCombinados.s")
+    public void testCalculosCombinados() throws IOException, ErrorLex {
+        testLexicalFile("calculosCombinados");
+    }
+
+    @Test
+    @DisplayName("Test del programa caracteresInvalidos.s")
+    public void testCaracteresInvalidos() throws IOException, ErrorLex {
+        testLexicalFile("caracteresInvalidos");
+    }
+
+    @Test
+    @DisplayName("Test del programa comentarioSinCerrar.s")
+    public void testComentarioSinCerrar() throws IOException, ErrorLex {
         testLexicalFile("comentarioSinCerrar");
     }
 
     @Test
-    @DisplayName("Test de doubleInvalido.s")
-    public void testDoubleInvalido() throws IOException, ErrorLex {
-        testLexicalFile("doubleInvalido");
+    @DisplayName("Test del programa enteroInvalido.s")
+    public void testEnteroInvalido() throws IOException, ErrorLex {
+        testLexicalFile("enteroInvalido");
     }
 
+    @Test
+    @DisplayName("Test del programa testFibonacciConErrorEnLineaEsperada.s")
+    public void testFibonacciConErrorEnLineaEsperada() throws IOException, ErrorLex {
+        testLexicalFile("archivoVacio");
+    }
+
+    @Test
+    @DisplayName("Test del programa metodosSeparados.s")
+    public void testMetodosSeparados() throws IOException, ErrorLex {
+        testLexicalFile("metodosSeparados");
+    }
 }
