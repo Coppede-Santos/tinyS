@@ -217,6 +217,7 @@ public class Escaner {
                     //Pasamos de largo el comentario
                     while (look() != '\n' && !isAtEnd()) advance();
                     column = 0;
+
                     return nextToken();
                 } else {
                     if (nextMatch('*')) {
@@ -229,7 +230,9 @@ public class Escaner {
                             if (caracter == '*') {
                                 caracter = advance();
 
+
                                 if (caracter == '/') {
+
                                     break;
                                 }
                             }
@@ -239,6 +242,7 @@ public class Escaner {
                                 column = 0;
                             }
                             if (isAtEnd()) {
+
                                 throw new ComentarioSinCerrarError(line, column, String.valueOf(c));
                                 //throw new IOException("CARACTER INVALIDO en línea " + line + ", columna " + column);
                             }
@@ -307,8 +311,9 @@ public class Escaner {
      */
 
     private char advance() throws ErrorLex, IOException {
+
         if (isAtEnd()) return '€';
-        if (column >= buffer.length()) {
+        if (current >= buffer.length()) {
             buffer =lectorCF.rechargeBuffer();
             current = 0;
         }
@@ -452,7 +457,6 @@ public class Escaner {
                 advance();
                 isDouble = true;
             }else {
-
                 throw new DoubleInvalidoError(line, column, buffer.substring(start + 1, current - 1));
             }
         }
