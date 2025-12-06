@@ -1,0 +1,33 @@
+CORRECTO: ANALISIS LEXICO
+| STRING_LITERAL | "esto es un string" | LINEA 3 (COLUMNA 19) |
+| STRING_LITERAL | "// esto es un comentario dentro de un string" | LINEA 4 (COLUMNA 46) |
+| STRING_LITERAL | "string con caracteres especiales: \n \t \\ \" | LINEA 5 (COLUMNA 46) |
+| STRING_LITERAL | "" | LINEA 6 (COLUMNA 2) |
+| STRING_LITERAL | "string con comillas: \''" | LINEA 6 (COLUMNA 28) |
+| STRING_LITERAL | "string con unicode: \u00A9 \u03A9" | LINEA 7 (COLUMNA 35) |
+| STRING_LITERAL | "string multilÃ­nea:
+primera lÃ­nea
+segunda lÃ­nea
+tercera lÃ­nea" | LINEA 11 (COLUMNA 16) |
+| STRING_LITERAL | "string con espacios    y tabulaciones		" | LINEA 12 (COLUMNA 41) |
+| STRING_LITERAL | "string vacÃ­o: " | LINEA 13 (COLUMNA 17) |
+| STRING_LITERAL | "" | LINEA 13 (COLUMNA 19) |
+| STRING_LITERAL | "string con nÃºmeros: 1234567890" | LINEA 14 (COLUMNA 33) |
+| STRING_LITERAL | "string con sÃ­mbolos: !@#$%^&*()_+-=[]{}|;:',.<>/?" | LINEA 15 (COLUMNA 52) |
+| STRING_LITERAL | "string con mezcla: Texto 123 !@# \n \t \u03A9" | LINEA 16 (COLUMNA 47) |
+| STRING_LITERAL | "string con salto de lÃ­nea al final\n" | LINEA 17 (COLUMNA 39) |
+| STRING_LITERAL | "string con tabulaciÃ³n al inicio\tInicio" | LINEA 18 (COLUMNA 42) |
+| STRING_LITERAL | "string con comillas simples: 'comillas simples'" | LINEA 19 (COLUMNA 49) |
+| STRING_LITERAL | "string con comillas dobles: " | LINEA 20 (COLUMNA 30) |
+| STRING_LITERAL | "comillas dobles\" | LINEA 20 (COLUMNA 49) |
+| STRING_LITERAL | "string con backslash: C:\\ruta\\al\\archivo" | LINEA 21 (COLUMNA 45) |
+| STRING_LITERAL | "string con espacios al final    " | LINEA 22 (COLUMNA 34) |
+| STRING_LITERAL | "string con espacios al inicio    Inicio" | LINEA 23 (COLUMNA 41) |
+| STRING_LITERAL | "string con mÃºltiples lÃ­neas:
+LÃ­nea 1
+LÃ­nea 2
+LÃ­nea 3" | LINEA 27 (COLUMNA 10) |
+| STRING_LITERAL | "string con mezcla de comillas: 'comillas simples' y \" | LINEA 28 (COLUMNA 55) |
+| STRING_LITERAL | "comillas dobles\" | LINEA 28 (COLUMNA 73) |
+| STRING_LITERAL | "string con caracteres especiales y unicode: \n \t \u03A9 \u00A9" | LINEA 29 (COLUMNA 65) |
+| EOF |  | LINEA 29 (COLUMNA 65) |

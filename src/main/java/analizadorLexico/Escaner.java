@@ -448,6 +448,7 @@ public class Escaner {
      */
 
     private Token number() throws ErrorLex, IOException {
+        start = current-1;
         boolean isDouble = false;
         while (isDigit(look())) advance();
 
@@ -567,11 +568,16 @@ public class Escaner {
         while (isAlphaNumeric(look())){
             advance();
         }
+
         String text = buffer.substring(start,current);
+
         if (keywords.containsKey(text)){
             return addToken(keywords.get(text));
         }else{
             if (identificadorTipo){
+                if (!isAlpha(text.charAt(text.length() -1))){
+                    throw new IdentificadorInvalidoError(line, column, text);
+                }
                 return addToken(IDCLASS);
             }else{
                 return addToken(IDOBJETS);
