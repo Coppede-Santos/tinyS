@@ -169,8 +169,6 @@ public class TestEtapa1 {
         testLexicalFile("string");
     }
 
-
-
     @Test
     @DisplayName("Test del programa identificadores.s")
     public void testLiterales() throws IOException, ErrorLex {
@@ -184,15 +182,27 @@ public class TestEtapa1 {
 
     @Test
     @DisplayName("Test del programa identificadoresErroneos3.s")
-    public void testOperadores() throws IOException, ErrorLex {
+    public void testIdentificadoresErroneos3() throws IOException, ErrorLex {
         testLexicalFile("identificadoresErroneos3");
     }
 
     @Test
     @DisplayName("Test del programa identificadoresErroneos4.s")
-    public void testOperadores2() throws IOException, ErrorLex {
+    public void testIdentificadoresErroneos2() throws IOException, ErrorLex {
         testLexicalFile("identificadoresErroneos4");
     }
+
+    @Test
+    @DisplayName("Test del programa operadores.s")
+    public void testOperadores() throws IOException, ErrorLex{
+        testLexicalFile("operadores");
+    }
+    @Test
+    @DisplayName("Test del programa romperPalabrasClaves.s")
+    public void testromperPalabrasClaves() throws IOException, ErrorLex{
+        testLexicalFile("romperPalabrasClaves");
+    }
+
 
 
 

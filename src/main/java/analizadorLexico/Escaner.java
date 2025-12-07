@@ -48,6 +48,7 @@ public class Escaner {
         keywords.put("Str", STR);
         keywords.put("start", START);
         keywords.put("void", VOID);
+        keywords.put("Bool", BOOL);
         keywords.put("€", EOF);
 
     }
@@ -259,6 +260,7 @@ public class Escaner {
             case '|':
                 //Puede ser un comentario:
                 if (nextMatch('|')) {
+                    start = current - 2;
                     //Pasamos de largo el comentario
                     return addToken(OR);
                 } else {
@@ -269,6 +271,7 @@ public class Escaner {
             case '&':
                 //Puede ser un comentario:
                 if (nextMatch('&')) {
+                    start = current - 2;
                     //Pasamos de largo el comentario
                     return addToken(AND);
                 } else {
