@@ -33,8 +33,8 @@ public class TestEtapa1 {
         String[] actualLines = actualOutput.split("\n");
         String[] expectedLines = expectedOutput.split("\n");
 
-        //assertEquals(expectedLines.length, actualLines.length,
-        //        "La cantidad de líneas no coincide para " + fileName);
+        assertEquals(expectedLines.length, actualLines.length,
+                "La cantidad de líneas no coincide para " + fileName);
 
         for (int i = 0; i < expectedLines.length; i++) {
             assertEquals(expectedLines[i].trim(), actualLines[i].trim(),
@@ -46,6 +46,12 @@ public class TestEtapa1 {
     public void testComentarios() throws IOException, ErrorLex {
         testLexicalFile("comentarios");
     }
+    @Test
+    @DisplayName("Test del programa comentarios2.s")
+    public void testSuma() throws IOException, ErrorLex {
+        testLexicalFile("comentarios2");
+    }
+
     @Test
     @DisplayName("Test del programa contador.s")
     public void testContador() throws IOException, ErrorLex {
@@ -156,4 +162,40 @@ public class TestEtapa1 {
     public void testMetodosSeparados() throws IOException, ErrorLex {
         testLexicalFile("metodosSeparados");
     }
+
+    @Test
+    @DisplayName("Test del programa string.s")
+    public void testIdentificadores() throws IOException, ErrorLex {
+        testLexicalFile("string");
+    }
+
+
+
+    @Test
+    @DisplayName("Test del programa identificadores.s")
+    public void testLiterales() throws IOException, ErrorLex {
+        testLexicalFile("identificadores");
+    }
+    @Test
+    @DisplayName("Test del programa identificadoresErroneos2.s")
+    public void testLiterales2() throws IOException, ErrorLex {
+        testLexicalFile("identificadoresErroneos2");
+    }
+
+    @Test
+    @DisplayName("Test del programa identificadoresErroneos3.s")
+    public void testOperadores() throws IOException, ErrorLex {
+        testLexicalFile("identificadoresErroneos3");
+    }
+
+    @Test
+    @DisplayName("Test del programa identificadoresErroneos4.s")
+    public void testOperadores2() throws IOException, ErrorLex {
+        testLexicalFile("identificadoresErroneos4");
+    }
+
+
+
+
+
 }

@@ -217,6 +217,7 @@ public class Escaner {
                     //Pasamos de largo el comentario
                     while (look() != '\n' && !isAtEnd()) advance();
                     column = 0;
+
                     return nextToken();
                 } else {
                     if (nextMatch('*')) {
@@ -229,7 +230,9 @@ public class Escaner {
                             if (caracter == '*') {
                                 caracter = advance();
 
+
                                 if (caracter == '/') {
+
                                     break;
                                 }
                             }
@@ -239,6 +242,7 @@ public class Escaner {
                                 column = 0;
                             }
                             if (isAtEnd()) {
+
                                 throw new ComentarioSinCerrarError(line, column, String.valueOf(c));
                                 //throw new IOException("CARACTER INVALIDO en línea " + line + ", columna " + column);
                             }
@@ -308,8 +312,9 @@ public class Escaner {
      */
 
     private char advance() throws ErrorLex, IOException {
+
         if (isAtEnd()) return '€';
-        if (column >= buffer.length()) {
+        if (current >= buffer.length()) {
             buffer =lectorCF.rechargeBuffer();
             current = 0;
         }
@@ -397,7 +402,7 @@ public class Escaner {
             advance();
         }
         if (isAtEnd()) {
-            throw new StringSinCerrarError(line, column, buffer.substring(start + 1, current - 1));
+            throw new StringSinCerrarError(line, column, buffer.substring(start, current));
         }
 
         advance();
@@ -443,6 +448,7 @@ public class Escaner {
      */
 
     private Token number() throws ErrorLex, IOException {
+        start = current-1;
         boolean isDouble = false;
         while (isDigit(look())) advance();
 
@@ -453,7 +459,6 @@ public class Escaner {
                 advance();
                 isDouble = true;
             }else {
-
                 throw new DoubleInvalidoError(line, column, buffer.substring(start + 1, current - 1));
             }
         }
@@ -563,11 +568,16 @@ public class Escaner {
         while (isAlphaNumeric(look())){
             advance();
         }
+
         String text = buffer.substring(start,current);
+
         if (keywords.containsKey(text)){
             return addToken(keywords.get(text));
         }else{
             if (identificadorTipo){
+                if (!isAlpha(text.charAt(text.length() -1))){
+                    throw new IdentificadorInvalidoError(line, column, text);
+                }
                 return addToken(IDCLASS);
             }else{
                 return addToken(IDOBJETS);
