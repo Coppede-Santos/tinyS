@@ -488,7 +488,7 @@ public class Escaner {
     private char lookNext() throws ErrorLex, IOException {
         if (current + 1 >= buffer.length()) {
             if (lectorCF != null && !lectorCF.isReachedEOF()) {
-                return '\0'; // Necesitaría recargar buffer, pero por simplicidad retornamos '\0'
+                return '\0';
             }
             return '\0';
         }
