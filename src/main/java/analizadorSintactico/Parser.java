@@ -4,6 +4,9 @@ import ErrorManage.ErrorTiny;
 import analizadorLexico.Escaner;
 import analizadorLexico.Token;
 import analizadorLexico.TokenType;
+import analizadorSintactico.Errores.MacheoIncorrectoError;
+import analizadorSintactico.Errores.TokenInesperadoError;
+import analizadorSintactico.Errores.TokenInesperadoError;
 
 import java.io.IOException;
 
@@ -58,6 +61,8 @@ public class Parser {
             } else {
                 currentToken = escaner.nextToken();
             }
+        }else{
+            throw new MacheoIncorrectoError(currentToken.getLine(),currentToken.getColumn(),tokenType.toString(), currentToken.getLexema());
         }
     }
 
@@ -91,7 +96,7 @@ public class Parser {
             macheo(EOF);
             return true;
         }
-        throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, se espera la definición de una clase o una implementación.");
+        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, se espera la definición de una clase o una implementación.");
     }
 
     /**
@@ -107,7 +112,7 @@ public class Parser {
             lista_definiciones();
             start();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definicion de una clase o implementación.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definicion de una clase o implementación.");
         }
     }
 
@@ -123,7 +128,7 @@ public class Parser {
             macheo(START);
             bloque_metodo();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un metodo start.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un metodo start.");
         }
     }
 
@@ -146,7 +151,7 @@ public class Parser {
                     if (type == IMPL){
                         impl_lista_recursivo();
                     }else{
-                        throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una clase o una implementación.");
+                        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una clase o una implementación.");
                     }
             }
         }
@@ -165,7 +170,7 @@ public class Parser {
             clas();
             lista_factorizacion();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una clase.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una clase.");
         }
     }
 
@@ -181,7 +186,7 @@ public class Parser {
             impl();
             lista_factorizacion();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una implementación.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una implementación.");
         }
     }
 
@@ -203,7 +208,7 @@ public class Parser {
                 if(type == START){
                     return;
                 }else{
-                    throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una clase o una implementación.");
+                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una clase o una implementación.");
                 }
             }
         }
@@ -222,7 +227,7 @@ public class Parser {
             macheo(IDCLASS);
             clas_factorizado();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una clase.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una clase.");
         }
     }
 
@@ -246,7 +251,7 @@ public class Parser {
                 atributo_class_recursivo();
                 macheo(RIGHT_BRACE);
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un bloque o herencia.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un bloque o herencia.");
             }
         }
     }
@@ -268,7 +273,7 @@ public class Parser {
             if(type == RIGHT_BRACE){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la asignacion de un tipo valido o un bloque.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la asignacion de un tipo valido o un bloque.");
             }
         }
     }
@@ -289,7 +294,7 @@ public class Parser {
             miembro_impl_recursivo();
             macheo(RIGHT_BRACE);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una implementación.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera la definición de una implementación.");
         }
     }
 
@@ -309,7 +314,7 @@ public class Parser {
             if(type == RIGHT_BRACE){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una firma para metodo o constructor.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una firma para metodo o constructor.");
             }
         }
     }
@@ -326,7 +331,7 @@ public class Parser {
             macheo(DOBLE_DOT);
             tipo();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una herencia.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una herencia.");
         }
     }
 
@@ -345,7 +350,7 @@ public class Parser {
             if(type == DOT){
                 constructor();
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una firma para metodo o constructor.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una firma para metodo o constructor.");
             }
         }
     }
@@ -363,7 +368,7 @@ public class Parser {
             argumentos_formales();
             bloque_metodo();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un constructor.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un constructor.");
         }
     }
 
@@ -387,7 +392,7 @@ public class Parser {
                 lista_declaraciones_variables();
                 macheo(SEMICOLON);
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un atributo.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un atributo.");
             }
         }
     }
@@ -416,7 +421,7 @@ public class Parser {
                 argumentos_formales();
                 bloque_metodo();
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un metodo.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un metodo.");
             }
         }
     }
@@ -436,7 +441,7 @@ public class Parser {
             if(type == IDOBJETS){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo de metodo.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo de metodo.");
             }
         }
     }
@@ -452,7 +457,7 @@ public class Parser {
         if (currentToken.getType() == PUB){
             macheo(PUB);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera tipo de visibilidad.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera tipo de visibilidad.");
         }
     }
 
@@ -467,7 +472,7 @@ public class Parser {
         if (currentToken.getType() == ST){
             macheo(ST);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una forma de metodo.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una forma de metodo.");
         }
     }
 
@@ -485,7 +490,7 @@ public class Parser {
             sentencia_bloque_recursivo();
             macheo(RIGHT_BRACE);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un bloque.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un bloque.");
         }
     }
 
@@ -506,7 +511,7 @@ public class Parser {
             if(type == LEFT_BRACE || type == RIGHT_BRACE || type == SEMICOLON || type == LEFT_PAREN || type == IF || type == WHILE || type == RET || type == IDOBJETS || type == PUB || type == NEW || type == FN || type == ST || type == DOT || type == SELF){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una declaracion de variables locales o un bloque.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una declaracion de variables locales o un bloque.");
             }
         }
     }
@@ -529,7 +534,7 @@ public class Parser {
             if(type == RIGHT_BRACE){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una sentencia o cierre de bloque.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una sentencia o cierre de bloque.");
             }
         }
     }
@@ -548,7 +553,7 @@ public class Parser {
             lista_declaraciones_variables();
             macheo(SEMICOLON);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una declaracion de variables locales.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una declaracion de variables locales.");
         }
     }
 
@@ -564,7 +569,7 @@ public class Parser {
             macheo(IDOBJETS);
             lista_declaraciones_variables_prima();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un nombre de variable.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un nombre de variable.");
         }
     }
 
@@ -584,7 +589,7 @@ public class Parser {
             if(type == SEMICOLON){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera mas declaraciones de variables locales o un punto y coma.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera mas declaraciones de variables locales o un punto y coma.");
             }
         }
     }
@@ -595,7 +600,7 @@ public class Parser {
             lista_argumentos_formales_factorizado();
             macheo(RIGHT_PAREN);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de argumentos formales.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de argumentos formales.");
         }
     }
 
@@ -614,7 +619,7 @@ public class Parser {
             if(type == RIGHT_PAREN){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de argumentos formales.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de argumentos formales.");
             }
         }
     }
@@ -633,7 +638,7 @@ public class Parser {
             argumento_formal();
             lista_argumentos_formales_prima();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera el tipo de un argumento formal.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera el tipo de un argumento formal.");
         }
     }
 
@@ -653,7 +658,7 @@ public class Parser {
             if(type==RIGHT_PAREN){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de argumentos formales.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de argumentos formales.");
             }
         }
     }
@@ -671,7 +676,7 @@ public class Parser {
             tipo();
             macheo(IDOBJETS);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera el tipo de un argumento formal.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera el tipo de un argumento formal.");
         }
     }
 
@@ -691,7 +696,7 @@ public class Parser {
             if (type == VOID){
                 macheo(VOID);
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo de metodo.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo de metodo.");
             }
         }
     }
@@ -715,7 +720,7 @@ public class Parser {
                 if(type == ARRAY){
                     tipo_arreglo();
                 }else{
-                    throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo.");
+                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo.");
                 }
             }
         }
@@ -744,7 +749,7 @@ public class Parser {
                     if(type==DOUBLE){
                         macheo(DOUBLE);
                     }else{
-                        throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo de primitivo.");
+                        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo de primitivo.");
                     }
                 }
             }
@@ -761,7 +766,7 @@ public class Parser {
         if(currentToken.getType()==IDCLASS){
             macheo(IDCLASS);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo de referencia.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo de referencia.");
         }
     }
 
@@ -769,7 +774,7 @@ public class Parser {
         if(currentToken.getType() == ARRAY){
             macheo(ARRAY);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo arreglo.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un tipo arreglo.");
         }
     }
 // corroborar asignacion ID
@@ -817,7 +822,7 @@ public class Parser {
                                 if(type==SEMICOLON){
                                     macheo(SEMICOLON);
                                 }else{
-                                    throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una sentencia.");
+                                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una sentencia.");
                                 }
                             }
                         }
@@ -843,7 +848,7 @@ public class Parser {
             if(type == SEMICOLON){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
             }
         }
     }
@@ -864,7 +869,7 @@ public class Parser {
             if( type == RIGHT_BRACE){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera cerrar sentencia.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera cerrar sentencia.");
             }
         }
     }
@@ -883,7 +888,7 @@ public class Parser {
             sentencia_bloque_recursivo();
             macheo(RIGHT_BRACE);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un bloque.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un bloque.");
         }
     }
 
@@ -906,7 +911,7 @@ public class Parser {
                 macheo(EQUAL);
                 expOr();
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una asignacion.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una asignacion.");
             }
         }
     }
@@ -927,7 +932,7 @@ public class Parser {
             accesoVar_simple_prima();
 
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable.");
         }
     }
 
@@ -948,7 +953,7 @@ public class Parser {
                 expOr();
                 macheo(RIGHT_BRACKET);
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable.");
             }
         }
     }
@@ -969,7 +974,7 @@ public class Parser {
             if(type == EQUAL){
                 return;
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable.");
             }
         }
     }
@@ -987,7 +992,7 @@ public class Parser {
             macheo(SELF);
             encadenado_simple_recursivo();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable self.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable self.");
         }
     }
 
@@ -1003,7 +1008,7 @@ public class Parser {
             macheo(DOT);
             macheo(IDOBJETS);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable.");
         }
     }
 
@@ -1021,7 +1026,7 @@ public class Parser {
             expOr();
             macheo(RIGHT_PAREN);
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una sentencia simple.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una sentencia simple.");
         }
     }
 
@@ -1038,7 +1043,7 @@ public class Parser {
             expAnd();
             expOrPrima();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
         }
     }
 
@@ -1058,7 +1063,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET) {
                 return;
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
             }
         }
     }
@@ -1076,7 +1081,7 @@ public class Parser {
             expIgual();
             expAndPrima();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
         }
     }
 
@@ -1095,7 +1100,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR) {
                 return;
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
             }
         }
     }
@@ -1113,7 +1118,7 @@ public class Parser {
             expCompuesta();
             expIgualPrima();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
         }
     }
 
@@ -1134,7 +1139,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND) {
                 return;
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
             }
         }
     }
@@ -1152,7 +1157,7 @@ public class Parser {
             expAd();
             expCompuestaPrima();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
         }
     }
 
@@ -1172,7 +1177,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL) {
                 return;
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
             }
         }
     }
@@ -1190,7 +1195,7 @@ public class Parser {
             expMul();
             expAdPrima();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN IVALIDO, Se espera una expresion.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN IVALIDO, Se espera una expresion.");
         }
     }
 
@@ -1211,7 +1216,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL) {
                 return;
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
             }
         }
     }
@@ -1229,7 +1234,7 @@ public class Parser {
             expUn();
             expMulPrima();
         }else{
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
         }
     }
 
@@ -1250,7 +1255,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS) {
                 return;
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
             }
         }
     }
@@ -1280,7 +1285,7 @@ public class Parser {
                     opUnario();
                     expUn();
                 } else {
-                    throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
+                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion.");
                 }
             }
         }
@@ -1300,7 +1305,7 @@ public class Parser {
             if (currentToken.getType() == NOT_EQUAL) {
                 macheo(NOT_EQUAL);
             }else{
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operador igual.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operador igual.");
             }
         }
     }
@@ -1319,7 +1324,7 @@ public class Parser {
             if (currentToken.getType() == MINUS) {
                 macheo(MINUS);
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operador aditivo.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operador aditivo.");
             }
         }
     }
@@ -1344,7 +1349,7 @@ public class Parser {
                     if (currentToken.getType() == LESS_EQUAL) {
                         macheo(LESS_EQUAL);
                     } else {
-                        throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operador relacional.");
+                        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operador relacional.");
                     }
                 }
             }
@@ -1379,7 +1384,7 @@ public class Parser {
                                 macheo(INT);
                                 macheo(RIGHT_PAREN);
                             } else {
-                                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operador unario.");
+                                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operador unario.");
                             }
                         }
                     }
@@ -1408,7 +1413,7 @@ public class Parser {
                     if (currentToken.getType() == DIV) {
                         macheo(DIV);
                     } else {
-                        throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operador multiplicativo.");
+                        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operador multiplicativo.");
                     }
                 }
             }
@@ -1431,7 +1436,7 @@ public class Parser {
             if (type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL){
                 literal();
             }else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operando.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un operando.");
             }
         }
     }
@@ -1451,7 +1456,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == LEFT_BRACKET || type == MULT || type == SLASH || type == PERCENTAGE || type == DIV) {
                 return;
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable o llamada a metodo.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable o llamada a metodo.");
             }
         }
     }
@@ -1482,7 +1487,7 @@ public class Parser {
                             if (currentToken.getType() == DOUBLE_LITERAL) {
                                 macheo(DOUBLE_LITERAL);
                             } else {
-                                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un literal.");
+                                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un literal.");
                             }
                         }
                     }
@@ -1516,7 +1521,7 @@ public class Parser {
                         if(type==NEW){
                             llamada_conclasor();
                         }else{
-                            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, se esperaba una expresión primaria (expresión entre paréntesis, acceso a variable, 'self', llamada a método o constructor).");
+                            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, se esperaba una expresión primaria (expresión entre paréntesis, acceso a variable, 'self', llamada a método o constructor).");
                         }
                     }
                 }
@@ -1539,7 +1544,7 @@ public class Parser {
             macheo(RIGHT_PAREN);
             encadenado_factorizado();
         }else {
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion parentizada.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una expresion parentizada.");
         }
     }
 
@@ -1556,7 +1561,7 @@ public class Parser {
             macheo(SELF);
             encadenado_factorizado();
         }else {
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a self.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a self.");
         }
     }
 
@@ -1578,7 +1583,7 @@ public class Parser {
                 macheo(RIGHT_BRACKET);
                 encadenado_factorizado();
             }else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable.");
             }
         }
     }
@@ -1596,7 +1601,7 @@ public class Parser {
             argumentos_actuales();
             encadenado_factorizado();
         }else {
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una llamada a metodo.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una llamada a metodo.");
         }
     }
 
@@ -1616,7 +1621,7 @@ public class Parser {
             llamada_metodo();
             encadenado_factorizado();
         }else {
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una llamada a metodo estatico.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una llamada a metodo estatico.");
         }
     }
 
@@ -1633,7 +1638,7 @@ public class Parser {
             macheo(NEW);
             llamada_conclasor_prima();
         }else {
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una llamada a constructor.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una llamada a constructor.");
         }
     }
 
@@ -1657,7 +1662,7 @@ public class Parser {
                 expOr();
                 macheo(RIGHT_BRACKET);
             }else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una llamada a constructor.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una llamada a constructor.");
             }
         }
     }
@@ -1676,7 +1681,7 @@ public class Parser {
             lista_expresiones_factorizado();
             macheo(RIGHT_PAREN);
         }else {
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de argumentos.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de argumentos.");
         }
     }
 
@@ -1695,7 +1700,7 @@ public class Parser {
             if (type == RIGHT_PAREN) {
                 return;
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de argumentos.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de argumentos.");
             }
         }
     }
@@ -1719,7 +1724,7 @@ public class Parser {
             expOr();
             lista_expresiones_prima();
         }else {
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de expresiones.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de expresiones.");
         }
     }
 
@@ -1739,7 +1744,7 @@ public class Parser {
             if (type == RIGHT_PAREN) {
                 return;
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de expresiones.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera una lista de expresiones.");
             }
         }
     }
@@ -1757,7 +1762,7 @@ public class Parser {
             macheo(DOT);
             encadenado_prima();
         }else {
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable o llamada a metodo.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable o llamada a metodo.");
         }
     }
 
@@ -1775,7 +1780,7 @@ public class Parser {
             macheo(IDOBJETS);
             id_factor();
         }else {
-            throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable o llamada a metodo.");
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable o llamada a metodo.");
         }
     }
 
@@ -1795,7 +1800,7 @@ public class Parser {
             if (type == LEFT_PAREN) {
                 llamada_metodo();
             } else {
-                throw new ErrorSintactico(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable o llamada a metodo.");
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"TOKEN INVALIDO, Se espera un acceso a variable o llamada a metodo.");
             }
         }
     }

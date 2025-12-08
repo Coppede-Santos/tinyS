@@ -2,6 +2,7 @@ package analizadorSintactico;
 
 import analizadorLexico.Errores.ErrorLex;
 import analizadorLexico.*;
+import analizadorSintactico.Errores.ErrorSintactico;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

@@ -30,10 +30,13 @@ public class TestEtapa2 {
      * @throws ErrorTiny Si ocurre un error del compilador
      *
      */
-    private void testSintaxFile(String fileName) throws IOException, ErrorTiny {
+    private void testSintaxFile(String fileName, Boolean correcto) throws IOException, ErrorTiny {
         String basePath = System.getProperty("user.dir");
         String testFilePath = basePath + "/src/test/resources/test/" + fileName + ".s";
-        String assertFilePath = basePath + "/src/test/resources/sintax/resultado_" + fileName + ".txt";
+        String assertFilePath = basePath + "/src/test/resources/sintax/resultado_correcto.txt";
+        if (!correcto) {
+            assertFilePath = basePath + "/src/test/resources/sintax/resultado_" + fileName + ".txt";
+        }
         String outputFilePath = basePath + "/src/test/resources/output/" + fileName + ".txt";
 
         // Ejecutar el analizador léxico
@@ -62,20 +65,35 @@ public class TestEtapa2 {
     @Test
     @DisplayName("Test del programa factorial.s")
     public void testFactorial() throws IOException, ErrorTiny {
-        testSintaxFile("factorial");
+        testSintaxFile("factorial",true);
     }
 
     @Test
     @DisplayName("Test del programa numerosPares.s")
     public void testNumerosPares() throws IOException, ErrorTiny {
-        testSintaxFile("numerosPares");
+        testSintaxFile("numerosPares",false);
     }
 
     @Test
     @DisplayName("Test del programa fibonacci.s")
     public void testFibonacci() throws IOException, ErrorTiny {
-        testSintaxFile("fibonacci");
+        testSintaxFile("fibonacci",true);
     }
+
+    @Test
+    @DisplayName("Test del programa areaDeUnCirculo.s")
+    public void testAreaDeUnCirculo() throws IOException, ErrorTiny{
+        testSintaxFile("areaDeUnCirculo",true);
+    }
+
+    @Test
+    @DisplayName("Test del programa primo.s")
+    public void testPrimo() throws IOException, ErrorTiny{
+        testSintaxFile("primo",true);
+    }
+
+
+
 
 
 
