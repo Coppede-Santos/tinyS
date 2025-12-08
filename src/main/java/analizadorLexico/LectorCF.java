@@ -13,6 +13,7 @@ public class LectorCF {
     private RandomAccessFile raf;  // Atributo de la clase
     private int current=0;
     private StringBuilder source= new StringBuilder();
+    private boolean reachedEOF = false;  // Indica si se alcanzó el final del archivo
 
     /**
      * Abre el archivo especificado en la ruta dada para lectura.
@@ -33,7 +34,7 @@ public class LectorCF {
      * Recarga el buffer con caracteres desde el archivo, comenzando desde la posición actual.
      *
      * @return Una cadena que contiene los caracteres leídos del archivo.
-     *         Si se alcanza el final del archivo, se añade el carácter "€" al final de la cadena.
+     *         Si se alcanza el final del archivo, se marca con el flag reachedEOF.
      * @throws IOException Si ocurre un error durante la lectura del archivo.
      */
 
@@ -49,12 +50,21 @@ public class LectorCF {
             if ((caracter = raf.read()) != -1) {
                 source.append((char) caracter);
             } else {
-                source.append("€");
+                reachedEOF = true;
                 return source.toString();
             }
         }
         current = i;
         return source.toString();
+    }
+
+    /**
+     * Verifica si se ha alcanzado el final del archivo.
+     *
+     * @return true si se alcanzó el final del archivo, false en caso contrario.
+     */
+    public boolean isReachedEOF() {
+        return reachedEOF;
     }
 
 

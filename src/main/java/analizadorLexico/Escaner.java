@@ -49,8 +49,6 @@ public class Escaner {
         keywords.put("start", START);
         keywords.put("void", VOID);
         keywords.put("Bool", BOOL);
-        keywords.put("€", EOF);
-
     }
     /**
      * Constructor para la clase {@code Escaner}.
@@ -120,10 +118,14 @@ public class Escaner {
 
     private boolean isAtEnd() throws ErrorLex, IOException {
         //return current >= source.length();
-        if (current == 2048) {
-            buffer = lectorCF.rechargeBuffer();
+        if (current >= buffer.length()) {
+            if (lectorCF != null && !lectorCF.isReachedEOF()) {
+                buffer = lectorCF.rechargeBuffer();
+            } else {
+                return true;
+            }
         }
-        return buffer.charAt(current) == '€';
+        return current >= buffer.length();
     }
 
     /**
@@ -137,6 +139,10 @@ public class Escaner {
     public Token nextToken() throws ErrorLex, IOException {
         char c = advance();
         switch (c) {
+            case '\0':
+                start = current;
+                return addToken(EOF);
+
             case '(':
                 start = current - 1;
                 return addToken(LEFT_PAREN);
@@ -184,9 +190,6 @@ public class Escaner {
             case ']':
                 start = current - 1;
                 return addToken(RIGHT_BRACKET);
-            case '€':
-                start = current;
-                return addToken(EOF);
 
             case '+':
                 start = current - 1;
@@ -309,18 +312,14 @@ public class Escaner {
     /**
      * Avanza al próximo caracter en el buffer.
      *
-     * @return El caracter al que se avanzó.
+     * @return El caracter al que se avanzó, o '\0' si se alcanzó el final del archivo.
      * @throws ErrorLex Si ocurre un error léxico.
      * @throws IOException Si ocurre un error de entrada/salida.
      */
 
     private char advance() throws ErrorLex, IOException {
 
-        if (isAtEnd()) return '€';
-        if (current >= buffer.length()) {
-            buffer =lectorCF.rechargeBuffer();
-            current = 0;
-        }
+        if (isAtEnd()) return '\0';
         column++;
         return buffer.charAt(current++);
 
@@ -329,13 +328,13 @@ public class Escaner {
     /**
      * Observa el siguiente caracter en el buffer sin consumirlo.
      *
-     * @return El siguiente caracter en el buffer.
+     * @return El siguiente caracter en el buffer, o '\0' si se alcanzó el final del archivo.
      * @throws ErrorLex Si ocurre un error léxico.
      * @throws IOException Si ocurre un error de entrada/salida.
      */
 
     private char look() throws ErrorLex, IOException {
-        if (isAtEnd()) return '€';
+        if (isAtEnd()) return '\0';
         return buffer.charAt(current);
     }
     /**
@@ -483,13 +482,18 @@ public class Escaner {
     /**
      * Observa el siguiente caracter en el buffer después del actual sin consumirlo.
      *
-     * @return El siguiente caracter en el buffer después del actual.
+     * @return El siguiente caracter en el buffer después del actual, o '\0' si se alcanzó el final del archivo.
      * @throws ErrorLex Si ocurre un error léxico.
      * @throws IOException Si ocurre un error de entrada/salida.
      */
 
     private char lookNext() throws ErrorLex, IOException {
-        if(isAtEnd()) return '€';
+        if (current + 1 >= buffer.length()) {
+            if (lectorCF != null && !lectorCF.isReachedEOF()) {
+                return '\0';
+            }
+            return '\0';
+        }
         return buffer.charAt(current+1);
     }
     /**
