@@ -1,4 +1,4 @@
-package analizadorSintactico;
+package analizadorSintactico.Errores;
 
 import ErrorManage.ErrorTiny;
 
