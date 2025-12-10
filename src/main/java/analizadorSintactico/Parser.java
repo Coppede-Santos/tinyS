@@ -866,7 +866,8 @@ public class Parser {
             macheo(ELSE);
             sentencia();
         }else{
-            if( type == RIGHT_BRACE){
+            if( type == RIGHT_BRACE || type == SEMICOLON || type == IDOBJETS || type== SELF || type == LEFT_PAREN
+                    || type == IF || type == WHILE || type == LEFT_BRACE || type == RET){
                 return;
             }else{
                 throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"cerrar sentencia", currentToken. getLexema());
