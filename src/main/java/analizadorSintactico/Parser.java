@@ -870,7 +870,8 @@ public class Parser {
                     || type == IF || type == WHILE || type == LEFT_BRACE || type == RET){
                 return;
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"cerrar sentencia", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),
+                        "cerrar sentencia", currentToken. getLexema());
             }
         }
     }
