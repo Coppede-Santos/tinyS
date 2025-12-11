@@ -866,7 +866,8 @@ public class Parser {
             macheo(ELSE);
             sentencia();
         }else{
-            if( type == RIGHT_BRACE){
+            if( type == RIGHT_BRACE || type == SEMICOLON || type == IDOBJETS || type== SELF || type == LEFT_PAREN
+                    || type == IF || type == WHILE || type == LEFT_BRACE || type == RET){
                 return;
             }else{
                 throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"cerrar sentencia", currentToken. getLexema());
@@ -1057,6 +1058,7 @@ public class Parser {
     private void expOrPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == OR) {
+            macheo(OR);
             expAnd();
             expOrPrima();
         }else {
@@ -1095,12 +1097,14 @@ public class Parser {
     private void expAndPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == AND) {
+            macheo(AND);
             expIgual();
         }else {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR) {
                 return;
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),
+                        "una expresion", currentToken. getLexema());
             }
         }
     }

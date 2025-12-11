@@ -71,7 +71,7 @@ public class TestEtapa2 {
     @Test
     @DisplayName("Test del programa numerosPares.s")
     public void testNumerosPares() throws IOException, ErrorTiny {
-        testSintaxFile("numerosPares",false);
+        testSintaxFile("numerosPares",true);
     }
 
     @Test
