@@ -1058,6 +1058,7 @@ public class Parser {
     private void expOrPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == OR) {
+            macheo(OR);
             expAnd();
             expOrPrima();
         }else {
@@ -1096,12 +1097,14 @@ public class Parser {
     private void expAndPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == AND) {
+            macheo(AND);
             expIgual();
         }else {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR) {
                 return;
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),
+                        "una expresion", currentToken. getLexema());
             }
         }
     }
