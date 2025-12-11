@@ -92,9 +92,35 @@ public class TestEtapa2 {
         testSintaxFile("primo",true);
     }
 
+    @Test
+    @DisplayName("Test del programa declIncorrecta.s")
+    public void testDeclIncorrecta() throws IOException, ErrorTiny{
+        testSintaxFile("declIncorrecta",false);
+    }
 
+    @Test
+    @DisplayName("Test del programa errorCondicion.s")
+    public void testErrorCondicion() throws IOException, ErrorTiny{
+        testSintaxFile("errorCondicion",false);
+    }
 
+    @Test
+    @DisplayName("Test del programa keywordIncorrecto.s")
+    public void testKeywordIncorrecto() throws IOException, ErrorTiny{
+        testSintaxFile("keywordIncorrecto",false);
+    }
 
+    @Test
+    @DisplayName("Test del programa llaveFaltante.s")
+    public void testLlaveFaltante() throws IOException, ErrorTiny{
+        testSintaxFile("llaveFaltante",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa puntoYComa.s")
+    public void testPuntoYComa() throws IOException, ErrorTiny{
+        testSintaxFile("puntoYComaFaltante",false);
+    }
 
 
 
