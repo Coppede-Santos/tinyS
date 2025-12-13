@@ -122,6 +122,34 @@ public class TestEtapa2 {
         testSintaxFile("puntoYComaFaltante",false);
     }
 
+    @Test
+    @DisplayName("Test del programa fizzBuzz.s")
+    public void testFizzBuzz() throws IOException, ErrorTiny{
+        testSintaxFile("fizzBuzz",true);
+    }
+    @Test
+        @DisplayName("Test del programa palindromo.s")
+        public void testPalindromo() throws IOException, ErrorTiny{
+            testSintaxFile("palindromo",true);
+        }
+
+        @Test
+        @DisplayName("Test del programa parImpar.s")
+        public void testParImpar() throws IOException, ErrorTiny{
+            testSintaxFile("parImpar",true);
+        }
+
+        @Test
+        @DisplayName("Test del programa sentenciasIfElse.s")
+        public void testSentenciasIfElse() throws IOException, ErrorTiny{
+            testSintaxFile("sentenciasIfElse",true);
+        }
+
+        @Test
+        @DisplayName("Test del programa valorMaxArreglo.s")
+        public void testValorMaxArreglo() throws IOException, ErrorTiny{
+            testSintaxFile("valorMaxArreglo",true);
+        }
 
 
 
