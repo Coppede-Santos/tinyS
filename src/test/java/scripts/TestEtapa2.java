@@ -117,8 +117,8 @@ public class TestEtapa2 {
     }
 
     @Test
-    @DisplayName("Test del programa puntoYComa.s")
-    public void testPuntoYComa() throws IOException, ErrorTiny{
+    @DisplayName("Test del programa puntoYComaFaltante.s")
+    public void testPuntoYComaFaltante() throws IOException, ErrorTiny{
         testSintaxFile("puntoYComaFaltante",false);
     }
 

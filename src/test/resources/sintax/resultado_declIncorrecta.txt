@@ -1,0 +1,4 @@
+ERROR: SINTACTICO
+ 
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: | 
+|LINEA 4 | COLUMNA 14 | TOKEN INESPERADO - Se espera: mas declaraciones de variables locales o un punto y coma - Se obtuvo: = |
