@@ -314,7 +314,7 @@ public class Parser {
             if(type == RIGHT_BRACE){
                 return;
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una firma para metodo o constructor", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una firma para metodo o constructor, o cerrar implementación", currentToken. getLexema());
             }
         }
     }
@@ -350,7 +350,7 @@ public class Parser {
             if(type == DOT){
                 constructor();
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una firma para metodo o constructor", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"else", currentToken. getLexema());
             }
         }
     }
@@ -870,8 +870,7 @@ public class Parser {
                     || type == IF || type == WHILE || type == LEFT_BRACE || type == RET){
                 return;
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),
-                        "cerrar sentencia", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una sentencia else, una nueva sentencia o cerrar el bloque", currentToken. getLexema());
             }
         }
     }

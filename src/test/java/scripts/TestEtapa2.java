@@ -79,6 +79,37 @@ public class TestEtapa2 {
     public void testFibonacci() throws IOException, ErrorTiny {
         testSintaxFile("fibonacci",true);
     }
+    @Test
+    @DisplayName("Test del programa fibonacciSinCerrar.s")
+    public void testFibonacciSinCerrar() throws IOException, ErrorTiny {
+        testSintaxFile("fibonacciSinCerrar",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa fibonacciSinElse.s")
+    public void testFibonacciSinElse() throws IOException, ErrorTiny {
+        testSintaxFile("fibonacciSinElse",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa fibonacciSinImpl.s")
+    public void testFibonacciSinImpl() throws IOException, ErrorTiny {
+        testSintaxFile("fibonacciSinImpl",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa fibonacciErrorExp.s")
+    public void testFibonacciErrorExp() throws IOException, ErrorTiny {
+        testSintaxFile("fibonacciErrorExp",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa fibonacciSinAsignar.s")
+    public void testFibonacciSinAsignar() throws IOException, ErrorTiny {
+        testSintaxFile("fibonacciSinAsignar",false);
+    }
+
+
 
     @Test
     @DisplayName("Test del programa areaDeUnCirculo.s")
