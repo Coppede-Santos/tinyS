@@ -203,7 +203,17 @@ public class TestEtapa1 {
         testLexicalFile("romperPalabrasClaves");
     }
 
+    @Test
+    @DisplayName("Test del programa strSinTerminar.s")
+    public void testStrSinTerminar() throws IOException, ErrorLex{
+        testLexicalFile("strSinTerminar");
+    }
 
+    @Test
+    @DisplayName("Test del programa strSinTerminar2.s")
+    public void testStrSinTerminar2() throws IOException, ErrorLex{
+        testLexicalFile("strSinTerminar2");
+    }
 
 
 
