@@ -50,28 +50,27 @@ public class Etapa2 {
 
         try {
             // ────────────── Preparación de componentes ──────────────
-            // Se instancian los componentes localmente para evitar problemas con el estado estático.
             LectorCF lector = new LectorCF();
             Escaner escaner = new Escaner();
             Parser parser = new Parser();
 
-            // Configuración de los componentes
+
             lector.lectorArchivo(rutaArchivoEntrada);
             String source = lector.rechargeBuffer();
             escaner.setBuffer(source);
-            escaner.setEscaner(lector); // El escáner puede necesitar el lector para contexto (ej. números de línea)
+            escaner.setEscaner(lector);
             parser.setEscaner(escaner);
 
             // ────────────── Análisis ──────────────
             Token firstToken = escaner.nextToken();
             parser.setCurrentToken(firstToken);
 
-            // Se ejecuta el parser. Arrojará una excepción si encuentra un error.
+            // Se ejecuta el parser.
             if (parser.s()) {
                 resultadoAnalisis = "CORRECTO: ANALISIS SINTACTICO\n";
             } else {
                 // Este caso maneja una falla sin excepción, que podría indicar un parseo incompleto.
-                resultadoAnalisis = "ERROR: SINTACTICO\nEl análisis sintáctico ha fallado sin un error específico.\n";
+                resultadoAnalisis = "ERROR: SINTACTICO";
             }
 
         } catch (ErrorSintactico e) {
@@ -81,11 +80,11 @@ public class Etapa2 {
         } catch (IOException e) {
             // Este error ocurre si hay problemas leyendo el archivo de entrada.
             System.err.println("Error de E/S al leer el archivo de entrada: " + e.getMessage());
-            return; // Salir, no tiene caso escribir un archivo de salida.
+            return;
         } catch (Exception e) {
             // Captura cualquier otro error inesperado durante el análisis.
             resultadoAnalisis = "ERROR: INESPERADO\nSe ha producido un error no controlado durante el análisis.\n" + e.getMessage();
-            e.printStackTrace(); // Es buena idea imprimir el stack trace para depuración.
+            e.printStackTrace();
         }
 
         // ────────────── Escritura de resultados ──────────────
@@ -96,7 +95,6 @@ public class Etapa2 {
             System.err.println("Error al escribir en el archivo de salida '" + nombreArchivoSalida + "': " + e.getMessage());
         }
 
-        // Proporcionar feedback en la consola también es una buena práctica.
         if (resultadoAnalisis.startsWith("ERROR")) {
             System.err.println(resultadoAnalisis.trim());
         } else {
@@ -114,7 +112,6 @@ public class Etapa2 {
      * @throws IOException Si ocurre un error de entrada/salida durante la escritura en el archivo.
      */
 
-    // Función auxiliar para escribir un mensaje de error, reemplazando el archivo
     private static void reemplazarConError(BufferedWriter writer, String archivo, String mensaje) throws IOException {
         if (writer != null) writer.close();
         try (BufferedWriter newWriter = new BufferedWriter(new FileWriter(archivo, false))) {

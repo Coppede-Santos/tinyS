@@ -350,7 +350,7 @@ public class Parser {
             if(type == DOT){
                 constructor();
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"else", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un metodo o constructor", currentToken. getLexema());
             }
         }
     }
@@ -720,7 +720,7 @@ public class Parser {
                 if(type == ARRAY){
                     tipo_arreglo();
                 }else{
-                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un tipo", currentToken. getLexema());
+                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un tipo o clase", currentToken. getLexema());
                 }
             }
         }
@@ -848,7 +848,7 @@ public class Parser {
             if(type == SEMICOLON){
                 return;
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion o punto y coma", currentToken. getLexema());
             }
         }
     }
@@ -1065,7 +1065,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET) {
                 return;
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion o cerrar expresion", currentToken. getLexema());
             }
         }
     }
@@ -1104,7 +1104,7 @@ public class Parser {
                 return;
             } else {
                 throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),
-                        "una expresion", currentToken. getLexema());
+                        "una expresion, una operacion o cerrar expresion", currentToken. getLexema());
             }
         }
     }
@@ -1122,7 +1122,7 @@ public class Parser {
             expCompuesta();
             expIgualPrima();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion, una operacion o cerrar expresion", currentToken. getLexema());
         }
     }
 
@@ -1143,7 +1143,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND) {
                 return;
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion, una operacion o cerrar expresion", currentToken. getLexema());
             }
         }
     }
@@ -1181,7 +1181,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL) {
                 return;
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion, una operacion o cerrar expresion", currentToken. getLexema());
             }
         }
     }
@@ -1220,7 +1220,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL) {
                 return;
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion, una operacion o cerrar expresion", currentToken. getLexema());
             }
         }
     }
@@ -1259,7 +1259,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS) {
                 return;
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion, una operacion o cerrar expresion", currentToken. getLexema());
             }
         }
     }
@@ -1289,7 +1289,7 @@ public class Parser {
                     opUnario();
                     expUn();
                 } else {
-                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion o una operacion", currentToken. getLexema());
                 }
             }
         }
@@ -1460,7 +1460,7 @@ public class Parser {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == RIGHT_BRACKET || type == MULT || type == SLASH || type == PERCENTAGE || type == DIV) {
                 return;
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo, una operación o cerrar una expresión", currentToken. getLexema());
             }
         }
     }
@@ -1804,7 +1804,7 @@ public class Parser {
             if (type == LEFT_PAREN) {
                 llamada_metodo();
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo", currentToken. getLexema());
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo, una operación o cerrar una expresión", currentToken. getLexema());
             }
         }
     }

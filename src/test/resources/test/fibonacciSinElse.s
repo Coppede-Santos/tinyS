@@ -14,7 +14,7 @@ class Fibonacci{
         (imprimo_numero(i));
         suma=suma+i;
         (imprimo_sucesion(suma));}
-    {//Se saca el else para probar el if sin else
+    {//Se saca el else para probar el if sin else. Como un bloque se puede considerar como una sentencia independiente, el analisis tiene que salir correcto.
         (imprimo_numero(i));
         suma=suma+j;
         j=suma;

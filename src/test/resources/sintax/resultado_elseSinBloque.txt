@@ -1,0 +1,4 @@
+ERROR: SINTACTICO
+
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
+|LINEA 7 | COLUMNA 2 | TOKEN INESPERADO - Se espera: una sentencia - Se obtuvo: } |
