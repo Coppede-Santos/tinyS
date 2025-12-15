@@ -88,7 +88,7 @@ public class TestEtapa2 {
     @Test
     @DisplayName("Test del programa fibonacciSinElse.s")
     public void testFibonacciSinElse() throws IOException, ErrorTiny {
-        testSintaxFile("fibonacciSinElse",false);
+        testSintaxFile("fibonacciSinElse",true);
     }
 
     @Test
@@ -159,28 +159,134 @@ public class TestEtapa2 {
         testSintaxFile("fizzBuzz",true);
     }
     @Test
-        @DisplayName("Test del programa palindromo.s")
-        public void testPalindromo() throws IOException, ErrorTiny{
-            testSintaxFile("palindromo",true);
-        }
+    @DisplayName("Test del programa palindromo.s")
+    public void testPalindromo() throws IOException, ErrorTiny{
+        testSintaxFile("palindromo",true);
+    }
 
-        @Test
-        @DisplayName("Test del programa parImpar.s")
-        public void testParImpar() throws IOException, ErrorTiny{
-            testSintaxFile("parImpar",true);
-        }
+    @Test
+    @DisplayName("Test del programa parImpar.s")
+    public void testParImpar() throws IOException, ErrorTiny{
+        testSintaxFile("parImpar",true);
+    }
 
-        @Test
-        @DisplayName("Test del programa sentenciasIfElse.s")
-        public void testSentenciasIfElse() throws IOException, ErrorTiny{
-            testSintaxFile("sentenciasIfElse",true);
-        }
+    @Test
+    @DisplayName("Test del programa sentenciasIfElse.s")
+    public void testSentenciasIfElse() throws IOException, ErrorTiny{
+        testSintaxFile("sentenciasIfElse",true);
+    }
 
-        @Test
-        @DisplayName("Test del programa valorMaxArreglo.s")
-        public void testValorMaxArreglo() throws IOException, ErrorTiny{
-            testSintaxFile("valorMaxArreglo",true);
-        }
+    @Test
+    @DisplayName("Test del programa valorMaxArreglo.s")
+    public void testValorMaxArreglo() throws IOException, ErrorTiny{
+        testSintaxFile("valorMaxArreglo",true);
+    }
+
+    @Test
+    @DisplayName("Test del programa bloquesSueltos.s")
+    public  void testBloquesSueltos() throws IOException, ErrorTiny{
+        testSintaxFile("bloquesSueltos",true);
+    }
+
+    @Test
+    @DisplayName("Test del programa dandlingElseCorrecto.s")
+    public  void testDandlingElseCorrecto() throws IOException, ErrorTiny{
+        testSintaxFile("dandlingElseCorrecto",true);
+    }
+
+    @Test
+    @DisplayName("Test del programa whileCorrecto.s")
+    public  void testWhileCorrecto() throws IOException, ErrorTiny{
+        testSintaxFile("whileCorrecto",true);
+    }
+
+    @Test
+    @DisplayName("Test del programa constructores.s")
+    public  void testConstructores() throws IOException, ErrorTiny{
+        testSintaxFile("constructores",true);
+    }
+
+    @Test
+    @DisplayName("Test del programa elseSinIf.s")
+    public  void testElseSinIf() throws IOException, ErrorTiny{
+        testSintaxFile("elseSinIf",false);
+    }
+    @Test
+    @DisplayName("Test del programa ifSinCondicion.s")
+    public  void testIfSinCondicion() throws IOException, ErrorTiny{
+        testSintaxFile("ifSinCondicion",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa whileMalformado.s")
+    public  void testWhileMalformado() throws IOException, ErrorTiny{
+        testSintaxFile("whileMalformado",false);
+    }
+    @Test
+    @DisplayName("Test del programa bloqueSuelto.s")
+    public  void testBloqueSuelto() throws IOException, ErrorTiny{
+        testSintaxFile("bloqueSuelto",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa ifConElseMalFormado.s")
+    public  void testIfConElseMalFormado() throws IOException, ErrorTiny{
+        testSintaxFile("ifConElseMalFormado",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa starAntes.s")
+    public  void testStarAntes() throws IOException, ErrorTiny{
+        testSintaxFile("starAntes",false);
+    }
+    @Test
+    @DisplayName("Test del programa classSinHerencia.s")
+    public   void testClassSinHerencia() throws IOException, ErrorTiny{
+        testSintaxFile("classSinHerencia",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa implMalFormado.s")
+    public   void testImplMalFormado() throws IOException, ErrorTiny{
+        testSintaxFile("implMalFormado",false);
+    }
+    @Test
+    @DisplayName("Test del programa constructorMalFormado.s")
+    public   void testConstructorMalFormado() throws IOException, ErrorTiny{
+        testSintaxFile("constructorMalFormado",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa metodoMalFormado.s")
+    public   void testMetodoMalFormado() throws IOException, ErrorTiny{
+        testSintaxFile("metodoMalFormado",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa sentenciaSinDeclarar.s")
+    public   void testSentenciaSinDeclarar() throws IOException, ErrorTiny{
+        testSintaxFile("sentenciaSinDeclarar",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa elseSinBloque.s")
+    public   void testElseSinBloque() throws IOException, ErrorTiny{
+        testSintaxFile("elseSinBloque",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa encadenadoIlegal.s")
+    public    void testEncadenadoIlegal() throws IOException, ErrorTiny{
+        testSintaxFile("encadenadoilegal",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa asignacionInvalida.s")
+    public   void testAsignacionInvalida() throws IOException, ErrorTiny{
+        testSintaxFile("asignacionInvalida",true);
+    }
+
+
 
 
 

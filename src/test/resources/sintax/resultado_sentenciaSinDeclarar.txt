@@ -1,0 +1,4 @@
+ERROR: SINTACTICO
+
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
+|LINEA 5 | COLUMNA 6 | TOKEN INESPERADO - Se espera: una sentencia o cierre de bloque - Se obtuvo: Int |

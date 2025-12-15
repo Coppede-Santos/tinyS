@@ -1,0 +1,4 @@
+ERROR: SINTACTICO
+
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
+|LINEA 4 | COLUMNA 7 | Macheo incorrecto - Se espera: LEFT_PAREN - Se obtuvo: {|
