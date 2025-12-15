@@ -1,4 +1,4 @@
 ERROR: SINTACTICO
  
 | NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: | 
-|LINEA 16 | COLUMNA 1 | TOKEN INESPERADO - Se espera: cerrar sentencia - Se obtuvo:  |
+|LINEA 16 | COLUMNA 1 | TOKEN INESPERADO - Se espera: una sentencia else, una nueva sentencia o cerrar el bloque - Se obtuvo:  |

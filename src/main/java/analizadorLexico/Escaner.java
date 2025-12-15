@@ -462,7 +462,8 @@ public class Escaner {
                 advance();
                 isDouble = true;
             }else {
-                throw new DoubleInvalidoError(line, column, buffer.substring(start + 1, current - 1));
+                if (!isAtEnd()) advance();
+                throw new DoubleInvalidoError(line, column, buffer.substring(start, current + 1));
             }
         }
         if(isAlpha(look())) {
