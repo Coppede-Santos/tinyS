@@ -123,10 +123,64 @@ public class TestEtapa2 {
         testSintaxFile("primo",true);
     }
 
+    @Test
+    @DisplayName("Test del programa declIncorrecta.s")
+    public void testDeclIncorrecta() throws IOException, ErrorTiny{
+        testSintaxFile("declIncorrecta",false);
+    }
 
+    @Test
+    @DisplayName("Test del programa errorCondicion.s")
+    public void testErrorCondicion() throws IOException, ErrorTiny{
+        testSintaxFile("errorCondicion",false);
+    }
 
+    @Test
+    @DisplayName("Test del programa keywordIncorrecto.s")
+    public void testKeywordIncorrecto() throws IOException, ErrorTiny{
+        testSintaxFile("keywordIncorrecto",false);
+    }
 
+    @Test
+    @DisplayName("Test del programa llaveFaltante.s")
+    public void testLlaveFaltante() throws IOException, ErrorTiny{
+        testSintaxFile("llaveFaltante",false);
+    }
 
+    @Test
+    @DisplayName("Test del programa puntoYComaFaltante.s")
+    public void testPuntoYComaFaltante() throws IOException, ErrorTiny{
+        testSintaxFile("puntoYComaFaltante",false);
+    }
+
+    @Test
+    @DisplayName("Test del programa fizzBuzz.s")
+    public void testFizzBuzz() throws IOException, ErrorTiny{
+        testSintaxFile("fizzBuzz",true);
+    }
+    @Test
+        @DisplayName("Test del programa palindromo.s")
+        public void testPalindromo() throws IOException, ErrorTiny{
+            testSintaxFile("palindromo",true);
+        }
+
+        @Test
+        @DisplayName("Test del programa parImpar.s")
+        public void testParImpar() throws IOException, ErrorTiny{
+            testSintaxFile("parImpar",true);
+        }
+
+        @Test
+        @DisplayName("Test del programa sentenciasIfElse.s")
+        public void testSentenciasIfElse() throws IOException, ErrorTiny{
+            testSintaxFile("sentenciasIfElse",true);
+        }
+
+        @Test
+        @DisplayName("Test del programa valorMaxArreglo.s")
+        public void testValorMaxArreglo() throws IOException, ErrorTiny{
+            testSintaxFile("valorMaxArreglo",true);
+        }
 
 
 

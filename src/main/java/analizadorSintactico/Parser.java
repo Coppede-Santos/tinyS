@@ -1457,7 +1457,7 @@ public class Parser {
         if(type == DOT) {
             encadenado();
         }else {
-            if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == LEFT_BRACKET || type == MULT || type == SLASH || type == PERCENTAGE || type == DIV) {
+            if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == RIGHT_BRACKET || type == MULT || type == SLASH || type == PERCENTAGE || type == DIV) {
                 return;
             } else {
                 throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo", currentToken. getLexema());
