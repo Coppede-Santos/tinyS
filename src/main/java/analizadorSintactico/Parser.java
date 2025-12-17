@@ -773,6 +773,7 @@ public class Parser {
     private void tipo_arreglo() throws IOException, ErrorTiny{
         if(currentToken.getType() == ARRAY){
             macheo(ARRAY);
+            tipo_primitivo();
         }else{
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un tipo arreglo", currentToken. getLexema());
         }

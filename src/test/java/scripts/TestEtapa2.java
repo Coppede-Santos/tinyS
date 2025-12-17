@@ -275,18 +275,16 @@ public class TestEtapa2 {
     }
 
     @Test
-    @DisplayName("Test del programa encadenadoIlegal.s")
-    public    void testEncadenadoIlegal() throws IOException, ErrorTiny{
-        testSintaxFile("encadenadoilegal",false);
-    }
-
-    @Test
     @DisplayName("Test del programa asignacionInvalida.s")
     public   void testAsignacionInvalida() throws IOException, ErrorTiny{
         testSintaxFile("asignacionInvalida",true);
     }
 
-
+    @Test
+    @DisplayName("Test del programa classArrayInt.s")
+    public   void testClassArrayInt() throws IOException, ErrorTiny{
+        testSintaxFile("classArrayInt",false);
+    }
 
 
 

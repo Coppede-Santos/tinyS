@@ -1,0 +1,4 @@
+ERROR: SINTACTICO
+ 
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: | 
+|LINEA 4 | COLUMNA 21 | TOKEN INESPERADO - Se espera: un tipo de primitivo - Se obtuvo: Array |

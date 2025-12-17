@@ -4,7 +4,7 @@ impl ValorMaxArreglo {
     *           Int len - longitud del arreglo
     *  Retorna: Int - valor maximo en el arreglo
     */
-    fn Int valor_max ( Array arr, Int len ) {
+    fn Int valor_max ( Array Int arr, Int len ) {
         Int max;
         Int i;
         max = arr[0];
@@ -22,7 +22,7 @@ impl ValorMaxArreglo {
 
 start {
     ValorMaxArreglo vma;
-    Array arr;
+    Array Int arr;
     Int len;
     Int max_value;
 
