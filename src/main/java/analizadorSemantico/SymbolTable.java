@@ -14,12 +14,12 @@ public class SymbolTable
         return true;
     }
 
-    EntradaClase buscarClase(String nombreClase)
+    public EntradaClase buscarClase(String nombreClase)
     {
         return clases.get(nombreClase);
     }
 
-    boolean insertarClase(String nombreClase, EntradaClase entradaClase)
+    public boolean insertarClase(String nombreClase, EntradaClase entradaClase)
     {
         if (clases.containsKey(nombreClase))
             return false;

@@ -12,6 +12,10 @@ public abstract class Entrada {
     public Entrada (String lexema){
         this.lexema = lexema;
     }
+
+    public String getLexema() {
+        return lexema;
+    }
 }
 
 class Posicion {

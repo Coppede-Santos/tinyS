@@ -21,6 +21,9 @@ public class EntradaClase extends Entrada {
         super(nombre, linea, columna);
         this.superClase = superClase;
     }
+    public EntradaClase(String nombre, int linea, int columna) {
+        super(nombre, linea, columna);
+    }
 
     EntradaAtributos buscarAtributo(String nombreAtributo) {
         return atributos.get(nombreAtributo);
@@ -54,5 +57,9 @@ public class EntradaClase extends Entrada {
 
     public void setConstructor(EntradaMetodo constructor) {
         this.constructor = constructor;
+    }
+
+    public void setSuperClase(EntradaClase superClase) {
+        this.superClase = superClase;
     }
 }

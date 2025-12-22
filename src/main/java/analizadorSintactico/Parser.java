@@ -4,6 +4,11 @@ import ErrorManage.ErrorTiny;
 import analizadorLexico.Escaner;
 import analizadorLexico.Token;
 import analizadorLexico.TokenType;
+import analizadorSemantico.EntradaClase;
+import analizadorSemantico.EntradaVariables;
+import analizadorSemantico.ErrorSemantico;
+import analizadorSemantico.SymbolTable;
+import analizadorSintactico.Errores.ErrorSintactico;
 import analizadorSintactico.Errores.MacheoIncorrectoError;
 import analizadorSintactico.Errores.TokenInesperadoError;
 import analizadorSintactico.Errores.TokenInesperadoError;
@@ -24,6 +29,9 @@ public class Parser {
 
     private Token currentToken;
     private Escaner escaner;
+    private SymbolTable symbolTable = new SymbolTable();
+
+
 
     /**
      * Establece el escáner que proporcionará los tokens al parser.
@@ -202,10 +210,23 @@ public class Parser {
 
     private void clas() throws IOException, ErrorTiny {
         if(currentToken.getType()==CLASS){
+
             macheo(CLASS);
+
+            if( symbolTable.getClassActual()!= null){
+                throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","");
+            }
+            EntradaClase e = new EntradaClase(currentToken.getLexema(),currentToken.getLine(),currentToken.getColumn());
+            symbolTable.setClassActual(e);
+
             macheo(IDCLASS);
 
-            clas_factorizado();
+            EntradaClase superClaseEntrada = clas_factorizado();
+
+            EntradaClase claseActual = symbolTable.getClassActual();
+            claseActual.setSuperClase(superClaseEntrada);
+            symbolTable.insertarClase(claseActual.getLexema(),claseActual);
+
         }else{
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definición de una clase", currentToken. getLexema());
         }
@@ -218,18 +239,28 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private void clas_factorizado() throws IOException, ErrorTiny {
+    private EntradaClase clas_factorizado() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if(type == LEFT_BRACE){
+
             macheo(LEFT_BRACE);
             atributo_class_recursivo();
             macheo(RIGHT_BRACE);
+            return symbolTable.buscarClase("Object");
         }else{
             if(type == DOBLE_DOT ){
-                herencia();
+
+                Token superClaseToken = herencia();
+                EntradaClase superClaseEntrada = symbolTable.buscarClase(superClaseToken.getLexema());
+                if(superClaseEntrada == null){
+                    throw new ErrorSemantico(superClaseToken.getLine(),superClaseToken.getColumn(),"","No existe la clase "+superClaseToken.getLexema());
+                }
+
                 macheo(LEFT_BRACE);
                 atributo_class_recursivo();
                 macheo(RIGHT_BRACE);
+
+                return superClaseEntrada;
             }else{
                 throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un bloque o herencia", currentToken. getLexema());
             }
@@ -306,10 +337,16 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private void herencia() throws IOException, ErrorTiny {
+    private Token herencia() throws IOException, ErrorTiny {
         if(currentToken.getType() == DOBLE_DOT){
             macheo(DOBLE_DOT);
+
+            Token superClase = currentToken;
+
             tipo();
+
+            return(superClase);
+
         }else{
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una herencia", currentToken. getLexema());
         }
