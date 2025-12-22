@@ -225,6 +225,7 @@ public class Parser {
         if(currentToken.getType()==CLASS){
             macheo(CLASS);
             macheo(IDCLASS);
+
             clas_factorizado();
         }else{
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definición de una clase", currentToken. getLexema());

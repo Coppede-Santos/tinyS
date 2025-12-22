@@ -50,4 +50,26 @@ public class SymbolTable
     public void setStartMethod(EntradaMetodo startMethod) {
         this.startMethod = startMethod;
     }
+
+    public boolean isStartMethod() {
+        return startMethod != null;
+    }
+
+    public void inicializarTiposPrimitivos() {
+        EntradaClase obj = new EntradaClase("Object");
+        insertarClase("Object", obj);
+
+        EntradaClase intClase = new EntradaClase("Int", obj);
+        insertarClase("Int", intClase);
+
+        EntradaClase booleanClase = new EntradaClase("Boolean", obj);
+        insertarClase("Boolean", booleanClase);
+
+        EntradaClase stringClase = new EntradaClase("String", obj);
+        insertarClase("String", stringClase);
+
+        EntradaClase doubleClase = new EntradaClase("Double", obj);
+        insertarClase("Double", doubleClase);
+
+    }
 }

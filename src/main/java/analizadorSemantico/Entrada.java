@@ -9,6 +9,9 @@ public abstract class Entrada {
         this.lexema = lexema;
         this.posicion = new Posicion(linea, columna);
     }
+    public Entrada (String lexema){
+        this.lexema = lexema;
+    }
 }
 
 class Posicion {

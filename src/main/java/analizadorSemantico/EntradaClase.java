@@ -8,8 +8,13 @@ public class EntradaClase extends Entrada {
     HashMap<String, EntradaMetodo> metodos = new HashMap<>();
     EntradaMetodo constructor = null;
 
-    public EntradaClase(String nombre, int linea, int columna) {
-        super(nombre, linea, columna);
+    public EntradaClase(String nombre) {
+        super(nombre);
+    }
+
+    public EntradaClase(String nombre, EntradaClase superClase) {
+        super(nombre);
+        this.superClase = superClase;
     }
 
     public EntradaClase(String nombre, int linea, int columna, EntradaClase superClase) {
