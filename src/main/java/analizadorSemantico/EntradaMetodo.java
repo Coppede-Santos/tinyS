@@ -4,9 +4,14 @@ import java.util.HashMap;
 
 public class EntradaMetodo extends Entrada{
     EntradaClase tipoRetorno = null;
+    EntradaClase subtipoRetorno = null;
     boolean esEstatico = false;
     HashMap <String, EntradaVariables> parametros = new HashMap<>();
     HashMap <String, EntradaVariables> variablesLocales = new HashMap<>();
+
+    public EntradaMetodo(){
+
+    }
 
     public EntradaMetodo(String nombre, int linea, int columna) {
         super(nombre, linea, columna);
@@ -18,22 +23,22 @@ public class EntradaMetodo extends Entrada{
         this.tipoRetorno = tipoRetorno;
     }
 
-    EntradaVariables buscarParametro(String nombreParametro) {
+    public EntradaVariables buscarParametro(String nombreParametro) {
         return parametros.get(nombreParametro);
     }
 
-    boolean insertarParametro(String nombreParametro, EntradaVariables entradaParametro) {
+    public boolean insertarParametro(String nombreParametro, EntradaVariables entradaParametro) {
         if (parametros.containsKey(nombreParametro))
             return false;
         parametros.put(nombreParametro, entradaParametro);
         return true;
     }
 
-    EntradaVariables buscarVariableLocal(String nombreVariableLocal) {
+    public EntradaVariables buscarVariableLocal(String nombreVariableLocal) {
         return variablesLocales.get(nombreVariableLocal);
     }
 
-    boolean insertarVariableLocal(String nombreVariableLocal, EntradaVariables entradaVariableLocal) {
+    public boolean insertarVariableLocal(String nombreVariableLocal, EntradaVariables entradaVariableLocal) {
         if (variablesLocales.containsKey(nombreVariableLocal))
             return false;
         variablesLocales.put(nombreVariableLocal, entradaVariableLocal);
@@ -42,6 +47,18 @@ public class EntradaMetodo extends Entrada{
 
     public EntradaClase getTipoRetorno() {
         return tipoRetorno;
+    }
+
+    public EntradaClase getSubtipoRetorno() {
+        return subtipoRetorno;
+    }
+
+    public void setTipoRetorno(EntradaClase tipoRetorno) {
+        this.tipoRetorno = tipoRetorno;
+    }
+
+    public void setSubtipoRetorno(EntradaClase subtipoRetorno) {
+        this.subtipoRetorno = subtipoRetorno;
     }
 
     public boolean isEsEstatico() {

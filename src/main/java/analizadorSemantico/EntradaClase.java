@@ -6,7 +6,7 @@ public class EntradaClase extends Entrada {
     EntradaClase superClase;
     HashMap<String, EntradaAtributos> atributos = new HashMap<>();
     HashMap<String, EntradaMetodo> metodos = new HashMap<>();
-    EntradaMetodo constructor = null;
+    boolean tieneConstructor = false;
 
     public EntradaClase(String nombre) {
         super(nombre);
@@ -25,22 +25,22 @@ public class EntradaClase extends Entrada {
         super(nombre, linea, columna);
     }
 
-    EntradaAtributos buscarAtributo(String nombreAtributo) {
+    public EntradaAtributos buscarAtributo(String nombreAtributo) {
         return atributos.get(nombreAtributo);
     }
 
-    boolean insertarAtributo(String nombreAtributo, EntradaAtributos entradaAtributo) {
+    public boolean insertarAtributo(String nombreAtributo, EntradaAtributos entradaAtributo) {
         if (atributos.containsKey(nombreAtributo))
             return false;
         atributos.put(nombreAtributo, entradaAtributo);
         return true;
     }
 
-    EntradaMetodo buscarMetodo(String nombreMetodo) {
+    public EntradaMetodo buscarMetodo(String nombreMetodo) {
         return metodos.get(nombreMetodo);
     }
 
-    boolean insertarMetodo(String nombreMetodo, EntradaMetodo entradaMetodo) {
+    public boolean insertarMetodo(String nombreMetodo, EntradaMetodo entradaMetodo) {
         if (metodos.containsKey(nombreMetodo))
             return false;
         metodos.put(nombreMetodo, entradaMetodo);
@@ -51,12 +51,12 @@ public class EntradaClase extends Entrada {
         return superClase;
     }
 
-    public EntradaMetodo getConstructor() {
-        return constructor;
+    public boolean tieneConstructor() {
+        return tieneConstructor;
     }
 
-    public void setConstructor(EntradaMetodo constructor) {
-        this.constructor = constructor;
+    public void setTieneConstructor(boolean tieneConstructor) {
+        this.tieneConstructor = tieneConstructor;
     }
 
     public void setSuperClase(EntradaClase superClase) {

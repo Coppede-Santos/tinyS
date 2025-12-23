@@ -9,9 +9,9 @@ public class SymbolTable
     EntradaMetodo metodoActual = null;
     EntradaMetodo startMethod = null;
 
-    public boolean SymbolTable()
+    public SymbolTable()
     {
-        return true;
+        inicializarTiposPrimitivos();
     }
 
     public EntradaClase buscarClase(String nombreClase)
@@ -70,6 +70,9 @@ public class SymbolTable
 
         EntradaClase doubleClase = new EntradaClase("Double", obj);
         insertarClase("Double", doubleClase);
+
+        EntradaClase arrayClase = new EntradaClase("Array", obj);
+        insertarClase("Array", arrayClase);
 
     }
 }
