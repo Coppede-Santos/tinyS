@@ -37,4 +37,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Test ###
 /src/test/resources/output/**
