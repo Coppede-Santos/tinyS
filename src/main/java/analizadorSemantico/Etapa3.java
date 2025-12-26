@@ -4,6 +4,7 @@ import analizadorLexico.Errores.ErrorLex;
 import analizadorLexico.Escaner;
 import analizadorLexico.LectorCF;
 import analizadorLexico.Token;
+import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSintactico.Errores.ErrorSintactico;
 import analizadorSintactico.Parser;
 

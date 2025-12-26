@@ -1,4 +1,4 @@
 ERROR: SEMANTICO - DECLARACIONES
  
 | NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: | 
-|LINEA 1 | COLUMNA 6 | No existe la clase A|
+|LINEA 1 | COLUMNA 6 | La clase no ha sido declarada anteriormente: A|

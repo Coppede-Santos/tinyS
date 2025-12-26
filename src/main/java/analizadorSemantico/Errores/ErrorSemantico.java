@@ -1,4 +1,4 @@
-package analizadorSemantico;
+package analizadorSemantico.Errores;
 
 import ErrorManage.ErrorTiny;
 

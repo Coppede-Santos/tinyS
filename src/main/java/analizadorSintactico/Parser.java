@@ -5,12 +5,12 @@ import analizadorLexico.Escaner;
 import analizadorLexico.Token;
 import analizadorLexico.TokenType;
 import analizadorSemantico.*;
-import analizadorSintactico.Errores.ErrorSintactico;
+import analizadorSemantico.Errores.*;
 import analizadorSintactico.Errores.MacheoIncorrectoError;
-import analizadorSintactico.Errores.TokenInesperadoError;
 import analizadorSintactico.Errores.TokenInesperadoError;
 
 import java.io.IOException;
+import java.io.SyncFailedException;
 
 import static analizadorLexico.TokenType.*;
 
@@ -215,7 +215,7 @@ public class Parser {
             macheo(CLASS);
 
             if( symbolTable.buscarClase(currentToken.getLexema())!= null){
-                throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","");
+                throw new ClaseRedeclaradaError(currentToken.getLine(),currentToken.getColumn(),currentToken.getLexema());
             }
             EntradaClase e = new EntradaClase(currentToken.getLexema(),currentToken.getLine(),currentToken.getColumn());
             symbolTable.setClassActual(e);
@@ -254,7 +254,7 @@ public class Parser {
                 Token superClaseToken = herencia();
                 EntradaClase superClaseEntrada = symbolTable.buscarClase(superClaseToken.getLexema());
                 if(superClaseEntrada == null){
-                    throw new ErrorSemantico(superClaseToken.getLine(),superClaseToken.getColumn(),"","No existe la clase "+superClaseToken.getLexema());
+                    throw new ClaseNoDeclaradaError(superClaseToken.getLine(),superClaseToken.getColumn(),superClaseToken.getLexema());
                 }
 
                 macheo(LEFT_BRACE);
@@ -303,7 +303,7 @@ public class Parser {
 
             EntradaClase claseActual = symbolTable.buscarClase(currentToken.getLexema());
             if(claseActual == null){
-                throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","No existe la clase "+currentToken.getLexema());
+                throw new ClaseNoDeclaradaError(currentToken.getLine(),currentToken.getColumn(),currentToken.getLexema());
             }
 
             symbolTable.setClassActual(claseActual);
@@ -355,7 +355,7 @@ public class Parser {
             if (superClase.getLexema().equals("Int") || superClase.getLexema().equals("Double") ||
                 superClase.getLexema().equals("Bool") || superClase.getLexema().equals("Str") ||
                 superClase.getLexema().equals("Array")) {
-                throw new ErrorSemantico(superClase.getLine(),superClase.getColumn(),"","La clase "+superClase.getLexema()+" es una clase primitiva y no puede ser heredada");
+                throw new HerenciaInvalidaError(superClase.getLine(),superClase.getColumn(),superClase.getLexema());
             }
 
             tipo();
@@ -381,7 +381,7 @@ public class Parser {
         }else{
             if(type == DOT){
                 if (symbolTable.getClassActual().tieneConstructor()){
-                    throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","La clase "+symbolTable.getClassActual().getLexema()+" ya tiene un constructor definido");
+                    throw new MetodoRedeclaradoError(currentToken.getLine(),currentToken.getColumn(),symbolTable.getClassActual().getLexema());
                 }
                 constructor();
             }else{
@@ -435,7 +435,7 @@ public class Parser {
 
             if (type == ARRAY) {
                 if (subtipo.isEmpty()){
-                    throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","El tipo de subtipo del arreglo no es válido");
+                    throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipo);
                 } else {
                     EntradaClase subtipoClase = symbolTable.buscarClase(subtipo);
                     lista_declaraciones_variables(tipoClase, subtipoClase, true);
@@ -456,7 +456,7 @@ public class Parser {
 
                 if (type == ARRAY) {
                     if (subtipo.isEmpty()){
-                        throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","El tipo de subtipo del arreglo no es válido");
+                        throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipo);
                     } else {
                         EntradaClase subtipoClase = symbolTable.buscarClase(subtipo);
                         lista_declaraciones_variables(tipoClase, subtipoClase, false);
@@ -531,7 +531,7 @@ public class Parser {
                 if (!subtipoMetodo.isEmpty()){
                     metodoActual.setSubtipoRetorno(symbolTable.buscarClase(subtipoMetodo));
                 } else {
-                    throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","El tipo de subtipo del arreglo no es válido");
+                    throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipoMetodo);
                 }
             }
             metodoActual.setTipoRetorno(symbolTable.buscarClase(tipoMetodo));
@@ -653,7 +653,7 @@ public class Parser {
 
             if (type == ARRAY) {
                 if (subtipo.isEmpty()){
-                    throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","El tipo de subtipo del arreglo no es válido");
+                    throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipo);
                 } else {
                     EntradaClase subtipoClase = symbolTable.buscarClase(subtipo);
                     lista_declaraciones_variables(tipoClase, subtipoClase);
@@ -679,7 +679,7 @@ public class Parser {
         if(currentToken.getType()==IDOBJETS){
 
             if (symbolTable.getMetodoActual().buscarVariableLocal(currentToken.getLexema()) != null) {
-                throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","La variable local "+currentToken.getLexema()+" ya ha sido declarada en el método "+symbolTable.getMetodoActual().getLexema());
+                throw new VariableRedefinidaError(currentToken.getLine(),currentToken.getColumn(),currentToken.getLexema());
             }
 
             EntradaVariables variableLocal = new EntradaVariables(
@@ -711,7 +711,7 @@ public class Parser {
     private void lista_declaraciones_variables(EntradaClase tipo, EntradaClase subtipo, boolean esPrivado) throws IOException, ErrorTiny {
         if(currentToken.getType()==IDOBJETS){
             if (symbolTable.getClassActual().buscarAtributo(currentToken.getLexema()) != null) {
-                throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","La variable local "+currentToken.getLexema()+" ya ha sido declarada en el método "+symbolTable.getClassActual().getLexema());
+                throw new VariableRedefinidaError(currentToken.getLine(),currentToken.getColumn(),currentToken.getLexema());
             }
 
             EntradaAtributos atributo = new EntradaAtributos(
@@ -867,7 +867,7 @@ public class Parser {
                     EntradaClase claseSubtipo = symbolTable.buscarClase(subtipoArgumento);
                     parametro.setSubtipo(claseSubtipo);
                 } else {
-                    throw new ErrorSemantico(currentToken.getLine(),currentToken.getColumn(),"","El tipo de subtipo del arreglo no es válido");
+                    throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipoArgumento);
                 }
             }
 
