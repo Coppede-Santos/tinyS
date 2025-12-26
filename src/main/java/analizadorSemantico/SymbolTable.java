@@ -87,59 +87,63 @@ public class SymbolTable
         EntradaClase ioClase = buscarClase("IO");
         if (ioClase != null) {
             EntradaMetodo out_str = new EntradaMetodo("out_str", true, null);
-            EntradaVariables parametroOutStr = new EntradaVariables("s", buscarClase("Str"));
+            EntradaParametro parametroOutStr = new EntradaParametro("s", buscarClase("Str"), 0);
             out_str.insertarParametro("s", parametroOutStr);
             ioClase.insertarMetodo("out_str", out_str);
 
             EntradaMetodo out_int = new EntradaMetodo("out_int", true, null);
-            EntradaVariables parametroOutInt = new EntradaVariables("i", buscarClase("Int"));
+            EntradaParametro parametroOutInt = new EntradaParametro("i", buscarClase("Int"), 0);
             out_int.insertarParametro("i", parametroOutInt);
             ioClase.insertarMetodo("out_int", out_int);
 
             EntradaMetodo out_bool = new EntradaMetodo("out_bool", true, null);
-            EntradaVariables parametroOutBool = new EntradaVariables("b", buscarClase("Boolean"));
+            EntradaParametro parametroOutBool = new EntradaParametro("b", buscarClase("Boolean"), 0);
             out_bool.insertarParametro("b", parametroOutBool);
             ioClase.insertarMetodo("out_bool", out_bool);
 
             // out_double
             EntradaMetodo out_double = new EntradaMetodo("out_double", true, null);
-            EntradaVariables parametroOutDouble = new EntradaVariables("d", buscarClase("Double"));
+            EntradaParametro parametroOutDouble = new EntradaParametro("d", buscarClase("Double"), 0);
             out_double.insertarParametro("d", parametroOutDouble);
             ioClase.insertarMetodo("out_double", out_double);
 
             // out_array_int
             EntradaMetodo out_array_int = new EntradaMetodo("out_array_int", true, null);
-            EntradaVariables parametroOutArrayInt = new EntradaVariables(
+            EntradaParametro parametroOutArrayInt = new EntradaParametro(
                     "a",
                     buscarClase("Array"),
-                    buscarClase("Int"));
+                    buscarClase("Int"),
+                    0);
             out_array_int.insertarParametro("a", parametroOutArrayInt);
             ioClase.insertarMetodo("out_array_int", out_array_int);
 
             // out_array_str
             EntradaMetodo out_array_str = new EntradaMetodo("out_array_str", true, null);
-            EntradaVariables parametroOutArrayStr = new EntradaVariables(
+            EntradaParametro parametroOutArrayStr = new EntradaParametro(
                     "a",
                     buscarClase("Array"),
-                    buscarClase("Str"));
+                    buscarClase("Str"),
+                    0);
             out_array_str.insertarParametro("a", parametroOutArrayStr);
             ioClase.insertarMetodo("out_array_str", out_array_str);
 
             // out_array_bool
             EntradaMetodo out_array_bool = new EntradaMetodo("out_array_bool", true, null);
-            EntradaVariables parametroOutArrayBool = new EntradaVariables(
+            EntradaParametro parametroOutArrayBool = new EntradaParametro(
                     "a",
                     buscarClase("Array"),
-                    buscarClase("Bool"));
+                    buscarClase("Bool"),
+                    0);
             out_array_bool.insertarParametro("a", parametroOutArrayBool);
             ioClase.insertarMetodo("out_array_bool", out_array_bool);
 
             // out_array_double
             EntradaMetodo out_array_double = new EntradaMetodo("out_array_double", true, null);
-            EntradaVariables parametroOutArrayDouble = new EntradaVariables(
+            EntradaParametro parametroOutArrayDouble = new EntradaParametro(
                     "a",
                     buscarClase("Array"),
-                    buscarClase("Double"));
+                    buscarClase("Double"),
+                    0);
             out_array_double.insertarParametro("a", parametroOutArrayDouble);
             ioClase.insertarMetodo("out_array_double", out_array_double);
 
@@ -178,7 +182,7 @@ public class SymbolTable
             stringClase.insertarMetodo("length", length);
 
             EntradaMetodo concat = new EntradaMetodo("concat", true, buscarClase("Str"));
-            EntradaVariables parametroConcat = new EntradaVariables("s", buscarClase("Str"));
+            EntradaParametro parametroConcat = new EntradaParametro("s", buscarClase("Str"), 0);
             concat.insertarParametro("s", parametroConcat);
             stringClase.insertarMetodo("concat", concat);
         }

@@ -861,11 +861,12 @@ public class Parser {
 
             String subtipoArgumento = tipo();
 
-            EntradaVariables parametro = new EntradaVariables(
+            EntradaParametro parametro = new EntradaParametro(
                     currentToken.getLexema(),
                     currentToken.getLine(),
                     currentToken.getColumn(),
-                    claseTipo);
+                    claseTipo,
+                    metodoActual.getCantidadParametros());
 
             if(tipoArgumento == ARRAY) {
                 if (!subtipoArgumento.isEmpty()){

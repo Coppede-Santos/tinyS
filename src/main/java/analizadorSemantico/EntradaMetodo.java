@@ -1,12 +1,14 @@
 package analizadorSemantico;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class EntradaMetodo extends Entrada{
     EntradaClase tipoRetorno = null;
     EntradaClase subtipoRetorno = null;
     boolean esEstatico = false;
-    HashMap <String, EntradaVariables> parametros = new HashMap<>();
+    HashMap <String, EntradaParametro> parametros = new HashMap<>();
     HashMap <String, EntradaVariables> variablesLocales = new HashMap<>();
 
     public EntradaMetodo(){
@@ -33,7 +35,7 @@ public class EntradaMetodo extends Entrada{
         return parametros.get(nombreParametro);
     }
 
-    public boolean insertarParametro(String nombreParametro, EntradaVariables entradaParametro) {
+    public boolean insertarParametro(String nombreParametro, EntradaParametro entradaParametro) {
         if (parametros.containsKey(nombreParametro))
             return false;
         parametros.put(nombreParametro, entradaParametro);
@@ -69,5 +71,9 @@ public class EntradaMetodo extends Entrada{
 
     public boolean isEsEstatico() {
         return esEstatico;
+    }
+
+    public int getCantidadParametros() {
+        return parametros.size();
     }
 }
