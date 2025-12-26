@@ -15,11 +15,13 @@ public class EntradaClase extends Entrada {
     public EntradaClase(String nombre, EntradaClase superClase) {
         super(nombre);
         this.superClase = superClase;
+        agregarMetodosDeSuperClase();
     }
 
     public EntradaClase(String nombre, int linea, int columna, EntradaClase superClase) {
         super(nombre, linea, columna);
         this.superClase = superClase;
+        agregarMetodosDeSuperClase();
     }
     public EntradaClase(String nombre, int linea, int columna) {
         super(nombre, linea, columna);
@@ -61,5 +63,15 @@ public class EntradaClase extends Entrada {
 
     public void setSuperClase(EntradaClase superClase) {
         this.superClase = superClase;
+        agregarMetodosDeSuperClase();
+    }
+
+    private void agregarMetodosDeSuperClase() {
+        if (superClase != null) {
+            for (String nombreMetodo : superClase.metodos.keySet()) {
+                EntradaMetodo metodoSuperClase = superClase.metodos.get(nombreMetodo);
+                this.metodos.put(nombreMetodo, metodoSuperClase);
+            }
+        }
     }
 }
