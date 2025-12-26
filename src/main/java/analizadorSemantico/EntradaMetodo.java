@@ -23,6 +23,12 @@ public class EntradaMetodo extends Entrada{
         this.tipoRetorno = tipoRetorno;
     }
 
+    public EntradaMetodo(String nombre, boolean esEstatico, EntradaClase tipoRetorno) {
+        super(nombre);
+        this.esEstatico = esEstatico;
+        this.tipoRetorno = tipoRetorno;
+    }
+
     public EntradaVariables buscarParametro(String nombreParametro) {
         return parametros.get(nombreParametro);
     }
