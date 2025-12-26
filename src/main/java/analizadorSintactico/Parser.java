@@ -491,6 +491,11 @@ public class Parser {
             metodoActual.setLexema(currentToken.getLexema());
 
             macheo(IDOBJETS);///// Corroborar eso, el identificador de metodo atributo es el mismo que el de objetos
+
+            if(symbolTable.getClassActual().buscarMetodo(metodoActual.getLexema()) != null){
+                throw new MetodoRedeclaradoError(currentToken.getLine(),currentToken.getColumn(),symbolTable.getMetodoActual().getLexema());
+            }
+
             argumentos_formales();
             bloque_metodo();
 
@@ -869,6 +874,9 @@ public class Parser {
                 } else {
                     throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipoArgumento);
                 }
+            }
+            if (metodoActual.buscarParametro(currentToken.getLexema()) != null) {
+                throw new ParametroRedefinidoError(currentToken.getLine(),currentToken.getColumn(),currentToken.getLexema());
             }
 
             metodoActual.insertarParametro(currentToken.getLexema(), parametro);

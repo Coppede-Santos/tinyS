@@ -1,0 +1,4 @@
+ERROR: SEMANTICO - DECLARACIONES
+
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
+|LINEA 1 | COLUMNA 9 | La clase no ha sido declarada anteriormente: B|

@@ -1,0 +1,5 @@
+class A : Int{
+}
+
+
+start{}

@@ -1,0 +1,4 @@
+ERROR: SEMANTICO - DECLARACIONES
+
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
+|LINEA 37 | COLUMNA 33 | El parametro ya ha sido declarado anteriormente en este contexto: s|

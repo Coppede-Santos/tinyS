@@ -175,6 +175,68 @@ public class TestEtapa3 {
         testSemanticFile("classArrayInt",false);
     }
 
+    @Test
+    @DisplayName("Test del programa variableredeclarada.s")
+    public   void testVariableredeclarada() throws IOException, ErrorTiny{
+        testSemanticFile("variableredeclarada",false);
+    }
+
+
+    @Test
+    @DisplayName("Test del programa parametroRedefinido.s")
+    public   void testParametroRedefinido() throws IOException, ErrorTiny {
+        testSemanticFile("parametroRedefinido", false);
+    }
+
+    @Test
+    @DisplayName("Test del programa ImplAntesDeClass.s")
+    public   void testImplAntesDeClass() throws IOException, ErrorTiny {
+        testSemanticFile("implAntesDeClass", false);
+    }
+    @Test
+    @DisplayName("Test del programa claseRedeclarada.s")
+    public   void testClaseRedeclarada() throws IOException, ErrorTiny {
+        testSemanticFile("claseRedeclarada", false);
+    }
+    @Test
+    @DisplayName("Test del programa redefinirMetodo.s")
+    public   void testRedefinirMetodo() throws IOException, ErrorTiny {
+        testSemanticFile("redefinirMetodo", false);
+    }
+
+    @Test
+    @DisplayName("Test del programa ancestroInexistente.s")
+    public   void testAncestroInexistente() throws IOException, ErrorTiny {
+        testSemanticFile("ancestroInexistente", false);
+    }
+
+
+    @Test
+    @DisplayName("Test del programa metodoDuplicado.s")
+    public   void testMetodoDuplicado() throws IOException, ErrorTiny {
+        testSemanticFile("metodoDuplicado", false);
+    }
+
+    @Test
+    @DisplayName("Test del programa atributoHeredado.s")
+    public   void testAtributoHeredado() throws IOException, ErrorTiny {
+        testSemanticFile("atributoHeredado", false);
+    }
+
+    @Test
+    @DisplayName("Test del programa herenciaInvalida.s")
+    public   void testHerenciaInvalida() throws IOException, ErrorTiny {
+        testSemanticFile("herenciaInvalida", false);
+    }
+
+    @Test
+    @DisplayName("Test del programa redefinirTipoPrimitivo.s")
+    public   void testRedefinirTipoPrimitivi() throws IOException, ErrorTiny {
+        testSemanticFile("redefinirTipoPrimitivo", false);
+    }
+
+
+
 
 
 }
