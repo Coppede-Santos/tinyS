@@ -74,5 +74,8 @@ public class SymbolTable
         EntradaClase arrayClase = new EntradaClase("Array", obj);
         insertarClase("Array", arrayClase);
 
+        EntradaClase ioClase = new EntradaClase("IO", obj);
+        insertarClase("IO", ioClase);
+
     }
 }
