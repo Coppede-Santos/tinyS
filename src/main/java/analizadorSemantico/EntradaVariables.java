@@ -33,4 +33,11 @@ public class EntradaVariables extends Entrada {
     public void setSubtipo(EntradaClase subtipo) {
         this.subtipo = subtipo;
     }
+
+    public String consolidarVariable() {
+
+        String salida = consolidar() + "\n tipo:" + tipo.getLexema() +
+                "\n subtipo:" + ((subtipo != null) ? subtipo.getLexema() : "null");
+        return salida;
+    }
 }

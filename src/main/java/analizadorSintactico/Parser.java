@@ -79,6 +79,7 @@ public class Parser {
         TokenType type = currentToken.getType();
         if (type == CLASS || type == IMPL || type == START){
             program();
+            System.out.println(symbolTable.consolidarTS());
             macheo(EOF);
             return true;
         }
@@ -115,6 +116,8 @@ public class Parser {
             symbolTable.setMetodoActual(metodoStart);
             macheo(START);
             bloque_metodo();
+            symbolTable.setStartMethod(metodoStart);
+
         }else{
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un metodo start", currentToken. getLexema());
         }
@@ -407,14 +410,14 @@ public class Parser {
                     currentToken.getLine(),
                     currentToken.getColumn());
 
-            claseActual.setTieneConstructor(true);
+
 
             symbolTable.setMetodoActual(constructor);
 
             macheo(DOT);
             argumentos_formales();
             bloque_metodo();
-            claseActual.insertarMetodo(claseActual.getLexema(), constructor);
+            claseActual.setConstructor(constructor);
         }else{
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un constructor", currentToken. getLexema());
         }

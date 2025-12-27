@@ -15,4 +15,12 @@ public class EntradaAtributos extends EntradaVariables{
     public boolean esPrivado() {
         return esPrivado;
     }
+
+    public String consolidarAtributo() {
+        String salida = consolidar() + "\n tipo:" + tipo.getLexema() +
+                "\n subtipo:" + ((subtipo != null) ? subtipo.getLexema() : "null")+
+                "\n esPrivado:" + esPrivado;
+
+        return salida;
+    }
 }

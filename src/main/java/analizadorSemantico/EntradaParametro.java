@@ -23,4 +23,12 @@ public class EntradaParametro extends EntradaVariables{
         super(nombre, linea, columna, tipo, subtipo);
         this.posicionParametro = posicionParametro;
     }
+
+    public String consolidarParametro() {
+
+        String salida = consolidar() + "\n tipo:" + tipo.getLexema() +
+                "\n subtipo:" + ((subtipo != null) ? subtipo.getLexema() : "null")+
+                "\n posicionParametro:" + posicionParametro;
+        return salida;
+    }
 }

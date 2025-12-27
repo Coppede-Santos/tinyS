@@ -1,6 +1,9 @@
 package analizadorSemantico;
 
 import java.util.*;
+import analizadorSemantico.Errores.ErrorSemantico;
+
+import java.util.HashMap;
 
 public class SymbolTable
 {
@@ -14,6 +17,8 @@ public class SymbolTable
         inicializarTiposPrimitivos();
         inicializarMetodosDeClaseIO();
         inicializarMetodosDeClaseArray();
+        inicializarMetodosDeClaseString();
+
 
     }
 
@@ -59,25 +64,25 @@ public class SymbolTable
     }
 
     public void inicializarTiposPrimitivos() {
-        EntradaClase obj = new EntradaClase("Object");
+        EntradaClase obj = new EntradaClase("Object",0,0);
         insertarClase("Object", obj);
 
-        EntradaClase intClase = new EntradaClase("Int", obj);
+        EntradaClase intClase = new EntradaClase("Int",0,0, obj);
         insertarClase("Int", intClase);
 
-        EntradaClase booleanClase = new EntradaClase("Bool", obj);
+        EntradaClase booleanClase = new EntradaClase("Bool",0,0, obj);
         insertarClase("Bool", booleanClase);
 
-        EntradaClase stringClase = new EntradaClase("Str", obj);
+        EntradaClase stringClase = new EntradaClase("Str",0,0, obj);
         insertarClase("Str", stringClase);
 
-        EntradaClase doubleClase = new EntradaClase("Double", obj);
+        EntradaClase doubleClase = new EntradaClase("Double",0,0, obj);
         insertarClase("Double", doubleClase);
 
-        EntradaClase arrayClase = new EntradaClase("Array", obj);
+        EntradaClase arrayClase = new EntradaClase("Array",0,0, obj);
         insertarClase("Array", arrayClase);
 
-        EntradaClase ioClase = new EntradaClase("IO", obj);
+        EntradaClase ioClase = new EntradaClase("IO",0,0, obj);
         insertarClase("IO", ioClase);
 
     }
@@ -97,7 +102,7 @@ public class SymbolTable
             ioClase.insertarMetodo("out_int", out_int);
 
             EntradaMetodo out_bool = new EntradaMetodo("out_bool", true, null);
-            EntradaParametro parametroOutBool = new EntradaParametro("b", buscarClase("Boolean"), 0);
+            EntradaParametro parametroOutBool = new EntradaParametro("b", buscarClase("Bool"), 0);
             out_bool.insertarParametro("b", parametroOutBool);
             ioClase.insertarMetodo("out_bool", out_bool);
 
@@ -171,7 +176,12 @@ public class SymbolTable
         if (arrayClase != null) {
             EntradaMetodo length = new EntradaMetodo("length", true, buscarClase("Int"));
             arrayClase.insertarMetodo("length", length);
+            EntradaMetodo constructor = new EntradaMetodo("Array", true, null);
+            EntradaParametro parametroConstructor = new EntradaParametro("n", buscarClase("Int"), 0);
+            constructor.insertarParametro("n", parametroConstructor);
+            arrayClase.setConstructor(constructor);
         }
+
     }
 
     public void inicializarMetodosDeClaseString() {
@@ -206,5 +216,19 @@ public class SymbolTable
             clasesOrdenadas.put(entry.getKey(), entry.getValue());
         }
         this.clases = clasesOrdenadas;
+    }
+
+    public String consolidarTS() throws ErrorSemantico {
+        ordenarClasesPorPosicion();
+        String salida = "Symbol Table:\n" +
+                "Clases: [";
+        for (EntradaClase clase : clases.values()) {
+            salida += clase.consolidarClase();
+        }
+        salida += "]\n" +
+                "start: ";
+
+        salida += startMethod.consolidarMetodo();
+        return salida;
     }
 }

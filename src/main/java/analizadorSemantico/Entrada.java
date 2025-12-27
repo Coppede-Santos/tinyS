@@ -20,12 +20,29 @@ public abstract class Entrada {
         return lexema;
     }
 
+    public int getLinea() {
+        return posicion.linea;
+    }
+    public int getColumna() {
+        return posicion.columna;
+    }
+
     public void setPosicion(int linea, int columna) {
         this.posicion = new Posicion(linea, columna);
     }
 
     public void setLexema(String lexema) {
         this.lexema = lexema;
+    }
+
+    public String consolidar() {
+        String salida =
+                "lexema='" + lexema + '\'';
+               if (posicion != null){
+                   salida += ", posicion=(" + posicion.linea + ", " + posicion.columna + ")";
+               }
+                return salida;
+
     }
 }
 

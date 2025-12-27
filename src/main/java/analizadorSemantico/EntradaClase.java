@@ -1,12 +1,14 @@
 package analizadorSemantico;
 
+import analizadorSemantico.Errores.ErrorSemantico;
+
 import java.util.HashMap;
 
 public class EntradaClase extends Entrada {
     EntradaClase superClase;
     HashMap<String, EntradaAtributos> atributos = new HashMap<>();
     HashMap<String, EntradaMetodo> metodos = new HashMap<>();
-    boolean tieneConstructor = false;
+    EntradaMetodo constructor;
 
     public EntradaClase(String nombre) {
         super(nombre);
@@ -15,13 +17,13 @@ public class EntradaClase extends Entrada {
     public EntradaClase(String nombre, EntradaClase superClase) {
         super(nombre);
         this.superClase = superClase;
-        agregarMetodosDeSuperClase();
+        //agregarMetodosDeSuperClase();
     }
 
     public EntradaClase(String nombre, int linea, int columna, EntradaClase superClase) {
         super(nombre, linea, columna);
         this.superClase = superClase;
-        agregarMetodosDeSuperClase();
+        //agregarMetodosDeSuperClase();
     }
     public EntradaClase(String nombre, int linea, int columna) {
         super(nombre, linea, columna);
@@ -54,24 +56,80 @@ public class EntradaClase extends Entrada {
     }
 
     public boolean tieneConstructor() {
-        return tieneConstructor;
+        return (constructor != null);
     }
 
-    public void setTieneConstructor(boolean tieneConstructor) {
-        this.tieneConstructor = tieneConstructor;
+
+    public void setConstructor(EntradaMetodo constructor) {
+        this.constructor = constructor;
     }
 
     public void setSuperClase(EntradaClase superClase) {
         this.superClase = superClase;
-        agregarMetodosDeSuperClase();
+        //agregarMetodosDeSuperClase();
     }
 
-    private void agregarMetodosDeSuperClase() {
+    private void agregarMetodosDeSuperClase() throws ErrorSemantico{
         if (superClase != null) {
-            for (String nombreMetodo : superClase.metodos.keySet()) {
-                EntradaMetodo metodoSuperClase = superClase.metodos.get(nombreMetodo);
-                this.metodos.put(nombreMetodo, metodoSuperClase);
+            for (EntradaMetodo metodoSuperClase : superClase.metodos.values()) {
+
+                EntradaMetodo metodo= this.metodos.get(metodoSuperClase.lexema);
+
+                if (metodo != null){
+                    if (!metodo.compararFirma(metodoSuperClase)){
+                        throw new ErrorSemantico(metodo.getLinea(),metodo.getColumna(),"Solo se pueden redefinir metodos heredados con la misma firma", metodo.lexema);
+                    }
+                }else{
+                    this.metodos.put(metodoSuperClase.lexema, metodoSuperClase);
+                }
             }
         }
+    }
+
+    private void agregarAtributosDeSuperClase() throws ErrorSemantico{
+        if (superClase != null) {
+            for (String nombreAtributo : superClase.atributos.keySet()) {
+                EntradaAtributos atributo = this.buscarAtributo(nombreAtributo);
+                if ( atributo != null){
+                    throw new ErrorSemantico( atributo.getLinea(), atributo.getColumna(),"atributo ya existe en la clase " + this.getLexema(), atributo.getLexema());
+                }
+                EntradaAtributos atributoSuperClase = superClase.atributos.get(nombreAtributo);
+                this.atributos.put(nombreAtributo, atributoSuperClase);
+            }
+        }
+    }
+
+
+    public String consolidarClase() throws ErrorSemantico {
+
+        if (!lexema.equals("Object") && !lexema.equals("IO") && !lexema.equals("Int") && !lexema.equals("Bool") && !lexema.equals("Str") && !lexema.equals("Double")) {
+            if (!tieneConstructor()) {
+                throw new ErrorSemantico(this.getLinea(), this.getColumna(), "no tiene constructor la clase " + this.getLexema(), this.getLexema());
+            }
+        }
+
+        agregarMetodosDeSuperClase();
+        agregarAtributosDeSuperClase();
+
+        String salida = consolidar() + "\n" +
+                "superClase: " + ((superClase != null) ? superClase.getLexema() : "null") + "\n" +
+                "Atributos: { ";
+        for (EntradaAtributos atributo : atributos.values()) {
+            salida += atributo.consolidarAtributo();
+        }
+        salida += "} \n";
+        if (constructor != null) {
+            salida += constructor.consolidarMetodo() + "\n" +
+                    "Metodos: {";
+        }
+
+        for (EntradaMetodo metodo : metodos.values()) {
+            salida += metodo.consolidarMetodo();
+        }
+
+        salida += "}";
+
+        return salida;
+
     }
 }
