@@ -1,6 +1,9 @@
 package analizadorSemantico;
 
+import analizadorSemantico.Errores.ClaseSinConstructorError;
 import analizadorSemantico.Errores.ErrorSemantico;
+import analizadorSemantico.Errores.RedefinirAtributoError;
+import analizadorSemantico.Errores.RedefinirMetodoError;
 
 import java.util.HashMap;
 
@@ -77,7 +80,7 @@ public class EntradaClase extends Entrada {
 
                 if (metodo != null){
                     if (!metodo.compararFirma(metodoSuperClase)){
-                        throw new ErrorSemantico(metodo.getLinea(),metodo.getColumna(),"Solo se pueden redefinir metodos heredados con la misma firma", metodo.lexema);
+                        throw new RedefinirMetodoError(metodo.getLinea(),metodo.getColumna(),lexema, metodo.lexema);
                     }
                 }else{
                     this.metodos.put(metodoSuperClase.lexema, metodoSuperClase);
@@ -91,7 +94,7 @@ public class EntradaClase extends Entrada {
             for (String nombreAtributo : superClase.atributos.keySet()) {
                 EntradaAtributos atributo = this.buscarAtributo(nombreAtributo);
                 if ( atributo != null){
-                    throw new ErrorSemantico( atributo.getLinea(), atributo.getColumna(),"atributo ya existe en la clase " + this.getLexema(), atributo.getLexema());
+                    throw new RedefinirAtributoError( atributo.getLinea(), atributo.getColumna(), this.getLexema(), atributo.getLexema());
                 }
                 EntradaAtributos atributoSuperClase = superClase.atributos.get(nombreAtributo);
                 this.atributos.put(nombreAtributo, atributoSuperClase);
@@ -104,7 +107,7 @@ public class EntradaClase extends Entrada {
 
         if (!lexema.equals("Object") && !lexema.equals("IO") && !lexema.equals("Int") && !lexema.equals("Bool") && !lexema.equals("Str") && !lexema.equals("Double")) {
             if (!tieneConstructor()) {
-                throw new ErrorSemantico(this.getLinea(), this.getColumna(), "no tiene constructor la clase " + this.getLexema(), this.getLexema());
+                throw new ClaseSinConstructorError(this.getLinea(), this.getColumna(), this.getLexema());
             }
         }
 

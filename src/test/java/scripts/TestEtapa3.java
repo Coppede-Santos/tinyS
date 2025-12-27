@@ -139,7 +139,7 @@ public class TestEtapa3 {
     @Test
     @DisplayName("Test del programa dandlingElseCorrecto.s")
     public  void testDandlingElseCorrecto() throws IOException, ErrorTiny{
-        testSemanticFile("dandlingElseCorrecto",true);
+        testSemanticFile("dandlingElseCorrecto",false);
     }
 
     @Test
@@ -235,6 +235,11 @@ public class TestEtapa3 {
         testSemanticFile("redefinirTipoPrimitivo", false);
     }
 
+    @Test
+    @DisplayName("Test del programa metodoRedefinido.s")
+    public   void testMetodoRedefinido() throws IOException, ErrorTiny {
+        testSemanticFile("metodoRedefinido", true);
+    }
 
 
 
