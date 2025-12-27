@@ -1,6 +1,6 @@
 package analizadorSemantico;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class SymbolTable
 {
@@ -186,5 +186,25 @@ public class SymbolTable
             concat.insertarParametro("s", parametroConcat);
             stringClase.insertarMetodo("concat", concat);
         }
+    }
+
+
+    public void ordenarClasesPorPosicion() {
+        List<Map.Entry<String, EntradaClase>> listaEntradas = new ArrayList<>(clases.entrySet());
+
+        // Ordenar por línea y columna de la posición de EntradaClase
+        listaEntradas.sort((e1, e2) -> {
+            int cmp = Integer.compare(e1.getValue().getLinea(), e2.getValue().getLinea());
+            if (cmp == 0) {
+                cmp = Integer.compare(e1.getValue().getColumna(), e2.getValue().getColumna());
+            }
+            return cmp;
+        });
+
+        LinkedHashMap<String, EntradaClase> clasesOrdenadas = new LinkedHashMap<>();
+        for (Map.Entry<String, EntradaClase> entry : listaEntradas) {
+            clasesOrdenadas.put(entry.getKey(), entry.getValue());
+        }
+        this.clases = clasesOrdenadas;
     }
 }
