@@ -24,11 +24,11 @@ public class EntradaParametro extends EntradaVariables{
         this.posicionParametro = posicionParametro;
     }
 
-    public String consolidarParametro() {
+    public String consolidarParametro(int profundidad) {
 
-        String salida = consolidar() + "\n tipo:" + tipo.getLexema() +
-                "\n subtipo:" + ((subtipo != null) ? subtipo.getLexema() : "null")+
-                "\n posicionParametro:" + posicionParametro;
+        String salida = consolidar(profundidad) + "\t\t\t\t\t\t\"tipo\": \"" + tipo.getLexema() +
+                "\",\n\t\t\t\t\t\t\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo.getLexema() + "\"") : "null")+
+                ",\n\t\t\t\t\t\t\"posicionParametro\": " + posicionParametro;
         return salida;
     }
 }

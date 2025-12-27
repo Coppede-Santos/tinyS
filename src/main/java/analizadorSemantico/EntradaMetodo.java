@@ -95,23 +95,52 @@ public class EntradaMetodo extends Entrada{
         return true;
     }
 
-    public String consolidarMetodo(){
+    public String consolidarMetodo(int profundidad, boolean metodoFinal) {
+        String salida;
 
-        String salida = consolidar() + "\n" +
-                "Tipo de retorno: " + ((subtipoRetorno != null) ? subtipoRetorno.getLexema() : "void") + "\n"+
-                "Subtipo de retorno: " + ((subtipoRetorno != null) ? subtipoRetorno.getLexema() : "null") + "\n"+
-                "Es Estatico: " + esEstatico + "\n"
-                + "Variables Locales: {";
-        for (EntradaVariables variable : variablesLocales.values()) {
-            salida += variable.consolidarVariable() + "\n";
+        String tabs = "";
+
+        for (int i = 0; i < profundidad; i++) {
+            tabs += "\t";
         }
-        salida += "}\n"+
-        "Parametros: {";
+
+        salida = tabs + "{\n";
+
+        salida += consolidar(profundidad+1) +
+                tabs + "\t\"tipoRetorno\": " + ((subtipoRetorno != null) ? subtipoRetorno.getLexema() : "null") + ",\n"+
+                tabs + "\t\"subtipoRetorno\": " + ((subtipoRetorno != null) ? subtipoRetorno.getLexema() : "null") + ",\n"+
+                tabs + "\t\"esEstatico\": " + esEstatico + ",\n" +
+                tabs + "\t\"variablesLocales\": [\n";
+        for (EntradaVariables variable : variablesLocales.values()) {
+            salida += tabs + "\t\t{\n" +  variable.consolidarVariable(5) + "\n";
+
+            // Check if it is the last variable
+            if (variable != variablesLocales.values().toArray()[variablesLocales.size() - 1]) {
+                salida += tabs + "\t\t},\n";
+            } else {
+                salida += tabs + "\t\t}\n";
+            }
+
+        }
+        salida += tabs + "\t],\n"+
+        tabs + "\t\"parametros\": [\n";
 
         for (EntradaParametro parametro : parametros.values()) {
-            salida += "\tParametro: " + parametro.consolidarParametro() + "\n";
+            salida += tabs + "{\n" + parametro.consolidarParametro(6) + "\n";
+
+            if (parametro != parametros.values().toArray()[parametros.size() - 1]) {
+                salida += tabs + "},\n";
+            } else {
+                salida += tabs + "}\n";
+            }
         }
-        salida += "}";
+        salida += tabs + "\t]\n";
+
+        if (metodoFinal) {
+            salida += tabs + "}\n";
+        } else {
+            salida += tabs + "},\n";
+        }
 
         return salida;
     }

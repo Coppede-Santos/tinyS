@@ -16,10 +16,10 @@ public class EntradaAtributos extends EntradaVariables{
         return esPrivado;
     }
 
-    public String consolidarAtributo() {
-        String salida = consolidar() + "\n tipo:" + tipo.getLexema() +
-                "\n subtipo:" + ((subtipo != null) ? subtipo.getLexema() : "null")+
-                "\n esPrivado:" + esPrivado;
+    public String consolidarAtributo(int profundidad) {
+        String salida = consolidar(profundidad) + "\t\t\t\t\t\"tipo\": \"" + tipo.getLexema() +
+                "\",\n\t\t\t\t\t\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo.getLexema() + "\"") : "null")+
+                ",\n\t\t\t\t\t\"esPrivado\": " + esPrivado;
 
         return salida;
     }

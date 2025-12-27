@@ -35,14 +35,20 @@ public abstract class Entrada {
         this.lexema = lexema;
     }
 
-    public String consolidar() {
+    public String consolidar(int profundidad) {
+        String tabs = "";
+        for (int i = 0; i < profundidad; i++) {
+            tabs += "\t";
+        }
         String salida =
-                "lexema='" + lexema + '\'';
-               if (posicion != null){
-                   salida += ", posicion=(" + posicion.linea + ", " + posicion.columna + ")";
-               }
-                return salida;
-
+                tabs + "\"lexema\": \"" + lexema + "\",\n";
+        if (posicion != null) {
+            salida += tabs + "\"posicion\": {\n" +
+                    tabs + "\t\"linea\": " + posicion.linea + ",\n" +
+                    tabs + "\t\"columna\": " + posicion.columna + "\n" +
+                    tabs + "},\n";
+        }
+        return salida;
     }
 }
 

@@ -220,15 +220,21 @@ public class SymbolTable
 
     public String consolidarTS() throws ErrorSemantico {
         ordenarClasesPorPosicion();
-        String salida = "Symbol Table:\n" +
-                "Clases: [";
+        String salida = "{\n" +
+                "\t\"clases\": [\n";
         for (EntradaClase clase : clases.values()) {
-            salida += clase.consolidarClase();
+            // Check if it is the last class
+            if (clase != clases.values().toArray()[clases.size() - 1]) {
+                salida += clase.consolidarClase(false);
+            } else {
+                salida += clase.consolidarClase(true);
+            }
         }
-        salida += "]\n" +
-                "start: ";
+        salida += "\t],\n" +
+                "\t\"start\":\n";
 
-        salida += startMethod.consolidarMetodo();
+        salida += startMethod.consolidarMetodo(2, true);
+        salida += "\n}";
         return salida;
     }
 }

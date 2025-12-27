@@ -100,7 +100,7 @@ public class EntradaClase extends Entrada {
     }
 
 
-    public String consolidarClase() throws ErrorSemantico {
+    public String consolidarClase(boolean claseFinal) throws ErrorSemantico {
 
         if (!lexema.equals("Object") && !lexema.equals("IO") && !lexema.equals("Int") && !lexema.equals("Bool") && !lexema.equals("Str") && !lexema.equals("Double")) {
             if (!tieneConstructor()) {
@@ -111,23 +111,42 @@ public class EntradaClase extends Entrada {
         agregarMetodosDeSuperClase();
         agregarAtributosDeSuperClase();
 
-        String salida = consolidar() + "\n" +
-                "superClase: " + ((superClase != null) ? superClase.getLexema() : "null") + "\n" +
-                "Atributos: { ";
+        String salida = "\t\t{\n" + consolidar(3) +
+                "\t\t\t\"superClase\": " + ((superClase != null) ? ("\"" + superClase.getLexema() + "\"") : "null") + ",\n" +
+                "\t\t\t\"atributos\": [\n";
         for (EntradaAtributos atributo : atributos.values()) {
-            salida += atributo.consolidarAtributo();
+            salida += "\t\t\t\t{\n" + atributo.consolidarAtributo(5);
+
+            if (atributo != atributos.values().toArray()[atributos.size() - 1]) {
+                salida += "\n\t\t\t\t},\n";
+            } else {
+                salida += "\n\t\t\t\t}\n";
+            }
         }
-        salida += "} \n";
+        salida += "\t\t\t], \n";
         if (constructor != null) {
-            salida += constructor.consolidarMetodo() + "\n" +
-                    "Metodos: {";
+            salida += "\t\t\t\"constructor\": [\n" + constructor.consolidarMetodo(4,true) +
+                    "\t\t\t],\n";
+
+
         }
 
+        salida += "\t\t\t\"metodos\": [\n";
         for (EntradaMetodo metodo : metodos.values()) {
-            salida += metodo.consolidarMetodo();
+            // Check if it is the last method
+            if (metodo != metodos.values().toArray()[metodos.size() - 1]) {
+                salida += "\t\t\t\t" + metodo.consolidarMetodo(4, false);
+            } else {
+                salida += "\t\t\t\t" + metodo.consolidarMetodo(4, true);
+            }
         }
+        salida += "\t\t\t]\n";
 
-        salida += "}";
+        if (claseFinal) {
+            salida += "\t\t}";
+        } else {
+            salida += "\t\t},\n";
+        }
 
         return salida;
 
