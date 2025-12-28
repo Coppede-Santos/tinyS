@@ -126,12 +126,12 @@ public class EntradaMetodo extends Entrada{
         tabs + "\t\"parametros\": [\n";
 
         for (EntradaParametro parametro : parametros.values()) {
-            salida += tabs + "{\n" + parametro.consolidarParametro(6) + "\n";
+            salida += tabs + "\t\t{\n" + parametro.consolidarParametro(profundidad+3) + "\n";
 
             if (parametro != parametros.values().toArray()[parametros.size() - 1]) {
-                salida += tabs + "},\n";
+                salida += tabs + "\t\t},\n";
             } else {
-                salida += tabs + "}\n";
+                salida += tabs + "\t\t}\n";
             }
         }
         salida += tabs + "\t]\n";

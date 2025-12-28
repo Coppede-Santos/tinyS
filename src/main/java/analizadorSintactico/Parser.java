@@ -79,7 +79,6 @@ public class Parser {
         TokenType type = currentToken.getType();
         if (type == CLASS || type == IMPL || type == START){
             program();
-            System.out.println(symbolTable.consolidarTS());
             macheo(EOF);
             return true;
         }
@@ -2001,6 +2000,10 @@ public class Parser {
                 throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo, una operación o cerrar una expresión", currentToken. getLexema());
             }
         }
+    }
+
+    public SymbolTable getTablaSimbolos() {
+        return symbolTable;
     }
 }
 

@@ -138,9 +138,9 @@ public class EntradaClase extends Entrada {
         for (EntradaMetodo metodo : metodos.values()) {
             // Check if it is the last method
             if (metodo != metodos.values().toArray()[metodos.size() - 1]) {
-                salida += "\t\t\t\t" + metodo.consolidarMetodo(4, false);
+                salida += metodo.consolidarMetodo(4, false);
             } else {
-                salida += "\t\t\t\t" + metodo.consolidarMetodo(4, true);
+                salida += metodo.consolidarMetodo(4, true);
             }
         }
         salida += "\t\t\t]\n";

@@ -52,6 +52,8 @@ public class Etapa3 {
 
         String resultadoAnalisis;
 
+        String tablaSimbolos = "";
+
         try {
             // ────────────── Preparación de componentes ──────────────
             LectorCF lector = new LectorCF();
@@ -71,11 +73,14 @@ public class Etapa3 {
 
             // Se ejecuta el parser.
             if (parser.s()) {
+                tablaSimbolos = parser.getTablaSimbolos().consolidarTS();
                 resultadoAnalisis = "CORRECTO: SEMANTICO - DECLARACIONES\n";
             } else {
                 // Este caso maneja una falla sin excepción, que podría indicar un parseo incompleto.
                 resultadoAnalisis = "ERROR: SEMANTICO - DECLARACIONES\n";
             }
+
+
 
         } catch (ErrorSintactico e) {
             resultadoAnalisis = "ERROR: SINTACTICO\n" + e.getMessage();
@@ -99,6 +104,18 @@ public class Etapa3 {
             writer.write(resultadoAnalisis);
         } catch (IOException e) {
             System.err.println("Error al escribir en el archivo de salida '" + nombreArchivoSalida + "': " + e.getMessage());
+        }
+
+        String nombreJsonSalida = rutaArchivoEntrada.replace(".s", ".ts.json");
+
+         // ────────────── Escritura de resultados JSON ──────────────
+
+        if (!tablaSimbolos.isEmpty()) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreJsonSalida))) {
+                writer.write(tablaSimbolos);
+            } catch (IOException e) {
+                System.err.println("Error al escribir en el archivo de salida '" + nombreJsonSalida + "': " + e.getMessage());
+            }
         }
 
         if (resultadoAnalisis.startsWith("ERROR")) {

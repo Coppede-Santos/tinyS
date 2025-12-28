@@ -26,9 +26,13 @@ public class EntradaParametro extends EntradaVariables{
 
     public String consolidarParametro(int profundidad) {
 
-        String salida = consolidar(profundidad) + "\t\t\t\t\t\t\"tipo\": \"" + tipo.getLexema() +
-                "\",\n\t\t\t\t\t\t\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo.getLexema() + "\"") : "null")+
-                ",\n\t\t\t\t\t\t\"posicionParametro\": " + posicionParametro;
-        return salida;
+        String tabs = "";
+        for (int i = 0; i < profundidad; i++) {
+            tabs += "\t";
+        }
+
+        return consolidar(profundidad) + tabs + "\"tipo\": \"" + tipo.getLexema() +
+                "\",\n" + tabs + "\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo.getLexema() + "\"") : "null")+
+                ",\n" + tabs + "\"posicionParametro\": " + posicionParametro;
     }
 }
