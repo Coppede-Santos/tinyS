@@ -436,9 +436,7 @@ public class Parser {
             String subtipo = tipo();
 
             if (type == ARRAY) {
-                if (subtipo.isEmpty()){
-                    throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipo);
-                } else {
+                if (!subtipo.isEmpty()){
                     EntradaClase subtipoClase = symbolTable.buscarClase(subtipo);
                     lista_declaraciones_variables(tipoClase, subtipoClase, true);
                 }
@@ -457,9 +455,7 @@ public class Parser {
                 String subtipo = tipo();
 
                 if (type == ARRAY) {
-                    if (subtipo.isEmpty()){
-                        throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipo);
-                    } else {
+                    if (!subtipo.isEmpty()){
                         EntradaClase subtipoClase = symbolTable.buscarClase(subtipo);
                         lista_declaraciones_variables(tipoClase, subtipoClase, false);
                     }
@@ -537,8 +533,6 @@ public class Parser {
             if(type == ARRAY) {
                 if (!subtipoMetodo.isEmpty()){
                     metodoActual.setSubtipoRetorno(symbolTable.buscarClase(subtipoMetodo));
-                } else {
-                    throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipoMetodo);
                 }
             }
             metodoActual.setTipoRetorno(symbolTable.buscarClase(tipoMetodo));
@@ -659,9 +653,7 @@ public class Parser {
             String subtipo = tipo();
 
             if (type == ARRAY) {
-                if (subtipo.isEmpty()){
-                    throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipo);
-                } else {
+                if (!subtipo.isEmpty()){
                     EntradaClase subtipoClase = symbolTable.buscarClase(subtipo);
                     lista_declaraciones_variables(tipoClase, subtipoClase);
                 }
@@ -874,8 +866,6 @@ public class Parser {
                 if (!subtipoArgumento.isEmpty()){
                     EntradaClase claseSubtipo = symbolTable.buscarClase(subtipoArgumento);
                     parametro.setSubtipo(claseSubtipo);
-                } else {
-                    throw new SubtipoArregloError(currentToken.getLine(),currentToken.getColumn(),subtipoArgumento);
                 }
             }
             if (metodoActual.buscarParametro(currentToken.getLexema()) != null) {
