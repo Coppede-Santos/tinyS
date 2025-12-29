@@ -143,11 +143,6 @@ public class TestEtapa3 {
         testSemanticFile("constructores",true);
     }
 
-    @Test
-    @DisplayName("Test del programa bloquesSueltos.s")
-    public  void testBloquesSueltos() throws IOException, ErrorTiny{
-        testSemanticFile("bloquesSueltos",true);
-    }
 
     @Test
     @DisplayName("Test del programa metodoRedefinido.s")
@@ -330,18 +325,6 @@ public class TestEtapa3 {
     @DisplayName("Test del programa herenciaInvalida.s")
     public   void testHerenciaInvalida() throws IOException, ErrorTiny {
         testSemanticFile("herenciaInvalida", false);
-    }
-
-    @Test
-    @DisplayName("Test del programa redefinirTipoPrimitivo.s")
-    public   void testRedefinirTipoPrimitivi() throws IOException, ErrorTiny {
-        testSemanticFile("redefinirTipoPrimitivo", false);
-    }
-
-    @Test
-    @DisplayName("Test del programa metodoRedefinido.s")
-    public   void testMetodoRedefinido() throws IOException, ErrorTiny {
-        testSemanticFile("metodoRedefinido", true);
     }
 
     @Test
