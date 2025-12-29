@@ -1,0 +1,430 @@
+{
+	"clases": [
+		{
+			"lexema": "Str",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"metodos": [
+				{
+					"lexema": "length",
+					"tipoRetorno": "Int",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				},
+				{
+					"lexema": "concat",
+					"tipoRetorno": "Str",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "s",
+							"tipo": "Str",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"lexema": "Array",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"constructor": [
+				{
+					"lexema": "Array",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "n",
+							"tipo": "Int",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				}
+			],
+			"metodos": [
+				{
+					"lexema": "length",
+					"tipoRetorno": "Int",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				}
+			]
+		},
+		{
+			"lexema": "Bool",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"metodos": [
+			]
+		},
+		{
+			"lexema": "IO",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"metodos": [
+				{
+					"lexema": "out_array_int",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "a",
+							"tipo": "Array",
+							"subtipo": "Int",
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "in_str",
+					"tipoRetorno": "Str",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				},
+				{
+					"lexema": "in_double",
+					"tipoRetorno": "Double",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				},
+				{
+					"lexema": "out_array_str",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "a",
+							"tipo": "Array",
+							"subtipo": "Str",
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "in_int",
+					"tipoRetorno": "Int",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				},
+				{
+					"lexema": "out_int",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "i",
+							"tipo": "Int",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "in_bool",
+					"tipoRetorno": "Bool",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				},
+				{
+					"lexema": "out_str",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "s",
+							"tipo": "Str",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "out_double",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "d",
+							"tipo": "Double",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "out_array_double",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "a",
+							"tipo": "Array",
+							"subtipo": "Double",
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "out_bool",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "b",
+							"tipo": "Bool",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "out_array_bool",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "a",
+							"tipo": "Array",
+							"subtipo": "Bool",
+							"posicionParametro": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"lexema": "Object",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": null,
+			"atributos": [
+			], 
+			"metodos": [
+			]
+		},
+		{
+			"lexema": "Double",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"metodos": [
+			]
+		},
+		{
+			"lexema": "Int",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"metodos": [
+			]
+		},
+		{
+			"lexema": "A",
+			"posicion": {
+				"linea": 1,
+				"columna": 7
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"constructor": [
+				{
+					"lexema": "A",
+					"posicion": {
+						"linea": 6,
+						"columna": 1
+					},
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": false,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				}
+			],
+			"metodos": [
+				{
+					"lexema": "aaa",
+					"posicion": {
+						"linea": 7,
+						"columna": 11
+					},
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": false,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "a",
+							"posicion": {
+								"linea": 7,
+								"columna": 17
+							},
+							"tipo": "Int",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"lexema": "B",
+			"posicion": {
+				"linea": 3,
+				"columna": 7
+			},
+			"superClase": "A",
+			"atributos": [
+			], 
+			"constructor": [
+				{
+					"lexema": "B",
+					"posicion": {
+						"linea": 10,
+						"columna": 1
+					},
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": false,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				}
+			],
+			"metodos": [
+				{
+					"lexema": "aaa",
+					"posicion": {
+						"linea": 11,
+						"columna": 11
+					},
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": false,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "a",
+							"posicion": {
+								"linea": 11,
+								"columna": 17
+							},
+							"tipo": "Int",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				}
+			]
+		}
+    ],
+	"start":
+		{
+			"lexema": "start",
+			"posicion": {
+				"linea": 14,
+				"columna": 5
+			},
+			"tipoRetorno": null,
+			"subtipoRetorno": null,
+			"esEstatico": false,
+			"variablesLocales": [
+			],
+			"parametros": [
+			]
+		}
+
+}

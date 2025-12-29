@@ -230,7 +230,7 @@ public class SymbolTable
                 salida += clase.consolidarClase(true);
             }
         }
-        salida += "\t],\n" +
+        salida += "\n \t ],\n" +
                 "\t\"start\":\n";
 
         salida += startMethod.consolidarMetodo(2, true);

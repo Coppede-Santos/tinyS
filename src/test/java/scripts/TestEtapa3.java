@@ -63,6 +63,35 @@ public class TestEtapa3 {
         }
     }
 
+    private void testSemanticJson(String fileName) throws IOException, ErrorTiny {
+        String basePath = System.getProperty("user.dir");
+        String testFilePath = basePath + "/src/test/resources/test/" + fileName + ".s";
+        String  assertFilePath = basePath + "/src/test/resources/declarationChecking/resultado_" + fileName + ".ts.json";
+
+        String outputFilePath = basePath + "/src/test/resources/test/" + fileName + ".ts.json";
+
+        // Ejecutar el analizador léxico
+        Etapa3.main(new String[]{testFilePath, outputFilePath});
+
+        // Leer el archivo generado
+        String actualOutput = Files.readString(Paths.get(outputFilePath));
+
+        // Leer el archivo esperado
+        String expectedOutput = Files.readString(Paths.get(assertFilePath));
+
+        // Comparar línea por línea
+        String[] actualLines = actualOutput.split("\n");
+        String[] expectedLines = expectedOutput.split("\n");
+
+        assertEquals(expectedLines.length, actualLines.length,
+                "La cantidad de líneas no coincide para " + fileName);
+
+        for (int i = 0; i < expectedLines.length; i++) {
+            assertEquals(expectedLines[i].trim(), actualLines[i].trim(),
+                    "Error en la línea " + (i + 1) + " del archivo " + fileName);
+        }
+    }
+
 
     @Test
     @DisplayName("Test del programa factorial.s")
@@ -240,6 +269,58 @@ public class TestEtapa3 {
     public   void testMetodoRedefinido() throws IOException, ErrorTiny {
         testSemanticFile("metodoRedefinido", true);
     }
+
+    @Test
+    @DisplayName("Test del json fibonacci.s")
+    public void testFibonacciJson() throws IOException, ErrorTiny {
+        testSemanticJson("fibonacci");
+    }
+
+    @Test
+    @DisplayName("Test del json factorial.s")
+    public void testFactorialJson() throws IOException, ErrorTiny {
+        testSemanticJson("factorial");
+    }
+
+    @Test
+    @DisplayName("Test del json numerosPares.s")
+    public void testNumerosParesJson() throws IOException, ErrorTiny {
+        testSemanticJson("numerosPares");
+    }
+
+    @Test
+    @DisplayName("Test del json constructores.s")
+    public void testConstructoresJson() throws IOException, ErrorTiny {
+        testSemanticJson("constructores");
+    }
+
+    @Test
+    @DisplayName("Test del json areaDeUnCirculo.s")
+    public void testAreaDeUnCirculoJson() throws IOException, ErrorTiny {
+        testSemanticJson("areaDeUnCirculo");
+    }
+
+
+    @Test
+    @DisplayName("Test del json primo.s")
+    public void testPrimoJson() throws IOException, ErrorTiny {
+        testSemanticJson("primo");
+    }
+
+    @Test
+    @DisplayName("Test del json metodoRedefinido.s")
+    public void testMetodoRedefinidoJson() throws IOException, ErrorTiny {
+        testSemanticJson("metodoRedefinido");
+    }
+
+    @Test
+    @DisplayName("Test del json palindromo.s")
+    public void testPalindromoJson() throws IOException, ErrorTiny {
+        testSemanticJson("palindromo");
+    }
+
+
+
 
 
 
