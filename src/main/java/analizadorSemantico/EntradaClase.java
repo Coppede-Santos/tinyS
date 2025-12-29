@@ -80,7 +80,7 @@ public class EntradaClase extends Entrada {
 
                 if (metodo != null){
                     if (!metodo.compararFirma(metodoSuperClase)){
-                        throw new RedefinirMetodoError(metodo.getLinea(),metodo.getColumna(),lexema, metodo.lexema);
+                        throw new RedefinirMetodoError(metodo.getLinea(),metodo.getColumna(),metodo.lexema, lexema);
                     }
                 }else{
                     this.metodos.put(metodoSuperClase.lexema, metodoSuperClase);
@@ -94,7 +94,7 @@ public class EntradaClase extends Entrada {
             for (String nombreAtributo : superClase.atributos.keySet()) {
                 EntradaAtributos atributo = this.buscarAtributo(nombreAtributo);
                 if ( atributo != null){
-                    throw new RedefinirAtributoError( atributo.getLinea(), atributo.getColumna(), this.getLexema(), atributo.getLexema());
+                    throw new RedefinirAtributoError( atributo.getLinea(), atributo.getColumna(), atributo.getLexema(), this.getLexema());
                 }
                 EntradaAtributos atributoSuperClase = superClase.atributos.get(nombreAtributo);
                 this.atributos.put(nombreAtributo, atributoSuperClase);

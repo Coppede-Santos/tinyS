@@ -63,6 +63,7 @@ public class TestEtapa3 {
         }
     }
 
+    // Tests de programas correctos
 
     @Test
     @DisplayName("Test del programa factorial.s")
@@ -102,32 +103,15 @@ public class TestEtapa3 {
     }
 
     @Test
-    @DisplayName("Test del programa fizzBuzz.s")
-    public void testFizzBuzz() throws IOException, ErrorTiny{
-        testSemanticFile("fizzBuzz",true);
-    }
-    @Test
-    @DisplayName("Test del programa palindromo.s")
-    public void testPalindromo() throws IOException, ErrorTiny{
-        testSemanticFile("palindromo",true);
-    }
-
-    @Test
-    @DisplayName("Test del programa parImpar.s")
-    public void testParImpar() throws IOException, ErrorTiny{
-        testSemanticFile("parImpar",true);
-    }
-
-    @Test
     @DisplayName("Test del programa sentenciasIfElse.s")
     public void testSentenciasIfElse() throws IOException, ErrorTiny{
         testSemanticFile("sentenciasIfElse",true);
     }
 
     @Test
-    @DisplayName("Test del programa valorMaxArreglo.s")
-    public void testValorMaxArreglo() throws IOException, ErrorTiny{
-        testSemanticFile("valorMaxArreglo",false);
+    @DisplayName("Test del programa constructores.s")
+    public  void testConstructores() throws IOException, ErrorTiny{
+        testSemanticFile("constructores",true);
     }
 
     @Test
@@ -137,111 +121,187 @@ public class TestEtapa3 {
     }
 
     @Test
+    @DisplayName("Test del programa metodoRedefinido.s")
+    public   void testMetodoRedefinido() throws IOException, ErrorTiny {
+        testSemanticFile("metodoRedefinido", true);
+    }
+
+    // TESTS DE PROGRAMAS CON ERRORES DE DECLARACIONES
+
+    // ClaseSinConstructorError
+
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ClaseSinConstructorError
+     */
+    @Test
+    @DisplayName("Test del programa fizzBuzz.s")
+    public void testFizzBuzz() throws IOException, ErrorTiny{
+        testSemanticFile("fizzBuzz",false);
+    }
+
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ClaseSinConstructorError
+     */
+    @Test
+    @DisplayName("Test del programa asignacionInvalida.s")
+    public void testAsignacionInvalida() throws IOException, ErrorTiny{
+        testSemanticFile("asignacionInvalida",false);
+    }
+
+    // ClaseNoDeclaradaError
+
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ClaseNoDeclaradaError
+     */
+    @Test
+    @DisplayName("Test del programa valorMaxArreglo.s")
+    public void testValorMaxArreglo() throws IOException, ErrorTiny{
+        testSemanticFile("valorMaxArreglo",false);
+    }
+
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ClaseNoDeclaradaError
+     */
+    @Test
     @DisplayName("Test del programa dandlingElseCorrecto.s")
-    public  void testDandlingElseCorrecto() throws IOException, ErrorTiny{
+    public void testDandlingElseCorrecto() throws IOException, ErrorTiny{
         testSemanticFile("dandlingElseCorrecto",false);
     }
 
-    @Test
-    @DisplayName("Test del programa whileCorrecto.s")
-    public  void testWhileCorrecto() throws IOException, ErrorTiny{
-        testSemanticFile("whileCorrecto",true);
-    }
-
-    @Test
-    @DisplayName("Test del programa constructores.s")
-    public  void testConstructores() throws IOException, ErrorTiny{
-        testSemanticFile("constructores",true);
-    }
-
-
-
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ClaseNoDeclaradaError
+     */
     @Test
     @DisplayName("Test del programa implMalFormado.s")
-    public   void testImplMalFormado() throws IOException, ErrorTiny{
+    public void testImplMalFormado() throws IOException, ErrorTiny{
         testSemanticFile("implMalFormado",false);
     }
 
-
-    @Test
-    @DisplayName("Test del programa asignacionInvalida.s")
-    public   void testAsignacionInvalida() throws IOException, ErrorTiny{
-        testSemanticFile("asignacionInvalida",true);
-    }
-
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ClaseNoDeclaradaError
+     */
     @Test
     @DisplayName("Test del programa classArrayInt.s")
     public   void testClassArrayInt() throws IOException, ErrorTiny{
         testSemanticFile("classArrayInt",false);
     }
 
-    @Test
-    @DisplayName("Test del programa variableredeclarada.s")
-    public   void testVariableredeclarada() throws IOException, ErrorTiny{
-        testSemanticFile("variableredeclarada",false);
-    }
-
-
-    @Test
-    @DisplayName("Test del programa parametroRedefinido.s")
-    public   void testParametroRedefinido() throws IOException, ErrorTiny {
-        testSemanticFile("parametroRedefinido", false);
-    }
-
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ClaseNoDeclaradaError
+     */
     @Test
     @DisplayName("Test del programa ImplAntesDeClass.s")
     public   void testImplAntesDeClass() throws IOException, ErrorTiny {
         testSemanticFile("implAntesDeClass", false);
     }
-    @Test
-    @DisplayName("Test del programa claseRedeclarada.s")
-    public   void testClaseRedeclarada() throws IOException, ErrorTiny {
-        testSemanticFile("claseRedeclarada", false);
-    }
-    @Test
-    @DisplayName("Test del programa redefinirMetodo.s")
-    public   void testRedefinirMetodo() throws IOException, ErrorTiny {
-        testSemanticFile("redefinirMetodo", false);
-    }
 
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ClaseNoDeclaradaError
+     */
     @Test
     @DisplayName("Test del programa ancestroInexistente.s")
     public   void testAncestroInexistente() throws IOException, ErrorTiny {
         testSemanticFile("ancestroInexistente", false);
     }
 
-
+    // VariableRedefinidaError
+    /**
+     *
+     * @throws analizadorSemantico.Errores.VariableRedefinidaError
+     */
     @Test
-    @DisplayName("Test del programa metodoDuplicado.s")
-    public   void testMetodoDuplicado() throws IOException, ErrorTiny {
-        testSemanticFile("metodoDuplicado", false);
+    @DisplayName("Test del programa variableredeclarada.s")
+    public   void testVariableredeclarada() throws IOException, ErrorTiny{
+        testSemanticFile("variableredeclarada",false);
     }
 
+    // ParametroRedefinidoError
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ParametroRedefinidoError
+     */
     @Test
-    @DisplayName("Test del programa atributoHeredado.s")
-    public   void testAtributoHeredado() throws IOException, ErrorTiny {
-        testSemanticFile("atributoHeredado", false);
+    @DisplayName("Test del programa parametroRedefinido.s")
+    public   void testParametroRedefinido() throws IOException, ErrorTiny {
+        testSemanticFile("parametroRedefinido", false);
     }
 
+    // ClaseRedeclaradaError
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ClaseRedeclaradaError
+     */
     @Test
-    @DisplayName("Test del programa herenciaInvalida.s")
-    public   void testHerenciaInvalida() throws IOException, ErrorTiny {
-        testSemanticFile("herenciaInvalida", false);
+    @DisplayName("Test del programa claseRedeclarada.s")
+    public   void testClaseRedeclarada() throws IOException, ErrorTiny {
+        testSemanticFile("claseRedeclarada", false);
     }
 
+    /**
+     *
+     * @throws analizadorSemantico.Errores.ClaseRedeclaradaError
+     */
     @Test
     @DisplayName("Test del programa redefinirTipoPrimitivo.s")
     public   void testRedefinirTipoPrimitivi() throws IOException, ErrorTiny {
         testSemanticFile("redefinirTipoPrimitivo", false);
     }
 
+    // RedefinirMetodoError
+
+    /**
+     *
+     * @throws analizadorSemantico.Errores.RedefinirMetodoError
+     */
     @Test
-    @DisplayName("Test del programa metodoRedefinido.s")
-    public   void testMetodoRedefinido() throws IOException, ErrorTiny {
-        testSemanticFile("metodoRedefinido", true);
+    @DisplayName("Test del programa redefinirMetodo.s")
+    public   void testRedefinirMetodo() throws IOException, ErrorTiny {
+        testSemanticFile("redefinirMetodo", false);
     }
 
+    // MetodoRedeclaradoError
 
+    /**
+     *
+     * @throws analizadorSemantico.Errores.MetodoRedeclaradoError
+     */
+    @Test
+    @DisplayName("Test del programa metodoDuplicado.s")
+    public   void testMetodoDuplicado() throws IOException, ErrorTiny {
+        testSemanticFile("metodoDuplicado", false);
+    }
+
+    // RedefinirAtributoError
+
+    /**
+     *
+     * @throws analizadorSemantico.Errores.RedefinirAtributoError
+     */
+    @Test
+    @DisplayName("Test del programa atributoHeredado.s")
+    public   void testAtributoHeredado() throws IOException, ErrorTiny {
+        testSemanticFile("atributoHeredado", false);
+    }
+
+    // HerenciaInvalidaError
+
+    /**
+     *
+     * @throws analizadorSemantico.Errores.HerenciaInvalidaError
+     */
+    @Test
+    @DisplayName("Test del programa herenciaInvalida.s")
+    public   void testHerenciaInvalida() throws IOException, ErrorTiny {
+        testSemanticFile("herenciaInvalida", false);
+    }
 
 
 }
