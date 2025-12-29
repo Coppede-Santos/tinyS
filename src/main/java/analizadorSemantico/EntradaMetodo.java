@@ -79,6 +79,12 @@ public class EntradaMetodo extends Entrada{
         return parametros.size();
     }
 
+    public void setEsEstatico(boolean esEstatico) {
+        this.esEstatico = esEstatico;
+    }
+
+
+
     public Boolean compararFirma(EntradaMetodo metodo) {
         if (tipoRetorno != metodo.tipoRetorno) return false;
         if (subtipoRetorno != metodo.subtipoRetorno) return false;

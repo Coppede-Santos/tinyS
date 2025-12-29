@@ -150,6 +150,12 @@ public class TestEtapa3 {
         testSemanticFile("metodoRedefinido", true);
     }
 
+    @Test
+    @DisplayName("Test del programa metodoEstatico.s")
+    public   void testMetodoEstatico() throws IOException, ErrorTiny {
+        testSemanticFile("metodoEstatico", true);
+    }
+
     // TESTS DE PROGRAMAS CON ERRORES DE DECLARACIONES
 
     // ClaseSinConstructorError

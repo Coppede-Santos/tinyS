@@ -478,9 +478,9 @@ public class Parser {
 
     private void metodo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
+        EntradaMetodo metodoActual = new EntradaMetodo();
+        symbolTable.setMetodoActual(metodoActual);
         if(type == FN){
-            EntradaMetodo metodoActual = new EntradaMetodo();
-            symbolTable.setMetodoActual(metodoActual);
 
             macheo(FN);
             tipo_metodo_factorizacion();
@@ -495,16 +495,30 @@ public class Parser {
             }
 
             argumentos_formales();
-            bloque_metodo();
 
             symbolTable.getClassActual().insertarMetodo(metodoActual.getLexema(), metodoActual);
+
+            bloque_metodo();
         }else{
             if(type == ST ){
+                metodoActual.setEsEstatico(true);
                 forma_metodo();
                 macheo(FN);
                 tipo_metodo_factorizacion();
+
+                metodoActual.setPosicion(currentToken.getLine(), currentToken.getColumn());
+                metodoActual.setLexema(currentToken.getLexema());
+
                 macheo(IDOBJETS);///// Corroborar eso, el identificador de metodo atributo es el mismo que el de objetos
+
+                if(symbolTable.getClassActual().buscarMetodo(metodoActual.getLexema()) != null){
+                    throw new MetodoRedeclaradoError(currentToken.getLine(),currentToken.getColumn(),symbolTable.getMetodoActual().getLexema());
+                }
+
                 argumentos_formales();
+
+                symbolTable.getClassActual().insertarMetodo(metodoActual.getLexema(), metodoActual);
+
                 bloque_metodo();
             }else{
                 throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un metodo", currentToken. getLexema());
