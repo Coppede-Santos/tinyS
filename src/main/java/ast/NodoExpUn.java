@@ -3,7 +3,11 @@ package ast;
 import analizadorLexico.TokenType;
 
 public class NodoExpUn extends NodoExp{
-    public NodoExp ladoDerecho;
-    public TokenType operador;
+    NodoExp ladoDerecho;
+    TokenType operador;
 
+    public NodoExpUn(NodoExp nodoExp, TokenType type) {
+        this.ladoDerecho = nodoExp;
+        this.operador = type;
+    }
 }

@@ -1,6 +1,11 @@
 package ast;
 
 public class NodoAsignacion extends NodoSentencia{
-    public NodoVar izquierda;
-    public NodoExp derecha;
+    NodoVar izquierda;
+    NodoExp derecha;
+
+    public NodoAsignacion(NodoVar izquierda, NodoExp derecha) {
+        this.izquierda = izquierda;
+        this.derecha = derecha;
+    }
 }

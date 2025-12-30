@@ -1,7 +1,14 @@
 package ast;
 
 public class NodoIf extends NodoSentencia{
-    public NodoExp condicion;
-    public NodoSentencia sentenciaIf;
-    public NodoSentencia sentenciaElse;
+    NodoExp condicion;
+    NodoSentencia sentenciaIf;
+    NodoSentencia sentenciaElse;
+
+    public NodoIf(NodoExp condicion, NodoSentencia sentenciaIf, NodoSentencia sentenciaElse) {
+        this.condicion = condicion;
+        this.sentenciaIf = sentenciaIf;
+        this.sentenciaElse = sentenciaElse;
+    }
+
 }

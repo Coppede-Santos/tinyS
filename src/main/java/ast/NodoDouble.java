@@ -1,5 +1,9 @@
 package ast;
 
 public class NodoDouble extends NodoNum{
-    public double valor;
+    double valor;
+
+    public NodoDouble(Double literal) {
+        valor = literal;
+    }
 }

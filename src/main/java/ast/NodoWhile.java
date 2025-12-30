@@ -1,6 +1,11 @@
 package ast;
 
 public class NodoWhile extends NodoSentencia {
-    public NodoExp condicion;
-    public NodoSentencia sentencia;
+    NodoExp condicion;
+    NodoSentencia sentencia;
+
+    public NodoWhile(NodoExp condicion, NodoSentencia sentencia) {
+        this.condicion = condicion;
+        this.sentencia = sentencia;
+    }
 }

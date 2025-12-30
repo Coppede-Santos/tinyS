@@ -1,5 +1,11 @@
 package ast;
 
 public class NodoInt extends NodoNum{
-    public int valor;
+    int valor;
+
+    public NodoInt(int valor){
+        this.valor = valor;
+    }
+
+
 }
