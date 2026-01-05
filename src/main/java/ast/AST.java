@@ -16,5 +16,7 @@ public class AST {
         return clases.get(lex);
     }
 
-
+    public void setStart(NodoBloque start) {
+        this.start = start;
+    }
 }

@@ -117,8 +117,11 @@ public class Parser {
         if (currentToken.getType() == START){
             EntradaMetodo metodoStart = new EntradaMetodo("start", currentToken.getLine(), currentToken.getColumn());
             symbolTable.setMetodoActual(metodoStart);
+            NodoBloque bloqueStart = new NodoBloque();
             macheo(START);
-            bloque_metodo();
+
+            bloque_metodo(bloqueStart);
+            ast.setStart(bloqueStart);
             symbolTable.setStartMethod(metodoStart);
 
         }else{
@@ -408,20 +411,22 @@ public class Parser {
         if (currentToken.getType()==DOT){
 
             EntradaClase claseActual = symbolTable.getClassActual();
+            NodoClass nodoClaseActual = ast.getClass(claseActual.getLexema());
 
             EntradaMetodo constructor = new EntradaMetodo(
                     claseActual.getLexema(),
                     currentToken.getLine(),
                     currentToken.getColumn());
 
-
-
             symbolTable.setMetodoActual(constructor);
+            NodoBloque bloqueConstructor = new NodoBloque();
 
             macheo(DOT);
             argumentos_formales();
-            bloque_metodo();
+            bloque_metodo(bloqueConstructor);
+
             claseActual.setConstructor(constructor);
+            nodoClaseActual.insertarMetodo(claseActual.getLexema(), bloqueConstructor);
         }else{
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un constructor", currentToken. getLexema());
         }
@@ -503,10 +508,7 @@ public class Parser {
 
             NodoClass nodoClaseActual = ast.getClass(symbolTable.getClassActual().getLexema());
 
-
-
             symbolTable.getClassActual().insertarMetodo(metodoActual.getLexema(), metodoActual);
-
 
             NodoBloque nodoBloque = new NodoBloque();
             bloque_metodo(nodoBloque);
@@ -531,9 +533,14 @@ public class Parser {
 
                 argumentos_formales();
 
+                NodoClass nodoClaseActual = ast.getClass(symbolTable.getClassActual().getLexema());
+
                 symbolTable.getClassActual().insertarMetodo(metodoActual.getLexema(), metodoActual);
 
-                bloque_metodo();
+                NodoBloque nodoBloque = new NodoBloque();
+                bloque_metodo(nodoBloque);
+
+                nodoClaseActual.insertarMetodo(symbolTable.getMetodoActual().getLexema(), nodoBloque);
             }else{
                 throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un metodo", currentToken. getLexema());
             }
