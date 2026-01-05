@@ -234,7 +234,7 @@ public class Parser {
             EntradaClase claseActual = symbolTable.getClassActual();
             claseActual.setSuperClase(superClaseEntrada);
             symbolTable.insertarClase(claseActual.getLexema(),claseActual);
-            ast.insertarClass(currentToken.getLexema(),new NodoClass(currentToken.getLexema()));
+            ast.insertarClass(claseActual.getLexema(),new NodoClass(claseActual.getLexema()));
 
         }else{
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definición de una clase", currentToken. getLexema());
@@ -1411,7 +1411,7 @@ public class Parser {
             opIgual();
 
             NodoExp nodoLadoDerecho = expCompuesta();
-            NodoExpBin nodoExpBin = new NodoExpBin(nodoLadoDerecho,nodoLadoIzq,type,currentToken.getLine(), currentToken.getColumn());
+            NodoExpBin nodoExpBin = new NodoExpBin(nodoLadoIzq,nodoLadoDerecho,type,currentToken.getLine(), currentToken.getColumn());
             return expIgualPrima(nodoExpBin);
         }else {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND) {
@@ -1570,8 +1570,8 @@ public class Parser {
                     if (type == IDCLASS || type == IDOBJETS || type == SELF || type == NEW) {
 
                         NodoExp nodoExp = primario_sin_parentesis();
-                        NodoExp nodoEncadenado = encadenado_factorizado();
-                        nodoExp.setEncadenado(nodoEncadenado);
+                        //NodoExp nodoEncadenado = encadenado_factorizado();
+                        //nodoExp.setEncadenado(nodoEncadenado);
                         return nodoExp;
                     }else{
                         throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion o una operación", currentToken. getLexema());
@@ -1734,11 +1734,11 @@ public class Parser {
         }else {
             if (currentToken.getType() == TRUE) {
                 macheo(TRUE);
-                return new NodoBool(true,currentToken.getLine(), currentToken.getColumn());
+                return new NodoBool(TRUE,currentToken.getLine(), currentToken.getColumn());
             }else{
                 if (currentToken.getType() == FALSE) {
                     macheo(FALSE);
-                    return new NodoBool(false,currentToken.getLine(), currentToken.getColumn());
+                    return new NodoBool(FALSE,currentToken.getLine(), currentToken.getColumn());
                 }else {
                     if (currentToken.getType() == INTEGER_LITERAL) {
                         Integer literal = Integer.parseInt(currentToken.getLexema());
@@ -1746,7 +1746,9 @@ public class Parser {
                         return new NodoInt(literal,currentToken.getLine(), currentToken.getColumn());
                     } else {
                         if (currentToken.getType() == STRING_LITERAL) {
-                            String literal = currentToken.getLexema();
+                            String literal = currentToken.getLexema().substring(
+                                    1, currentToken.getLexema().length() - 1
+                            );
                             macheo(STRING_LITERAL);
                             return new NodoString(literal,currentToken.getLine(), currentToken.getColumn());
                         } else {
@@ -1910,13 +1912,14 @@ public class Parser {
             NodoLlamadaEncadenado nodoLlamadaEncadenado = new NodoLlamadaEncadenado(currentToken.getLexema(),
                     currentToken.getLine(), currentToken.getColumn());
             //encadenamos el metodo a la clase static
+            nodoLlamadaEncadenado.setEsEstatico(true);
             nodoVarStatic.setEncadenado(nodoLlamadaEncadenado);
             macheo(IDOBJETS);
             //agregamos al nodo metodo todos sus parametros
             llamada_metodo(nodoLlamadaEncadenado);
             //seguimos encadenando si es necesario
             NodoExp nodoEncadenado = encadenado_factorizado();
-            nodoVarStatic.setEncadenado(nodoEncadenado);
+            nodoLlamadaEncadenado.setEncadenado(nodoEncadenado);
             return nodoVarStatic;
         }else {
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una llamada a metodo estatico", currentToken. getLexema());

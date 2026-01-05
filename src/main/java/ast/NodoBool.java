@@ -1,12 +1,18 @@
 package ast;
 
+import analizadorLexico.TokenType;
+
 public class NodoBool extends NodoOperando{
 
     boolean valor;
 
-    public NodoBool(boolean valor, int linea, int columna) {
-        super(linea, columna);
-        this.valor = valor;
+    public NodoBool(TokenType tipo, int linea, int columna) {
+        super(tipo, linea, columna);
+        if (tipo == TokenType.TRUE) {
+            this.valor = true;
+        } else {
+            this.valor = false;
+        }
     }
 
 }

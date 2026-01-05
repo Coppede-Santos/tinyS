@@ -7,6 +7,6 @@ public class NodoExpBin extends NodoExpUn{
 
     public NodoExpBin(NodoExp ladoIzquierdo, NodoExp ladoDerecho, TokenType operador, int linea, int columna){
         super(ladoDerecho,operador, linea, columna);
-        this.ladoIzquierdo = ladoDerecho;
+        this.ladoIzquierdo = ladoIzquierdo;
     }
 }
