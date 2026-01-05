@@ -3,12 +3,12 @@ package ast;
 import analizadorLexico.TokenType;
 
 
-public class NodoArray extends NodoOperando{
+public class NodoConstructorArray extends NodoVar{
     TokenType subtipo;
     NodoExp dimension;
 
-    public NodoArray( TokenType subtipo){
-        super(TokenType.ARRAY);
+    public NodoConstructorArray(TokenType subtipo, int linea, int columna) {
+        super("Array", linea, columna);
         this.subtipo=subtipo;
 
     }
