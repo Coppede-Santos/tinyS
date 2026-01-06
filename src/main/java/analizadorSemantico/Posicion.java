@@ -8,4 +8,12 @@ public class Posicion {
         this.linea = linea;
         this.columna = columna;
     }
+
+    public int getLinea() {
+        return linea;
+    }
+
+    public int getColumna() {
+        return columna;
+    }
 }

@@ -54,6 +54,10 @@ public class EntradaClase extends Entrada {
         return true;
     }
 
+    public EntradaMetodo getMetodo(String lexema) {
+        return metodos.get(lexema);
+    }
+
     public EntradaClase getSuperClase() {
         return superClase;
     }

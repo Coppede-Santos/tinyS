@@ -25,4 +25,8 @@ public class NodoExp extends NodoSentencia {
     public void setTipo(TokenType tipo){
         this.tipo = tipo;
     }
+
+    public TokenType getTipo() {
+        return tipo;
+    }
 }

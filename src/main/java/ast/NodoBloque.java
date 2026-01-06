@@ -1,5 +1,9 @@
 package ast;
 
+import analizadorSemantico.EntradaMetodo;
+import analizadorSemantico.Errores.ErrorSemantico;
+import analizadorSemantico.SymbolTable;
+
 import java.util.LinkedList;
 
 public class NodoBloque extends NodoSentencia{
@@ -11,5 +15,17 @@ public class NodoBloque extends NodoSentencia{
 
     public void insertarSentencia(NodoSentencia nodoSentencia){
         sentencias.add(nodoSentencia);
+    }
+
+
+
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico{
+        String salida = "";
+
+        for (NodoSentencia nodoSentencia : sentencias){
+            salida += nodoSentencia.chequeoDeSentencias(entradaMetodo, st);
+        }
+
+        return salida;
     }
 }

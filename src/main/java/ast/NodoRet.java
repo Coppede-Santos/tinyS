@@ -1,5 +1,9 @@
 package ast;
 
+import analizadorSemantico.EntradaMetodo;
+import analizadorSemantico.Errores.ErrorSemantico;
+import analizadorSemantico.SymbolTable;
+
 public class NodoRet extends NodoSentencia{
     NodoExp exp;
 
@@ -10,5 +14,21 @@ public class NodoRet extends NodoSentencia{
 
     public NodoExp getExp(){
         return exp;
+    }
+
+
+    @Override
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+        String salida;
+
+        if (exp == null) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"","");
+
+        exp.chequeoDeSentencias(entradaMetodo,st);
+
+        if(exp.getTipo() != entradaMetodo.getTipoRetorno().getLexema())
+
+
+
+        return salida;
     }
 }

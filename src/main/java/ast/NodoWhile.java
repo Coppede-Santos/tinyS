@@ -1,5 +1,9 @@
 package ast;
 
+import analizadorSemantico.EntradaMetodo;
+import analizadorSemantico.Errores.ErrorSemantico;
+import analizadorSemantico.SymbolTable;
+
 public class NodoWhile extends NodoSentencia {
     NodoExp condicion;
     NodoSentencia sentencia;
@@ -8,5 +12,18 @@ public class NodoWhile extends NodoSentencia {
         super(linea, columna);
         this.condicion = condicion;
         this.sentencia = sentencia;
+    }
+
+    @Override
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+        String salida = "";
+
+        if(condicion == null || sentencia == null) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"","");
+
+        condicion.chequeoDeSentencias(entradaMetodo,st);
+        sentencia.chequeoDeSentencias(entradaMetodo,st);
+
+
+        return salida;
     }
 }

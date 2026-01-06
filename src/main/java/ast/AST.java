@@ -1,6 +1,8 @@
 package ast;
 
+import analizadorSemantico.EntradaClase;
 import analizadorSemantico.Errores.ErrorSemantico;
+import analizadorSemantico.SymbolTable;
 
 import java.util.HashMap;
 
@@ -19,4 +21,19 @@ public class AST {
     public void setStart(NodoBloque start) {
         this.start = start;
     }
+
+    public String chequeoDeSentencias(SymbolTable st) throws ErrorSemantico{
+
+        String salida = "";
+
+
+        for (NodoClass clase : clases.values()){
+            salida += clase.chequeoDeSentencias(st);
+        }
+
+        salida += start.chequeoDeSentencias(st.getStartMethod(), st);
+        return salida;
+
+    }
+
 }
