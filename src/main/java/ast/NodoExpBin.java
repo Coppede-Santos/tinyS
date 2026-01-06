@@ -70,11 +70,22 @@ public class NodoExpBin extends NodoExpUn{
         }
 
 
-
+        /*
+        La operación de comparación (>, >=, <, <=) solo se puede realizar entre valores numéricos (INT y DOUBLE).
+         */
         if(operador == TokenType.GREATER || operador == TokenType.GREATER_EQUAL || operador == TokenType.LESS || operador == TokenType.LESS_EQUAL){
             if (tipoDer != "INT" && tipoIz != "INT" && tipoDer != "DOUBLE" && tipoIz != "DOUBLE") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
             tipo = "BOOL";
         }
+
+        /*
+        Propuesta:
+        if(operador == TokenType.GREATER || operador == TokenType.GREATER_EQUAL || operador == TokenType.LESS || operador == TokenType.LESS_EQUAL){
+            // Si el tipo de alguno de los operandos no es INT o DOUBLE, lanzar un error semántico
+            if ((tipoIz != "INT" || tipoIz != "DOUBLE") || (tipoDer != "INT" && tipoDer != "DOUBLE")) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+            tipo = "BOOL";
+        }
+         */
 
         if(operador == TokenType.EQUAL_EQUAL || operador == TokenType.NOT_EQUAL){
             if (tipoDer != tipoIz){
