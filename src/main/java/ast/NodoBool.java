@@ -6,13 +6,9 @@ public class NodoBool extends NodoOperando{
 
     boolean valor;
 
-    public NodoBool(TokenType tipo, int linea, int columna) {
-        super(tipo, linea, columna);
-        if (tipo == TokenType.TRUE) {
-            this.valor = true;
-        } else {
-            this.valor = false;
-        }
+    public NodoBool(Boolean valor, int linea, int columna) {
+        super("BOOL", linea, columna);
+        this.valor = valor;
     }
 
 }

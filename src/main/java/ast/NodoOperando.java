@@ -4,7 +4,7 @@ import analizadorLexico.TokenType;
 
 public abstract class NodoOperando extends NodoExp {
 
-    public NodoOperando(TokenType type, int linea, int columna){
+    public NodoOperando(String type, int linea, int columna){
         super(type, linea, columna);
     }
     public NodoOperando(int linea, int columna){

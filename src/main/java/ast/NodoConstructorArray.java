@@ -4,11 +4,11 @@ import analizadorLexico.TokenType;
 
 
 public class NodoConstructorArray extends NodoVar{
-    TokenType subtipo;
+    String subtipo;
     NodoExp dimension;
 
-    public NodoConstructorArray(TokenType subtipo, int linea, int columna) {
-        super("Array", linea, columna);
+    public NodoConstructorArray(String subtipo, int linea, int columna) {
+        super("ARRAY", linea, columna);
         this.subtipo=subtipo;
 
     }

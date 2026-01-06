@@ -1,16 +1,18 @@
 package ast;
 
 import analizadorLexico.TokenType;
+import analizadorSemantico.EntradaMetodo;
+import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.Posicion;
+import analizadorSemantico.SymbolTable;
 
-public class NodoExp extends NodoSentencia {
+public abstract class NodoExp extends NodoSentencia {
 
-    TokenType tipo;
+    String tipo;
     NodoExp encadenado;
 
-    public NodoExp(TokenType tipo, int linea, int columna) {
+    public NodoExp(String tipo, int linea, int columna) {
         super(linea, columna);
-
         this.tipo = tipo;
     }
 
@@ -22,11 +24,11 @@ public class NodoExp extends NodoSentencia {
         this.encadenado = encadenado;
     }
 
-    public void setTipo(TokenType tipo){
+    public void setTipo(String tipo){
         this.tipo = tipo;
     }
 
-    public TokenType getTipo() {
+    public String getTipo() {
         return tipo;
     }
 }

@@ -1734,11 +1734,11 @@ public class Parser {
         }else {
             if (currentToken.getType() == TRUE) {
                 macheo(TRUE);
-                return new NodoBool(TRUE,currentToken.getLine(), currentToken.getColumn());
+                return new NodoBool( true,currentToken.getLine(), currentToken.getColumn());
             }else{
                 if (currentToken.getType() == FALSE) {
                     macheo(FALSE);
-                    return new NodoBool(FALSE,currentToken.getLine(), currentToken.getColumn());
+                    return new NodoBool(false,currentToken.getLine(), currentToken.getColumn());
                 }else {
                     if (currentToken.getType() == INTEGER_LITERAL) {
                         Integer literal = Integer.parseInt(currentToken.getLexema());
@@ -1968,7 +1968,7 @@ public class Parser {
             if (type == STR || type == DOUBLE || type == INT || type == BOOL){
 
                 tipo_primitivo();
-                NodoConstructorArray arreglo = new NodoConstructorArray(type,
+                NodoConstructorArray arreglo = new NodoConstructorArray(type.toString(),
                         currentToken.getLine(),
                         currentToken.getColumn()
                 );
