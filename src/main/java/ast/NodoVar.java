@@ -33,11 +33,19 @@ public  class NodoVar extends NodoOperando{
             variable = st.getClassActual().buscarAtributo(lexema);
         }
 
-        if (variable == null) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la variable " + lexema + " no existe en el metodo " + entradaMetodo.getLexema(), "");
+        if (variable ==  null) {
+            if  (esEstatico) {
+                EntradaClase claseActual = st.buscarClase(lexema);
+                if (claseActual == null) {
+                    throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + lexema + " no existe", "");
+                }
+                this.tipo = claseActual.getLexema();
+            }else {
+                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la variable " + lexema + " no existe en el metodo " + entradaMetodo.getLexema(), "");
+            }
+        } else {
+            this.tipo = variable.getTipo().getLexema();
         }
-
-        this.tipo = variable.getTipo().getLexema();
 
         if (encadenado != null){
             salida += this.encadenado.chequeoDeSentencias(
