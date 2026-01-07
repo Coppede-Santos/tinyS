@@ -82,7 +82,7 @@ public class NodoExpBin extends NodoExpUn{
         Propuesta:
         if(operador == TokenType.GREATER || operador == TokenType.GREATER_EQUAL || operador == TokenType.LESS || operador == TokenType.LESS_EQUAL){
             // Si el tipo de alguno de los operandos no es INT o DOUBLE, lanzar un error semántico
-            if ((tipoIz != "INT" || tipoIz != "DOUBLE") || (tipoDer != "INT" && tipoDer != "DOUBLE")) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+            if ((tipoIz != "INT" && tipoIz != "DOUBLE") || (tipoDer != "INT" && tipoDer != "DOUBLE")) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
             tipo = "BOOL";
         }
          */
