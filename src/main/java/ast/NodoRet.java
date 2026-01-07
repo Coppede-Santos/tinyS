@@ -25,7 +25,7 @@ public class NodoRet extends NodoSentencia{
 
         exp.chequeoDeSentencias(entradaMetodo,st);
 
-        if(exp.getTipo() == "NIL") exp.setTipo(null);
+        if(exp.getTipo() == "nil") exp.setTipo(null);
 
         if(exp.getTipo() != entradaMetodo.getTipoRetorno().getLexema()) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
 

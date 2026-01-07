@@ -1,6 +1,10 @@
 package ast;
 
 import analizadorLexico.TokenType;
+import analizadorSemantico.*;
+import analizadorSemantico.Errores.ErrorSemantico;
+
+import java.util.Objects;
 
 public  class NodoVar extends NodoOperando{
     String lexema;
@@ -16,4 +20,60 @@ public  class NodoVar extends NodoOperando{
 
     }
 
+    @Override
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+        String salida = "";
+
+        EntradaVariables variable = entradaMetodo.buscarVariableLocal(lexema);
+        if (variable == null) {
+            variable = entradaMetodo.buscarParametro(lexema);
+        }
+
+        if (variable == null) {
+            variable = st.getClassActual().buscarAtributo(lexema);
+        }
+
+        if (variable == null) {
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la variable " + lexema + " no existe en el metodo " + entradaMetodo.getLexema(), "");
+        }
+
+        this.tipo = variable.getTipo().getLexema();
+
+        if (encadenado != null){
+            salida += this.encadenado.chequeoDeSentencias(
+                    entradaMetodo,
+                    st,
+                    this.tipo
+            );
+        }
+
+        return salida;
+    }
+
+    @Override
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev) throws ErrorSemantico {
+        String salida = "";
+
+        EntradaClase entradaClase = st.buscarClase(tipoEncadenadoPrev);
+        if (entradaClase == null) {
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + tipoEncadenadoPrev + " no existe","");
+        }
+
+        EntradaAtributos atributo = entradaClase.buscarAtributo(lexema);
+        if (atributo == null) {
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " no existe en la clase " + tipoEncadenadoPrev,"");
+        }
+
+        this.tipo = atributo.getTipo().getLexema();
+
+        if (encadenado != null){
+            salida += this.encadenado.chequeoDeSentencias(
+                    entradaMetodo,
+                    st,
+                    this.tipo
+            );
+        }
+
+        return salida;
+    }
 }

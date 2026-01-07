@@ -31,13 +31,13 @@ public class NodoExpUn extends NodoExp{
         if (ladoDerecho.getTipo() == null) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "", "");
 
         if (operador == TokenType.PLUS_PLUS || operador == TokenType.MINUS_MINUS || operador == TokenType.PLUS || operador == TokenType.MINUS ){
-            if(tipo != "INT" && tipo != "DOUBLE") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
+            if(tipo != "Int" && tipo != "Double") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
         }
 
-        if (operador == TokenType.NOT){ if (tipo != "BOOL") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");}
+        if (operador == TokenType.NOT){ if (tipo != "Bool") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");}
 
         if(operador == TokenType.LEFT_PAREN){
-            if (tipo != "DOUBLE") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
+            if (tipo != "Double") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
             tipo = "INT";
         }
 
@@ -47,5 +47,9 @@ public class NodoExpUn extends NodoExp{
 
 
         return salida;
+    }
+
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev) throws ErrorSemantico {
+        throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "prohibido encadenar una expresion binaria","");
     }
 }

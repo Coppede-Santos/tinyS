@@ -1185,10 +1185,9 @@ public class Parser {
 
         TokenType type = currentToken.getType();
         if(type == IDOBJETS){
-            NodoVar nodoVar = new NodoVar(currentToken.getLexema(), currentToken.getLine(), currentToken.getColumn());
+            Token token = currentToken;
             macheo(IDOBJETS);
-            nodoVar.setEncadenado(accesoVar_simple_prima());
-            return nodoVar;
+            return accesoVar_simple_prima(token);
         }else{
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable", currentToken. getLexema());
         }
@@ -1202,14 +1201,16 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private NodoExp accesoVar_simple_prima() throws IOException, ErrorTiny{
+    private NodoVar accesoVar_simple_prima(Token token) throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT || type == EQUAL){
-            return encadenado_simple_recursivo();
+            NodoVar nodoVar = new NodoVar(token.getLexema(), token.getLine(), token.getColumn());
+            nodoVar.setEncadenado(encadenado_simple_recursivo());
+            return nodoVar;
         }else{
             if(type == LEFT_BRACKET){
                 macheo(LEFT_BRACKET);
-                NodoArray arreglo = new NodoArray( currentToken.getLine(), currentToken.getColumn());
+                NodoArray arreglo = new NodoArray(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
                 arreglo.setIndice(expOr());
                 macheo(RIGHT_BRACKET);
                 return arreglo;
@@ -1856,14 +1857,16 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private NodoExp accesoVar_prima() throws IOException, ErrorTiny{
+    private NodoVar accesoVar_prima(Token token) throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT || type == SEMICOLON || type == COMMA  || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == EQUAL_EQUAL || type == NOT_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == MULT || type == SLASH || type == DIV || type == PERCENTAGE){
-            return encadenado_factorizado();
+            NodoVar nodoVar = new NodoVar(token.getLexema(), token.getLine(), token.getColumn());
+            nodoVar.setEncadenado(encadenado_factorizado());
+            return nodoVar;
         }else{
             if (type == LEFT_BRACKET){
                 macheo(LEFT_BRACKET);
-                NodoArray nodoArray = new NodoArray( currentToken.getLine(), currentToken.getColumn());
+                NodoArray nodoArray = new NodoArray(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
                 nodoArray.setIndice(expOr());
                 macheo(RIGHT_BRACKET);
                 nodoArray.setEncadenado(encadenado_factorizado());
@@ -1950,7 +1953,7 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private NodoVar llamada_conclasor_prima() throws IOException, ErrorTiny{
+    private NodoOperando llamada_conclasor_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS){
 
@@ -1972,6 +1975,7 @@ public class Parser {
                         currentToken.getLine(),
                         currentToken.getColumn()
                 );
+                arreglo.setTipo("Array");
                 macheo(LEFT_BRACKET);
                 NodoExp nodoExp = expOr();
                 arreglo.setDimension(nodoExp);
@@ -2113,10 +2117,8 @@ public class Parser {
     private NodoVar id_factor(String lexema) throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT || type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == LEFT_BRACKET || type == RIGHT_BRACKET || type == OR || type == AND || type == EQUAL_EQUAL || type == NOT_EQUAL || type == LESS || type == GREATER || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == MULT || type == SLASH || type == PERCENTAGE || type == DIV ) {
-            NodoVar nodoVar = new NodoVar(lexema, currentToken.getLine(), currentToken.getColumn());
-            NodoExp nodoEncadenado = accesoVar_prima();
-            nodoVar.setEncadenado(nodoEncadenado);
-            return nodoVar;
+            Token token = currentToken;
+            return accesoVar_prima(token);
         }else {
             if (type == LEFT_PAREN) {
                 NodoLlamadaEncadenado nodoLlamadaEncadenado = new NodoLlamadaEncadenado(lexema, currentToken.getLine(), currentToken.getColumn());
@@ -2130,6 +2132,10 @@ public class Parser {
 
     public SymbolTable getTablaSimbolos() {
         return symbolTable;
+    }
+
+    public AST getAST() {
+        return ast;
     }
 }
 

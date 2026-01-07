@@ -34,6 +34,10 @@ public class EntradaVariables extends Entrada {
         this.subtipo = subtipo;
     }
 
+    public EntradaClase getSubtipo() {
+        return subtipo;
+    }
+
     public String consolidarVariable(int profundidad) {
 
         String tabs = "";

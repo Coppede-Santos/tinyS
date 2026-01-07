@@ -21,14 +21,15 @@ public class NodoIf extends NodoSentencia{
         String salida = "";
         if (condicion == null || sentenciaIf == null) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), ",","");
 
-        condicion.chequeoDeSentencias(entradaMetodo,st);
-        sentenciaIf.chequeoDeSentencias(entradaMetodo,st);
+        salida += condicion.chequeoDeSentencias(entradaMetodo,st);
 
-        if (sentenciaElse != null) sentenciaElse.chequeoDeSentencias(entradaMetodo,st);
+        if (!condicion.tipo.equals("Bool")){
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "La condicion de un if debe ser de tipo Bool","");
+        }
 
+        salida += sentenciaIf.chequeoDeSentencias(entradaMetodo,st);
 
-
-
+        if (sentenciaElse != null) salida += sentenciaElse.chequeoDeSentencias(entradaMetodo,st);
 
         return salida;
     }

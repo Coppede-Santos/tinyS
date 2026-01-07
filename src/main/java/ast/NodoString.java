@@ -1,13 +1,37 @@
 package ast;
 
-import analizadorLexico.TokenType;
+import analizadorSemantico.EntradaMetodo;
+import analizadorSemantico.Errores.ErrorSemantico;
+import analizadorSemantico.SymbolTable;
 
 public class NodoString extends NodoOperando{
     String valor;
 
     public NodoString(String valor, int linea, int columna) {
-        super("STRING", linea, columna);
+        super("Str", linea, columna);
         this.valor = valor;
+    }
+
+    @Override
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev) throws ErrorSemantico {
+        throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "prohibido encadenar una expresion","");
+    }
+
+    @Override
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+        String salida = "";
+
+        salida += "\"" + valor + "\"";
+
+        if (encadenado != null){
+            this.encadenado.chequeoDeSentencias(
+                entradaMetodo,
+                st,
+                this.tipo
+            );
+        }
+
+        return salida;
     }
 
 }

@@ -1,15 +1,99 @@
 package ast;
 
-public class NodoArray extends NodoOperando{
+import analizadorSemantico.*;
+import analizadorSemantico.Errores.ErrorSemantico;
+
+import java.util.Objects;
+
+public class NodoArray extends NodoVar{
     NodoExp indice;
 
-    public NodoArray(NodoExp indice, int linea, int columna) {
-        super(linea, columna);
+    public NodoArray(NodoExp indice, String lexema, int linea, int columna) {
+        super(lexema, linea, columna);
         this.indice = indice;
     }
 
-    public NodoArray(int linea, int columna) {
-        super(linea, columna);
+    public NodoArray(String lexema, int linea, int columna) {
+        super(lexema, linea, columna);
+    }
+
+    @Override
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+        String salida = "";
+
+        EntradaVariables variable = entradaMetodo.buscarVariableLocal(lexema);
+        if (variable == null) {
+            variable = entradaMetodo.buscarParametro(lexema);
+        }
+
+        if (variable == null) {
+            variable = st.getClassActual().buscarAtributo(lexema);
+        }
+
+        if (variable == null) {
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la variable " + lexema + " no existe en el metodo " + entradaMetodo.getLexema(), "");
+        }
+
+        EntradaClase subtipo = variable.getSubtipo();
+
+        this.tipo = subtipo.getLexema();
+
+        salida += indice.chequeoDeSentencias(entradaMetodo, st);
+
+        if (!Objects.equals(indice.getTipo(), "Int")) {
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el indice de un array debe ser de tipo Int","");
+        }
+
+        if (encadenado != null){
+            salida += this.encadenado.chequeoDeSentencias(
+                    entradaMetodo,
+                    st,
+                    this.tipo
+            );
+        }
+
+        return salida;
+    }
+
+    @Override
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev) throws ErrorSemantico {
+        String salida = "";
+
+        // Fibonacci.a[2]
+
+        EntradaClase entradaClase = st.buscarClase(tipoEncadenadoPrev);
+        if (entradaClase == null) {
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + tipoEncadenadoPrev + " no existe","");
+        }
+
+        EntradaAtributos atributo = entradaClase.buscarAtributo(lexema);
+        if (atributo == null) {
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " no existe en la clase " + tipoEncadenadoPrev,"");
+        }
+
+        if (!Objects.equals(atributo.getTipo().getLexema(), "Array")) {
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " no es un array","");
+        }
+
+        EntradaClase subtipo = atributo.getSubtipo();
+
+        this.tipo = subtipo.getLexema();
+
+        salida += indice.chequeoDeSentencias(entradaMetodo, st);
+
+        if (!Objects.equals(indice.getTipo(), "Int")) {
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el indice de un array debe ser de tipo Int","");
+        }
+
+        if (encadenado != null){
+            salida += this.encadenado.chequeoDeSentencias(
+                entradaMetodo,
+                st,
+                this.tipo
+            );
+        }
+
+        return salida;
     }
 
     public void setIndice(NodoExp indice) {

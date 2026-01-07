@@ -28,28 +28,23 @@ public class NodoClass {
 
         st.setClassActual(entradaClase);
 
-
         String salida = "";
-
 
         EntradaMetodo entradaMetodo;
         NodoBloque bloque;
 
         for (String metodoLex : metodos.keySet()){
 
-
-
-
             do {
                entradaMetodo = entradaClase.getMetodo(metodoLex);
                entradaClase  = entradaClase.getSuperClase();
-
-           }while (entradaMetodo == null && entradaClase.getSuperClase() != null);
+            } while (entradaMetodo == null && entradaClase.getSuperClase() != null);
 
             if (entradaMetodo == null) throw new ErrorSemantico(0,0,"no tiene un metodo definido","");
 
             bloque = metodos.get(metodoLex);
             salida += bloque.chequeoDeSentencias(entradaMetodo, st);
+
         }
 
         return salida;

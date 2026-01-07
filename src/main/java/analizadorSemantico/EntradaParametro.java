@@ -35,4 +35,8 @@ public class EntradaParametro extends EntradaVariables{
                 "\",\n" + tabs + "\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo.getLexema() + "\"") : "null")+
                 ",\n" + tabs + "\"posicionParametro\": " + posicionParametro;
     }
+
+    public int getPosicionParametro() {
+        return posicionParametro;
+    }
 }

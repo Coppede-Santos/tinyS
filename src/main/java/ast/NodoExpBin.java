@@ -18,7 +18,6 @@ public class NodoExpBin extends NodoExpUn{
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico{
         String salida = "";
 
-
         if (ladoDerecho == null || operador == null || ladoIzquierdo == null)
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "", "");
 
@@ -31,80 +30,86 @@ public class NodoExpBin extends NodoExpUn{
         String tipoDer = ladoDerecho.getTipo();
         String tipoIz = ladoIzquierdo.getTipo();
 
-
+        boolean algunTipoNoEsNumerico = (!Objects.equals(tipoIz, "Int") && !Objects.equals(tipoIz, "Double"))
+                || (!Objects.equals(tipoDer, "Int") && !Objects.equals(tipoDer, "Double"));
 
         if(operador == TokenType.DIV){
-            if (tipoDer != "INT" && tipoIz != "INT") throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"","");
-            tipo = "INT";
+            if (!Objects.equals(tipoDer, "Int") && !Objects.equals(tipoIz, "Int"))
+                throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"","");
+            tipo = "Int";
         }
 
         if  (operador == TokenType.MINUS || operador == TokenType.MULT || operador == TokenType.SLASH || operador == TokenType.PERCENTAGE){
-            if (tipoDer != "INT" && tipoIz != "INT" && tipoDer != "DOUBLE" && tipoIz != "DOUBLE") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
-            if (tipoDer == "DOUBLE" || tipoIz == "DOUBLE"){
-                tipo = "DOUBLE";
-            }else tipo = "INT";
+            if (algunTipoNoEsNumerico)
+                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+            if (tipoDer.equals("Double") || tipoIz.equals("Double")){
+                tipo = "Double";
+            }else tipo = "Int";
         }
 
 
         if (operador == TokenType.PLUS || operador == TokenType.MULT){
-            if (tipoDer != "INT" && tipoIz != "INT" && tipoDer != "DOUBLE" && tipoIz != "DOUBLE" && tipoDer != "STRING" && tipoIz != "STRING"){
+
+            if ((!Objects.equals(tipoDer, "Int") && !Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Str"))
+                || (!Objects.equals(tipoIz, "Int") &&  !Objects.equals(tipoIz, "Double") && !Objects.equals(tipoIz, "Str"))){
                 throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
             }
+
             switch (tipoIz){
-                case "INT":
+                case "Int":
                     switch (tipoDer){
-                        case "INT": tipo = "INT"; break;
-                        case "DOUBLE": tipo = "DOUBLE"; break;
+                        case "Int": tipo = "Int"; break;
+                        case "Double": tipo = "Double"; break;
                         default: throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
                     } break;
-                case "DOUBLE":
-                   if (tipoDer != "DOUBLE" && tipoDer != "INT") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
+                case "Double":
+                   if (!Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Int")) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
                    tipo = "Double";
                    break;
-                case "STRING":
-                    if (tipoDer != "STRING" || operador == TokenType.MULT) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
-                    tipo = "STRING";
+                case "Str":
+                    if (!Objects.equals(tipoDer, "Str") || operador == TokenType.MULT) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
+                    tipo = "Str";
                     break;
                 default: throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
             }
         }
 
-
-        /*
-        La operación de comparación (>, >=, <, <=) solo se puede realizar entre valores numéricos (INT y DOUBLE).
-         */
         if(operador == TokenType.GREATER || operador == TokenType.GREATER_EQUAL || operador == TokenType.LESS || operador == TokenType.LESS_EQUAL){
-            if (tipoDer != "INT" && tipoIz != "INT" && tipoDer != "DOUBLE" && tipoIz != "DOUBLE") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
-            tipo = "BOOL";
+            if (algunTipoNoEsNumerico) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+            tipo = "Bool";
         }
-
-        /*
-        Propuesta:
-        if(operador == TokenType.GREATER || operador == TokenType.GREATER_EQUAL || operador == TokenType.LESS || operador == TokenType.LESS_EQUAL){
-            // Si el tipo de alguno de los operandos no es INT o DOUBLE, lanzar un error semántico
-            if ((tipoIz != "INT" && tipoIz != "DOUBLE") || (tipoDer != "INT" && tipoDer != "DOUBLE")) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
-            tipo = "BOOL";
-        }
-         */
 
         if(operador == TokenType.EQUAL_EQUAL || operador == TokenType.NOT_EQUAL){
-            if (tipoDer != tipoIz){
-                if((tipoDer == "Int" && tipoIz == "Double") || (tipoDer == "Double" && tipoIz == "Int"))
+            if (!Objects.equals(tipoDer, tipoIz)){
+                if((Objects.equals(tipoDer, "Int") && Objects.equals(tipoIz, "Double"))
+                        || (Objects.equals(tipoDer, "Double") && Objects.equals(tipoIz, "Int")))
                     tipo = "Bool";
                 else{
                     throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
                 }
             }
 
-            if(tipoDer != "String" && tipoDer != "Int" && tipoDer != "Double" && tipoDer != "Bool"){
+            if(!Objects.equals(tipoDer, "Str") && !Objects.equals(tipoDer, "Int")
+                    && !Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Bool")){
                 throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
             }
             tipo = "Bool";
         }
+        
+        if (operador == TokenType.AND || operador == TokenType.OR){
+            if (!Objects.equals(tipoDer, "Bool") || !Objects.equals(tipoIz, "Bool"))
+                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+            tipo = "Bool";
+        }
 
-
+        // ("A" + "B").length()
+        if (encadenado != null) salida += this.encadenado.chequeoDeSentencias(entradaMetodo, st, tipo);
 
         return salida;
+    }
+
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev) throws ErrorSemantico {
+        throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "prohibido encadenar una expresion binaria","");
     }
 
 }

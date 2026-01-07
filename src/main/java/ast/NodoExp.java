@@ -1,9 +1,7 @@
 package ast;
 
-import analizadorLexico.TokenType;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
-import analizadorSemantico.Posicion;
 import analizadorSemantico.SymbolTable;
 
 public abstract class NodoExp extends NodoSentencia {
@@ -31,4 +29,6 @@ public abstract class NodoExp extends NodoSentencia {
     public String getTipo() {
         return tipo;
     }
+
+    public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev) throws ErrorSemantico;
 }
