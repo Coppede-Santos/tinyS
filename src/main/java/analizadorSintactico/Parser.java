@@ -1794,9 +1794,9 @@ public class Parser {
                 return accesoSelf();
         }else{
             if(type==IDOBJETS){
-                String lexemaIdObject = currentToken.getLexema();
+                Token idObject = currentToken;
                 macheo(IDOBJETS);
-                return id_factor(lexemaIdObject);
+                return id_factor(idObject);
             }else{
                 if(type==IDCLASS){
                     return llamada_metodo_estatico();
@@ -2098,9 +2098,9 @@ public class Parser {
     private NodoVar encadenado_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDOBJETS) {
-            String lexemaIdObject = currentToken.getLexema();
+            Token idObject = currentToken;
             macheo(IDOBJETS);
-            return id_factor(lexemaIdObject);
+            return id_factor(idObject);
         }else {
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo", currentToken. getLexema());
         }
@@ -2114,14 +2114,13 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private NodoVar id_factor(String lexema) throws IOException, ErrorTiny{
+    private NodoVar id_factor(Token token) throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT || type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == LEFT_BRACKET || type == RIGHT_BRACKET || type == OR || type == AND || type == EQUAL_EQUAL || type == NOT_EQUAL || type == LESS || type == GREATER || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == MULT || type == SLASH || type == PERCENTAGE || type == DIV ) {
-            Token token = currentToken;
             return accesoVar_prima(token);
         }else {
             if (type == LEFT_PAREN) {
-                NodoLlamadaEncadenado nodoLlamadaEncadenado = new NodoLlamadaEncadenado(lexema, currentToken.getLine(), currentToken.getColumn());
+                NodoLlamadaEncadenado nodoLlamadaEncadenado = new NodoLlamadaEncadenado(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
                 llamada_metodo(nodoLlamadaEncadenado);
                 return nodoLlamadaEncadenado;
             } else {

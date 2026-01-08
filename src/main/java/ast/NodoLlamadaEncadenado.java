@@ -27,10 +27,19 @@ public class NodoLlamadaEncadenado extends NodoVar{
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
         StringBuilder salida = new StringBuilder();
-
-        EntradaClase claseActual = st.getClassActual();
-        EntradaMetodo metodoReferenciado = claseActual.buscarMetodo(lexema);
+        boolean esConstructor = false;
+        EntradaClase claseActual;
+        EntradaMetodo metodoReferenciado;
         EntradaParametro parametroReferenciado;
+
+        if (st.buscarClase(lexema) != null) {
+            esConstructor = true;
+            claseActual = st.buscarClase(lexema);
+            metodoReferenciado  = claseActual.getConstructor();
+        } else {
+            claseActual = st.getClassActual();
+            metodoReferenciado = claseActual.buscarMetodo(lexema);
+        }
 
         if (metodoReferenciado == null) {
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
@@ -48,7 +57,12 @@ public class NodoLlamadaEncadenado extends NodoVar{
 
             salida.append(parametroActual.chequeoDeSentencias(entradaMetodo, st));
 
-            parametroReferenciado = metodoReferenciado.buscarParametro(lexema);
+            parametroReferenciado = metodoReferenciado.buscarParametroPorPosicion(i);
+
+            if (parametroReferenciado == null) {
+                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
+                        "no se encontro el parametro en la posicion " + i + " para el metodo " + lexema, "");
+            }
 
             if (!Objects.equals(parametroActual.tipo, parametroReferenciado.getTipo().getLexema())) {
                 throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
@@ -62,7 +76,17 @@ public class NodoLlamadaEncadenado extends NodoVar{
 
         }
 
-        this.tipo = metodoReferenciado.getTipoRetorno().getLexema();
+        EntradaClase tipoRetorno = metodoReferenciado.getTipoRetorno();
+
+        if (tipoRetorno == null) {
+            if (esConstructor) {
+                this.tipo = claseActual.getLexema();
+            } else {
+                this.tipo = "nil";
+            }
+        } else {
+            this.tipo = tipoRetorno.getLexema();
+        }
 
         if (encadenado != null){
             salida.append(this.encadenado.chequeoDeSentencias(
@@ -70,6 +94,8 @@ public class NodoLlamadaEncadenado extends NodoVar{
                     st,
                     this.tipo
             ));
+
+            this.tipo = encadenado.getTipo();
         }
 
         return salida.toString();
@@ -88,6 +114,13 @@ public class NodoLlamadaEncadenado extends NodoVar{
                     "el metodo " + lexema + " no existe en la clase " + claseActual.getLexema(), "");
         }
 
+        if (esEstatico) {
+            if (!metodoReferenciado.esEstatico()) {
+                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
+                        "no se puede llamar de forma estatica al metodo no estatico " + lexema, "");
+            }
+        }
+
         if (parametros.size() != metodoReferenciado.getCantidadParametros()) {
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
                     "la cantidad de parametros en la llamada al metodo " + lexema + " no coincide con la cantidad esperada", "");
@@ -99,7 +132,12 @@ public class NodoLlamadaEncadenado extends NodoVar{
 
             salida.append(parametroActual.chequeoDeSentencias(entradaMetodo, st));
 
-            parametroReferenciado = metodoReferenciado.buscarParametro(lexema);
+            parametroReferenciado = metodoReferenciado.buscarParametroPorPosicion(i);
+
+            if (parametroReferenciado == null) {
+                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
+                        "no se encontro el parametro en la posicion " + i + " para el metodo " + lexema, "");
+            }
 
             if (!Objects.equals(parametroActual.tipo, parametroReferenciado.getTipo().getLexema())) {
                 throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
@@ -113,7 +151,13 @@ public class NodoLlamadaEncadenado extends NodoVar{
 
         }
 
-        this.tipo = metodoReferenciado.getTipoRetorno().getLexema();
+        EntradaClase tipoRetorno = metodoReferenciado.getTipoRetorno();
+
+        if (tipoRetorno == null) {
+            this.tipo = "nil";
+        } else {
+            this.tipo = tipoRetorno.getLexema();
+        }
 
         if (encadenado != null){
             salida.append(this.encadenado.chequeoDeSentencias(
@@ -121,6 +165,7 @@ public class NodoLlamadaEncadenado extends NodoVar{
                     st,
                     this.tipo
             ));
+            this.tipo = encadenado.getTipo();
         }
 
         return salida.toString();

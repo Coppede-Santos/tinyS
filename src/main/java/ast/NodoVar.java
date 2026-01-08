@@ -6,7 +6,7 @@ import analizadorSemantico.Errores.ErrorSemantico;
 
 import java.util.Objects;
 
-public  class NodoVar extends NodoOperando{
+public class NodoVar extends NodoOperando {
     String lexema;
     Boolean esEstatico = false;
 
@@ -15,7 +15,7 @@ public  class NodoVar extends NodoOperando{
         this.lexema = lexema;
     }
 
-    public void setEsEstatico(Boolean esEstatico){
+    public void setEsEstatico(Boolean esEstatico) {
         this.esEstatico = esEstatico;
 
     }
@@ -24,35 +24,41 @@ public  class NodoVar extends NodoOperando{
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
         String salida = "";
 
+        EntradaClase claseReferenciada;
+
         EntradaVariables variable = entradaMetodo.buscarVariableLocal(lexema);
         if (variable == null) {
             variable = entradaMetodo.buscarParametro(lexema);
         }
 
-        if (variable == null) {
-            variable = st.getClassActual().buscarAtributo(lexema);
+        if (entradaMetodo != st.getStartMethod() && variable == null) {
+            claseReferenciada = st.getClassActual();
+            if (claseReferenciada != null) {
+                variable = claseReferenciada.buscarAtributo(lexema);
+            }
         }
 
-        if (variable ==  null) {
-            if  (esEstatico) {
+        if (variable == null) {
+            if (esEstatico) {
                 EntradaClase claseActual = st.buscarClase(lexema);
                 if (claseActual == null) {
                     throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + lexema + " no existe", "");
                 }
                 this.tipo = claseActual.getLexema();
-            }else {
+            } else {
                 throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la variable " + lexema + " no existe en el metodo " + entradaMetodo.getLexema(), "");
             }
         } else {
             this.tipo = variable.getTipo().getLexema();
         }
 
-        if (encadenado != null){
+        if (encadenado != null) {
             salida += this.encadenado.chequeoDeSentencias(
                     entradaMetodo,
                     st,
                     this.tipo
             );
+            this.tipo = encadenado.getTipo();
         }
 
         return salida;
@@ -64,22 +70,23 @@ public  class NodoVar extends NodoOperando{
 
         EntradaClase entradaClase = st.buscarClase(tipoEncadenadoPrev);
         if (entradaClase == null) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + tipoEncadenadoPrev + " no existe","");
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + tipoEncadenadoPrev + " no existe", "");
         }
 
         EntradaAtributos atributo = entradaClase.buscarAtributo(lexema);
         if (atributo == null) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " no existe en la clase " + tipoEncadenadoPrev,"");
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " no existe en la clase " + tipoEncadenadoPrev, "");
         }
 
         this.tipo = atributo.getTipo().getLexema();
 
-        if (encadenado != null){
+        if (encadenado != null) {
             salida += this.encadenado.chequeoDeSentencias(
                     entradaMetodo,
                     st,
                     this.tipo
             );
+            this.tipo = encadenado.getTipo();
         }
 
         return salida;

@@ -103,7 +103,10 @@ public class NodoExpBin extends NodoExpUn{
         }
 
         // ("A" + "B").length()
-        if (encadenado != null) salida += this.encadenado.chequeoDeSentencias(entradaMetodo, st, tipo);
+        if (encadenado != null) {
+            salida += this.encadenado.chequeoDeSentencias(entradaMetodo, st, tipo);
+            this.tipo = encadenado.getTipo();
+        }
 
         return salida;
     }

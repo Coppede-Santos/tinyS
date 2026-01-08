@@ -37,6 +37,7 @@ public class NodoConstructorArray extends NodoOperando{
                     st,
                     this.tipo
             );
+            this.tipo = encadenado.getTipo();
         }
 
         // Array Int

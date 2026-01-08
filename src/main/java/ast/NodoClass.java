@@ -35,12 +35,13 @@ public class NodoClass {
 
         for (String metodoLex : metodos.keySet()){
 
-            do {
-               entradaMetodo = entradaClase.getMetodo(metodoLex);
-               entradaClase  = entradaClase.getSuperClase();
-            } while (entradaMetodo == null && entradaClase.getSuperClase() != null);
+            if (entradaClase.getConstructor().getLexema().equals(metodoLex)) {
+                entradaMetodo = entradaClase.getConstructor();
+            } else {
+                entradaMetodo = entradaClase.getMetodo(metodoLex);
 
-            if (entradaMetodo == null) throw new ErrorSemantico(0,0,"no tiene un metodo definido","");
+                if (entradaMetodo == null) throw new ErrorSemantico(0,0,"no tiene un metodo definido","");
+            }
 
             bloque = metodos.get(metodoLex);
             salida += bloque.chequeoDeSentencias(entradaMetodo, st);

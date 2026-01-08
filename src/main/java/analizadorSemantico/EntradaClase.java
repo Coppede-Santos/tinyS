@@ -66,6 +66,9 @@ public class EntradaClase extends Entrada {
         return (constructor != null);
     }
 
+    public EntradaMetodo getConstructor() {
+        return constructor;
+    }
 
     public void setConstructor(EntradaMetodo constructor) {
         this.constructor = constructor;

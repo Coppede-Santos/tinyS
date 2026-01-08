@@ -1,10 +1,6 @@
 package analizadorSemantico;
 
-import analizadorSemantico.Errores.ErrorSemantico;
-
-import java.lang.reflect.Array;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class EntradaMetodo extends Entrada{
     EntradaClase tipoRetorno = null;
@@ -35,6 +31,15 @@ public class EntradaMetodo extends Entrada{
 
     public EntradaParametro buscarParametro(String nombreParametro) {
         return parametros.get(nombreParametro);
+    }
+
+    public EntradaParametro buscarParametroPorPosicion(int posicionParametro) {
+        for (EntradaParametro parametro : parametros.values()) {
+            if (parametro.posicionParametro == posicionParametro) {
+                return parametro;
+            }
+        }
+        return null;
     }
 
     public boolean insertarParametro(String nombreParametro, EntradaParametro entradaParametro) {
@@ -71,7 +76,7 @@ public class EntradaMetodo extends Entrada{
         this.subtipoRetorno = subtipoRetorno;
     }
 
-    public boolean isEsEstatico() {
+    public boolean esEstatico() {
         return esEstatico;
     }
 

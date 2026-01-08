@@ -29,6 +29,7 @@ public class NodoString extends NodoOperando{
                 st,
                 this.tipo
             );
+            this.tipo = encadenado.getTipo();
         }
 
         return salida;

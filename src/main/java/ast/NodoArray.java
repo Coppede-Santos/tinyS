@@ -50,6 +50,7 @@ public class NodoArray extends NodoVar{
                     st,
                     this.tipo
             );
+            this.tipo = encadenado.getTipo();
         }
 
         return salida;
@@ -91,6 +92,7 @@ public class NodoArray extends NodoVar{
                 st,
                 this.tipo
             );
+            this.tipo = encadenado.getTipo();
         }
 
         return salida;
