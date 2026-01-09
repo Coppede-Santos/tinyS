@@ -1,7 +1,6 @@
 package ast;
 
 import analizadorSemantico.EntradaMetodo;
-import analizadorSemantico.EntradaParametro;
 import analizadorSemantico.EntradaVariables;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
@@ -20,12 +19,12 @@ public class NodoAsignacion extends NodoSentencia{
 
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
         String salida = "";
         if (izquierda == null || derecha == null) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"aaaaaa","");
 
-        salida += izquierda.chequeoDeSentencias(entradaMetodo,st);
-        salida += derecha.chequeoDeSentencias(entradaMetodo,st);
+        salida += izquierda.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += derecha.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
 
         if (!Objects.equals(izquierda.getTipo(), derecha.getTipo())) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"ooooooo","");
 

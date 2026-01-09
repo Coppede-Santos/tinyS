@@ -7,6 +7,8 @@ import analizadorSemantico.SymbolTable;
 
 import java.util.HashMap;
 
+import static ast.AstJsonBuilder.*;
+
 public class NodoClass {
     String nombre;
     HashMap<String,NodoBloque> metodos = new HashMap<>();
@@ -22,16 +24,19 @@ public class NodoClass {
 
     public String chequeoDeSentencias(SymbolTable st) throws ErrorSemantico{
 
+        EntradaMetodo entradaMetodo;
+        NodoBloque bloque;
         EntradaClase entradaClase = st.buscarClase(nombre);
+        int profundidad = 1;
 
         if(entradaClase == null) throw new ErrorSemantico(0,0,"no tiene una clase definida","");
 
         st.setClassActual(entradaClase);
 
-        String salida = "";
+        String salida = tabs(2) + "{\n";
 
-        EntradaMetodo entradaMetodo;
-        NodoBloque bloque;
+        salida += tabs(3) + claveJson("nombre") + valorJson(nombre) + ",\n";
+        salida += tabs(3) + claveJson("metodos") + "[\n";
 
         for (String metodoLex : metodos.keySet()){
 
@@ -44,9 +49,13 @@ public class NodoClass {
             }
 
             bloque = metodos.get(metodoLex);
-            salida += bloque.chequeoDeSentencias(entradaMetodo, st);
+            salida += bloque.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
 
         }
+
+        salida += tabs(3) + "]\n";
+
+        salida += tabs(2) + "}\n";
 
         return salida;
     }

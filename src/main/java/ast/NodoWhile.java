@@ -15,19 +15,19 @@ public class NodoWhile extends NodoSentencia {
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
         String salida = "";
 
         if(condicion == null || sentencia == null) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"","");
 
-        condicion.chequeoDeSentencias(entradaMetodo,st);
+        condicion.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
 
         if (!condicion.tipo.equals("Bool")){
             throw new ErrorSemantico(condicion.posicion.getLinea(), condicion.posicion.getColumna(),
                     "La condicion de un while debe ser de tipo Bool","");
         }
 
-        sentencia.chequeoDeSentencias(entradaMetodo,st);
+        sentencia.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
 
         return salida;
     }

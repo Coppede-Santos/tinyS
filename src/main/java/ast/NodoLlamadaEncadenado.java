@@ -9,6 +9,8 @@ import analizadorSemantico.SymbolTable;
 import java.util.LinkedList;
 import java.util.Objects;
 
+import static ast.AstJsonBuilder.*;
+
 public class NodoLlamadaEncadenado extends NodoVar{
 
     LinkedList<NodoExp> parametros = new LinkedList<>();
@@ -25,12 +27,16 @@ public class NodoLlamadaEncadenado extends NodoVar{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
-        StringBuilder salida = new StringBuilder();
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
+        String salida = "";
         boolean esConstructor = false;
         EntradaClase claseActual;
         EntradaMetodo metodoReferenciado;
         EntradaParametro parametroReferenciado;
+
+        salida += tabs(profundidad) + "{\n";
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoLlamadaEncadenado") + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
 
         if (st.buscarClase(lexema) != null) {
             esConstructor = true;
@@ -51,11 +57,12 @@ public class NodoLlamadaEncadenado extends NodoVar{
                     "la cantidad de parametros en la llamada al metodo " + lexema + " no coincide con la cantidad esperada", "");
         }
 
+        salida += tabs(profundidad + 1) + claveJson("parametros") + "[\n";
         for (int i = 0; i < parametros.size(); i++) {
 
             NodoExp parametroActual = parametros.get(i);
 
-            salida.append(parametroActual.chequeoDeSentencias(entradaMetodo, st));
+            salida += parametroActual.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
 
             parametroReferenciado = metodoReferenciado.buscarParametroPorPosicion(i);
 
@@ -75,6 +82,7 @@ public class NodoLlamadaEncadenado extends NodoVar{
             }
 
         }
+        salida += tabs(profundidad + 1) + "],\n";
 
         EntradaClase tipoRetorno = metodoReferenciado.getTipoRetorno();
 
@@ -88,22 +96,40 @@ public class NodoLlamadaEncadenado extends NodoVar{
             this.tipo = tipoRetorno.getLexema();
         }
 
+        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + "\n";
+        salida += tabs(profundidad + 1) + claveJson("esEstatico") + valorJson(String.valueOf(false)) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("posicion") + "{\n";
+        salida += tabs(profundidad + 2) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
+        salida += tabs(profundidad + 2) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
+        salida += tabs(profundidad + 1) + "}";
+
         if (encadenado != null){
-            salida.append(this.encadenado.chequeoDeSentencias(
+            salida += ",\n";
+            salida += tabs(profundidad + 1) + claveJson("encadenado") + "\n";
+            salida += this.encadenado.chequeoDeSentencias(
                     entradaMetodo,
                     st,
-                    this.tipo
-            ));
+                    this.tipo,
+                    profundidad + 1
+            );
 
             this.tipo = encadenado.getTipo();
+        } else {
+            salida += "\n";
         }
 
-        return salida.toString();
+        salida += "\n" + tabs(profundidad) + "}";
+        
+        return salida;
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev) throws ErrorSemantico {
-        StringBuilder salida = new StringBuilder();
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
+        String salida = "";
+
+        salida += tabs(profundidad) + "{\n";
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoLlamadaEncadenado") + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
 
         EntradaClase claseActual = st.buscarClase(tipoEncadenadoPrev);
         EntradaMetodo metodoReferenciado = claseActual.buscarMetodo(lexema);
@@ -126,11 +152,13 @@ public class NodoLlamadaEncadenado extends NodoVar{
                     "la cantidad de parametros en la llamada al metodo " + lexema + " no coincide con la cantidad esperada", "");
         }
 
+        salida += tabs(profundidad + 1) + claveJson("parametros") + "[\n";
+
         for (int i = 0; i < parametros.size(); i++) {
 
             NodoExp parametroActual = parametros.get(i);
 
-            salida.append(parametroActual.chequeoDeSentencias(entradaMetodo, st));
+            salida += parametroActual.chequeoDeSentencias(entradaMetodo, st, profundidad + 2);
 
             parametroReferenciado = metodoReferenciado.buscarParametroPorPosicion(i);
 
@@ -151,6 +179,8 @@ public class NodoLlamadaEncadenado extends NodoVar{
 
         }
 
+        salida += tabs(profundidad + 1) + "],\n";
+
         EntradaClase tipoRetorno = metodoReferenciado.getTipoRetorno();
 
         if (tipoRetorno == null) {
@@ -159,14 +189,28 @@ public class NodoLlamadaEncadenado extends NodoVar{
             this.tipo = tipoRetorno.getLexema();
         }
 
+        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + "\n";
+        salida += tabs(profundidad + 1) + claveJson("esEstatico") + valorJson(String.valueOf(esEstatico)) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("posicion") + "{\n";
+        salida += tabs(profundidad + 2) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
+        salida += tabs(profundidad + 2) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
+        salida += tabs(profundidad + 1) + "}";
+
         if (encadenado != null){
-            salida.append(this.encadenado.chequeoDeSentencias(
+            salida += ",\n";
+            salida += tabs(profundidad + 1) + claveJson("encadenado") + "\n";
+            salida += this.encadenado.chequeoDeSentencias(
                     entradaMetodo,
                     st,
-                    this.tipo
-            ));
+                    this.tipo,
+                    profundidad + 1
+            );
             this.tipo = encadenado.getTipo();
+        } else {
+            salida += "\n";
         }
+
+        salida += "\n" + tabs(profundidad) + "}";
 
         return salida.toString();
     }

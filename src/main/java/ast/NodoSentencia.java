@@ -13,6 +13,6 @@ public abstract class NodoSentencia {
         this.posicion = new Posicion(linea, columna);
     }
 
-    public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico;
+    public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico;
 
 }

@@ -17,14 +17,14 @@ public class NodoExpUn extends NodoExp{
 
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
         String salida = "";
 
 
         if (ladoDerecho == null || operador == null)
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "", "");
 
-        ladoDerecho.chequeoDeSentencias(entradaMetodo, st);
+        ladoDerecho.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
 
         tipo = ladoDerecho.getTipo();
 
@@ -49,7 +49,7 @@ public class NodoExpUn extends NodoExp{
         return salida;
     }
 
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
         throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "prohibido encadenar una expresion binaria","");
     }
 }

@@ -1,6 +1,5 @@
 package ast;
 
-import analizadorSemantico.EntradaClase;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 
@@ -23,17 +22,19 @@ public class AST {
     }
 
     public String chequeoDeSentencias(SymbolTable st) throws ErrorSemantico{
-
+        int profundidad = 1;
         String salida = "";
-
+        salida += "{\n";
+        salida += "\t\"clases\": [\n";
 
         for (NodoClass clase : clases.values()){
             salida += clase.chequeoDeSentencias(st);
         }
 
-        salida += start.chequeoDeSentencias(st.getStartMethod(), st);
-        return salida;
+        salida += start.chequeoDeSentencias(st.getStartMethod(), st, profundidad + 1);
+        salida += "}\n";
 
+        return salida;
     }
 
 }

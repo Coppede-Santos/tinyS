@@ -18,7 +18,7 @@ public class NodoArray extends NodoVar{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
         String salida = "";
 
         EntradaVariables variable = entradaMetodo.buscarVariableLocal(lexema);
@@ -38,7 +38,7 @@ public class NodoArray extends NodoVar{
 
         this.tipo = subtipo.getLexema();
 
-        salida += indice.chequeoDeSentencias(entradaMetodo, st);
+        salida += indice.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
 
         if (!Objects.equals(indice.getTipo(), "Int")) {
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el indice de un array debe ser de tipo Int","");
@@ -48,7 +48,8 @@ public class NodoArray extends NodoVar{
             salida += this.encadenado.chequeoDeSentencias(
                     entradaMetodo,
                     st,
-                    this.tipo
+                    this.tipo,
+                    profundidad + 1
             );
             this.tipo = encadenado.getTipo();
         }
@@ -57,7 +58,7 @@ public class NodoArray extends NodoVar{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
         String salida = "";
 
         // Fibonacci.a[2]
@@ -80,7 +81,7 @@ public class NodoArray extends NodoVar{
 
         this.tipo = subtipo.getLexema();
 
-        salida += indice.chequeoDeSentencias(entradaMetodo, st);
+        salida += indice.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
 
         if (!Objects.equals(indice.getTipo(), "Int")) {
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el indice de un array debe ser de tipo Int","");
@@ -90,7 +91,8 @@ public class NodoArray extends NodoVar{
             salida += this.encadenado.chequeoDeSentencias(
                 entradaMetodo,
                 st,
-                this.tipo
+                this.tipo,
+                profundidad + 1
             );
             this.tipo = encadenado.getTipo();
         }

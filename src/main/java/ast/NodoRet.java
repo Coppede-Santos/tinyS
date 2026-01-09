@@ -18,12 +18,12 @@ public class NodoRet extends NodoSentencia{
 
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
         String salida = "";
 
         if (exp == null) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"","");
 
-        exp.chequeoDeSentencias(entradaMetodo,st);
+        exp.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
 
         if(exp.getTipo() == "nil") exp.setTipo(null);
 

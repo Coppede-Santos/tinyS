@@ -15,14 +15,14 @@ public class NodoExpBin extends NodoExpUn{
         this.ladoIzquierdo = ladoIzquierdo;
     }
 
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico{
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico{
         String salida = "";
 
         if (ladoDerecho == null || operador == null || ladoIzquierdo == null)
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "", "");
 
-        ladoDerecho.chequeoDeSentencias(entradaMetodo, st);
-        ladoIzquierdo.chequeoDeSentencias(entradaMetodo, st);
+        ladoDerecho.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
+        ladoIzquierdo.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
 
 
         if (ladoDerecho.getTipo() == null || ladoIzquierdo.getTipo() == null) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "", "");
@@ -104,14 +104,14 @@ public class NodoExpBin extends NodoExpUn{
 
         // ("A" + "B").length()
         if (encadenado != null) {
-            salida += this.encadenado.chequeoDeSentencias(entradaMetodo, st, tipo);
+            salida += this.encadenado.chequeoDeSentencias(entradaMetodo, st, tipo, profundidad + 1);
             this.tipo = encadenado.getTipo();
         }
 
         return salida;
     }
 
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
         throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "prohibido encadenar una expresion binaria","");
     }
 

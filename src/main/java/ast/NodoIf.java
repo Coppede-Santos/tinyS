@@ -17,19 +17,19 @@ public class NodoIf extends NodoSentencia{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
         String salida = "";
         if (condicion == null || sentenciaIf == null) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), ",","");
 
-        salida += condicion.chequeoDeSentencias(entradaMetodo,st);
+        salida += condicion.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
 
         if (!condicion.tipo.equals("Bool")){
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "La condicion de un if debe ser de tipo Bool","");
         }
 
-        salida += sentenciaIf.chequeoDeSentencias(entradaMetodo,st);
+        salida += sentenciaIf.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
 
-        if (sentenciaElse != null) salida += sentenciaElse.chequeoDeSentencias(entradaMetodo,st);
+        if (sentenciaElse != null) salida += sentenciaElse.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
 
         return salida;
     }
