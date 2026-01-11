@@ -22,19 +22,19 @@ public class NodoBloque extends NodoSentencia{
 
 
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico{
-        String salida = tabs(4) + "{\n";
-        salida += tabs(5) + claveJson("nombre") + valorJson(entradaMetodo.getLexema()) + ",\n";
-        salida += tabs(5) + claveJson("posicion") + "{\n";
-        salida += tabs(6) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
-        salida += tabs(6) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
-        salida += tabs(5) + "},\n";
-        salida += tabs(5) + claveJson("sentencias") + "[\n";
-
+        String salida = "";
+        salida +=  "[\n";
         for (NodoSentencia nodoSentencia : sentencias){
-            salida += nodoSentencia.chequeoDeSentencias(entradaMetodo, st, 6);
-            salida += ",\n";
+            salida += tabs(profundidad + 1) + "{\n";
+            salida += nodoSentencia.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
+            if (nodoSentencia != sentencias.getLast()){
+                salida += tabs(profundidad + 1) + "},\n";
+            } else {
+                salida += tabs(profundidad + 1) + "}\n";
+            }
         }
-        salida += tabs(4) + "]\n";
+        salida += tabs(profundidad) + "],\n";
+
 
         return salida;
     }

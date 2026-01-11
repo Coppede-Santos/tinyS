@@ -33,7 +33,7 @@ public class NodoClass {
 
         st.setClassActual(entradaClase);
 
-        String salida = tabs(2) + "{\n";
+        String salida = "";
 
         salida += tabs(3) + claveJson("nombre") + valorJson(nombre) + ",\n";
         salida += tabs(3) + claveJson("metodos") + "[\n";
@@ -49,13 +49,23 @@ public class NodoClass {
             }
 
             bloque = metodos.get(metodoLex);
-            salida += bloque.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
+            salida += tabs(4) + "{\n";
+            salida += tabs(5) + claveJson("nombre") + valorJson(entradaMetodo.getLexema()) + ",\n";
+            // salida += tabs(5) + claveJson("posicion") + "{\n";
+            // salida += tabs(6) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
+            // salida += tabs(6) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
+            // salida += tabs(5) + "},\n";
+            salida += tabs(5) + claveJson("sentencias");
+            salida += bloque.chequeoDeSentencias(entradaMetodo, st, 5);
+            if (metodoLex != metodos.keySet().toArray()[metodos.size()-1]){
+                salida += tabs(4) + "},\n";
+            } else {
+                salida += tabs(4) + "}\n";
+            }
 
         }
 
         salida += tabs(3) + "]\n";
-
-        salida += tabs(2) + "}\n";
 
         return salida;
     }

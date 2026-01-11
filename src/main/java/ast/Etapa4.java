@@ -111,6 +111,8 @@ public class Etapa4 {
 
         String nombreJsonSalida = rutaArchivoEntrada.replace(".s", ".ts.json");
 
+        String nombreAstSalida = rutaArchivoEntrada.replace(".s", ".ast.json");
+
          // ────────────── Escritura de resultados JSON ──────────────
 
         if (!tablaSimbolos.isEmpty()) {
@@ -118,6 +120,14 @@ public class Etapa4 {
                 writer.write(tablaSimbolos);
             } catch (IOException e) {
                 System.err.println("Error al escribir en el archivo de salida '" + nombreJsonSalida + "': " + e.getMessage());
+            }
+        }
+
+        if(!astJson.isEmpty()) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreAstSalida))) {
+                writer.write(astJson);
+            } catch (IOException e) {
+                System.err.println("Error al escribir en el archivo de salida '" + nombreAstSalida + "': " + e.getMessage());
             }
         }
 

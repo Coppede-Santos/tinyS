@@ -7,6 +7,8 @@ import analizadorSemantico.SymbolTable;
 
 import java.util.Objects;
 
+import static ast.AstJsonBuilder.*;
+
 public class NodoExpBin extends NodoExpUn{
     NodoExp ladoIzquierdo;
 
@@ -21,9 +23,17 @@ public class NodoExpBin extends NodoExpUn{
         if (ladoDerecho == null || operador == null || ladoIzquierdo == null)
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "", "");
 
-        ladoDerecho.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
-        ladoIzquierdo.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoExpBin") + ",\n";
 
+        salida += tabs(profundidad + 1) + claveJson("ladoIzquierdo") + "{\n";
+        salida += ladoIzquierdo.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
+        salida += tabs(profundidad + 1) + "},\n";
+
+        salida += tabs(profundidad + 1) + claveJson("operador") + valorJson(operador.toString()) + ",\n";
+
+        salida += tabs(profundidad + 1) + claveJson("ladoDerecho") + "{\n";
+        salida += ladoDerecho.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
+        salida += tabs(profundidad + 1) + "},\n";
 
         if (ladoDerecho.getTipo() == null || ladoIzquierdo.getTipo() == null) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "", "");
 
@@ -107,6 +117,8 @@ public class NodoExpBin extends NodoExpUn{
             salida += this.encadenado.chequeoDeSentencias(entradaMetodo, st, tipo, profundidad + 1);
             this.tipo = encadenado.getTipo();
         }
+
+        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(tipo) + "\n";
 
         return salida;
     }

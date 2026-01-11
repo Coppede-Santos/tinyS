@@ -5,6 +5,8 @@ import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 
+import static ast.AstJsonBuilder.*;
+
 public class NodoExpUn extends NodoExp{
     NodoExp ladoDerecho;
     TokenType operador;
@@ -24,7 +26,11 @@ public class NodoExpUn extends NodoExp{
         if (ladoDerecho == null || operador == null)
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "", "");
 
-        ladoDerecho.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoExpUn") + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("operador") + valorJson(operador.toString()) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("ladoDerecho") + "{\n";
+        salida += ladoDerecho.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
+        salida += tabs(profundidad + 1) + "},\n";
 
         tipo = ladoDerecho.getTipo();
 
@@ -45,6 +51,7 @@ public class NodoExpUn extends NodoExp{
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
         }
 
+        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(tipo) + "\n";
 
         return salida;
     }

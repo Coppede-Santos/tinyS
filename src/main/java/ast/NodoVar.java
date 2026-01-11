@@ -21,7 +21,7 @@ public class NodoVar extends NodoOperando {
 
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
-        String salida = tabs(profundidad) + "{\n";
+        String salida = "";
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoVariable") + ",\n";
         salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
@@ -57,7 +57,7 @@ public class NodoVar extends NodoOperando {
             this.tipo = variable.getTipo().getLexema();
         }
 
-        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + "\n";
+        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + ",\n";
         salida += tabs(profundidad + 1) + claveJson("posicion") + "{\n";
         salida += tabs(profundidad + 2) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
         salida += tabs(profundidad + 2) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
@@ -65,25 +65,25 @@ public class NodoVar extends NodoOperando {
 
         if (encadenado != null) {
             salida += ",\n" + tabs(profundidad + 1) + claveJson("encadenado") + "\n";
+            salida += tabs(profundidad + 2) + "{\n";
             salida += this.encadenado.chequeoDeSentencias(
                     entradaMetodo,
                     st,
                     this.tipo,
                     profundidad + 2
             );
+            salida += tabs(profundidad + 2) + "}\n";
             this.tipo = encadenado.getTipo();
         } else {
             salida += "\n";
         }
-
-        salida += tabs(profundidad) + "}\n";
 
         return salida;
     }
 
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
-        String salida = tabs(profundidad) + "{\n";
+        String salida = "";
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoVariable") + ",\n";
         salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
@@ -100,7 +100,7 @@ public class NodoVar extends NodoOperando {
 
         this.tipo = atributo.getTipo().getLexema();
 
-        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + "\n";
+        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + ",\n";
         salida += tabs(profundidad + 1) + claveJson("posicion") + "{\n";
         salida += tabs(profundidad + 2) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
         salida += tabs(profundidad + 2) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
@@ -110,18 +110,18 @@ public class NodoVar extends NodoOperando {
         if (encadenado != null) {
             salida += ",\n";
             salida += tabs(profundidad + 1) + claveJson("encadenado") + "\n";
+            salida += tabs(profundidad + 2) + "{\n";
             salida += this.encadenado.chequeoDeSentencias(
                     entradaMetodo,
                     st,
                     this.tipo,
                     profundidad + 2
             );
+            salida += tabs(profundidad + 2) + "}\n";
             this.tipo = encadenado.getTipo();
         } else {
             salida += "\n";
         }
-
-        salida += tabs(profundidad) + "}\n";
 
         return salida;
     }

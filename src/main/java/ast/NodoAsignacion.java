@@ -7,6 +7,8 @@ import analizadorSemantico.SymbolTable;
 
 import java.util.Objects;
 
+import static ast.AstJsonBuilder.*;
+
 public class NodoAsignacion extends NodoSentencia{
     NodoVar izquierda;
     NodoExp derecha;
@@ -17,14 +19,20 @@ public class NodoAsignacion extends NodoSentencia{
         this.derecha = derecha;
     }
 
-
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
         String salida = "";
         if (izquierda == null || derecha == null) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"aaaaaa","");
 
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoAsignacion") + ",\n";
+
+        salida += tabs(profundidad + 1) + claveJson("izquierda") + "{\n";
         salida += izquierda.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += tabs(profundidad + 1) + "},\n";
+
+        salida += tabs(profundidad + 1) + claveJson("derecha") + "{\n";
         salida += derecha.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += tabs(profundidad + 1) + "}\n";
 
         if (!Objects.equals(izquierda.getTipo(), derecha.getTipo())) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"ooooooo","");
 

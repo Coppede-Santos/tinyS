@@ -4,6 +4,8 @@ import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 
+import static ast.AstJsonBuilder.*;
+
 public class NodoWhile extends NodoSentencia {
     NodoExp condicion;
     NodoSentencia sentencia;
@@ -20,14 +22,18 @@ public class NodoWhile extends NodoSentencia {
 
         if(condicion == null || sentencia == null) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"","");
 
-        condicion.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoWhile") + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("condicion") + "{\n";
+        salida += condicion.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += tabs(profundidad + 1) + "},\n";
 
         if (!condicion.tipo.equals("Bool")){
             throw new ErrorSemantico(condicion.posicion.getLinea(), condicion.posicion.getColumna(),
                     "La condicion de un while debe ser de tipo Bool","");
         }
 
-        sentencia.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += tabs(profundidad + 1) + claveJson("sentencia");
+        salida += sentencia.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
 
         return salida;
     }

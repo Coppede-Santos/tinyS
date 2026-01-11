@@ -4,6 +4,8 @@ import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 
+import static ast.AstJsonBuilder.*;
+
 public class NodoRet extends NodoSentencia{
     NodoExp exp;
 
@@ -23,7 +25,10 @@ public class NodoRet extends NodoSentencia{
 
         if (exp == null) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"","");
 
-        exp.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoRet") + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("expresion") + "{\n";
+        salida += exp.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += tabs(profundidad + 1) + "}\n";
 
         if(exp.getTipo() == "nil") exp.setTipo(null);
 
