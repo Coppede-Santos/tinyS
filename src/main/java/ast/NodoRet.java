@@ -32,7 +32,7 @@ public class NodoRet extends NodoSentencia{
 
         if(exp.getTipo() == "nil") exp.setTipo(null);
 
-        if(exp.getTipo() != entradaMetodo.getTipoRetorno().getLexema()) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+        if(exp.getTipo() != entradaMetodo.getTipoRetorno().getLexema()) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "El tipo de retorno ("+exp.getTipo()+") no coincide con el tipo de retorno del metodo ("+entradaMetodo.getTipoRetorno().getLexema()+")","");
 
         return salida;
     }

@@ -32,8 +32,8 @@ public class NodoWhile extends NodoSentencia {
                     "La condicion de un while debe ser de tipo Bool","");
         }
 
-        salida += tabs(profundidad + 1) + claveJson("sentencia");
-        salida += sentencia.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += tabs(profundidad + 1) + claveJson("sentencia") + "\n";
+        salida += sentencia.chequeoDeSentencias(entradaMetodo,st, profundidad + 2);
 
         return salida;
     }

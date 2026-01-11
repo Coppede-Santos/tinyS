@@ -49,8 +49,8 @@ public class AST {
         salida += "\t\t\t" + claveJson("columna") + st.getStartMethod().getColumna() + "\n";
         salida += "\t\t},\n";
 
-        salida += "\t\t" + claveJson("sentencias");
-        salida += start.chequeoDeSentencias(st.getStartMethod(), st, profundidad + 1);
+        salida += "\t\t" + claveJson("sentencias") + "\n";
+        salida += start.chequeoDeSentencias(st.getStartMethod(), st, profundidad + 2);
 
         salida += "\t}\n";
 

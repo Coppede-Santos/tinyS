@@ -23,10 +23,18 @@ public class NodoBloque extends NodoSentencia{
 
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico{
         String salida = "";
-        salida +=  "[\n";
+        salida += tabs(profundidad) + "[\n";
         for (NodoSentencia nodoSentencia : sentencias){
             salida += tabs(profundidad + 1) + "{\n";
-            salida += nodoSentencia.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
+            // Si el tipo es NodoBloque, agregamos info
+            if (nodoSentencia instanceof NodoBloque){
+                salida += tabs(profundidad + 2) + claveJson("tipoNodo") + valorJson("NodoBloque") + ",\n";
+                salida += tabs(profundidad + 2) + claveJson("sentencias") + "\n";
+                salida += nodoSentencia.chequeoDeSentencias(entradaMetodo, st, profundidad + 3);
+            } else {
+                salida += nodoSentencia.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
+            }
+
             if (nodoSentencia != sentencias.getLast()){
                 salida += tabs(profundidad + 1) + "},\n";
             } else {

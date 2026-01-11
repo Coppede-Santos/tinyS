@@ -55,8 +55,8 @@ public class NodoClass {
             // salida += tabs(6) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
             // salida += tabs(6) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
             // salida += tabs(5) + "},\n";
-            salida += tabs(5) + claveJson("sentencias");
-            salida += bloque.chequeoDeSentencias(entradaMetodo, st, 5);
+            salida += tabs(5) + claveJson("sentencias") + "\n";
+            salida += bloque.chequeoDeSentencias(entradaMetodo, st, 6);
             if (metodoLex != metodos.keySet().toArray()[metodos.size()-1]){
                 salida += tabs(4) + "},\n";
             } else {

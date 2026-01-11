@@ -34,7 +34,7 @@ public class NodoAsignacion extends NodoSentencia{
         salida += derecha.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
         salida += tabs(profundidad + 1) + "}\n";
 
-        if (!Objects.equals(izquierda.getTipo(), derecha.getTipo())) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"ooooooo","");
+        if (!Objects.equals(izquierda.getTipo(), derecha.getTipo()) && derecha.getTipo().isEmpty()) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"ooooooo","");
 
         // Array Int a;
         // a = new Int[5];
@@ -55,7 +55,7 @@ public class NodoAsignacion extends NodoSentencia{
 
             String subtipoIzq = variableIzquierda.getSubtipo().getLexema();
 
-            if (subtipoIzq != ((NodoConstructorArray) derecha).subtipo) {
+            if (!Objects.equals(subtipoIzq, ((NodoConstructorArray) derecha).subtipo)) {
                 throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el subtipo del array en la asignacion no coincide", "");
             }
         }

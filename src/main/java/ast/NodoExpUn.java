@@ -44,7 +44,7 @@ public class NodoExpUn extends NodoExp{
 
         if(operador == TokenType.LEFT_PAREN){
             if (tipo != "Double") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
-            tipo = "INT";
+            tipo = "Int";
         }
 
         if (encadenado != null){
