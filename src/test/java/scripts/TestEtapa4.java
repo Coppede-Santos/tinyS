@@ -14,18 +14,18 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Clase de prueba para la Etapa3 del compilador, encargada de realizar
- * la construcción de la tabla de símbolos del análisis semántico de 
+ * Clase de prueba para la Etapa4 del compilador, encargada de realizar
+ * la construcción del árbol sintáctico abstracto del análisis semántico de
  * programas escritos en lenguaje TinyS.
  * Esta clase contiene pruebas para verificar que el analizador semántico
  * funciona correctamente tanto con programas semánticamente correctos
- * como con programas que contienen errores semánticos (de declaraciones).
+ * como con programas que contienen errores semánticos (de sentencias).
  */
 public class TestEtapa4 {
 
 
     /**
-     * Metodo auxiliar para ejecutar una prueba con un programa que contiene errores de declaraciones.
+     * Metodo auxiliar para ejecutar una prueba con un programa que contiene errores de sentencias.
      * 
      * @param fileName Nombre del test
      * @throws IOException Si ocurre un error de E/S
@@ -35,9 +35,9 @@ public class TestEtapa4 {
     private void testSemanticFile(String fileName, Boolean correcto) throws IOException, ErrorTiny {
         String basePath = System.getProperty("user.dir");
         String testFilePath = basePath + "/src/test/resources/test/" + fileName + ".s";
-        String assertFilePath = basePath + "/src/test/resources/declarationChecking/resultado_correcto.txt";
+        String assertFilePath = basePath + "/src/test/resources/statementChecking/resultado_correcto.txt";
         if (!correcto) {
-            assertFilePath = basePath + "/src/test/resources/declarationChecking/resultado_" + fileName + ".txt";
+            assertFilePath = basePath + "/src/test/resources/statementChecking/resultado_" + fileName + ".txt";
         }
         String outputFilePath = basePath + "/src/test/resources/output/" + fileName + ".txt";
 
@@ -66,12 +66,12 @@ public class TestEtapa4 {
     private void testSemanticJson(String fileName) throws IOException, ErrorTiny {
         String basePath = System.getProperty("user.dir");
         String testFilePath = basePath + "/src/test/resources/test/" + fileName + ".s";
-        String  assertFilePath = basePath + "/src/test/resources/declarationChecking/resultado_" + fileName + ".ts.json";
+        String  assertFilePath = basePath + "/src/test/resources/statementChecking/resultado_" + fileName + ".ast.json";
 
-        String outputFilePath = basePath + "/src/test/resources/test/" + fileName + ".ts.json";
+        String outputFilePath = basePath + "/src/test/resources/test/" + fileName + ".ast.json";
 
         // Ejecutar el analizador léxico
-        Etapa3.main(new String[]{testFilePath, outputFilePath});
+        Etapa4.main(new String[]{testFilePath, outputFilePath});
 
         // Leer el archivo generado
         String actualOutput = Files.readString(Paths.get(outputFilePath));
@@ -129,12 +129,6 @@ public class TestEtapa4 {
     @DisplayName("Test del programa primo.s")
     public void testPrimo() throws IOException, ErrorTiny{
         testSemanticFile("primo",true);
-    }
-
-    @Test
-    @DisplayName("Test del programa sentenciasIfElse.s")
-    public void testSentenciasIfElse() throws IOException, ErrorTiny{
-        testSemanticFile("sentenciasIfElse",true);
     }
 
     @Test

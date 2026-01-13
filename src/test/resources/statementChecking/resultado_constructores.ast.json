@@ -1,0 +1,131 @@
+{
+  "clases": [
+    {
+      "nombre": "D",
+      "metodos": [
+        {
+          "nombre": "D",
+          "sentencias":
+          [
+            {
+              "tipoNodo": "NodoAsignacion",
+              "izquierda": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "x",
+                "tipo": "Int",
+                "posicion": {
+                  "linea": "6",
+                  "columna": "4"
+                }
+              },
+              "derecha": {
+                "tipoNodo": "NodoInt",
+                "valor": "0",
+                "tipo": "Int",
+                "posicion": {
+                  "linea": "6",
+                  "columna": "7"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "nombre": "inc",
+          "sentencias":
+          [
+            {
+              "tipoNodo": "NodoAsignacion",
+              "izquierda": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "x",
+                "tipo": "Int",
+                "posicion": {
+                  "linea": "9",
+                  "columna": "4"
+                }
+              },
+              "derecha": {
+                "tipoNodo": "NodoExpBin",
+                "ladoIzquierdo": {
+                  "tipoNodo": "NodoVariable",
+                  "lexema": "x",
+                  "tipo": "Int",
+                  "posicion": {
+                    "linea": "9",
+                    "columna": "6"
+                  }
+                },
+                "operador": "PLUS",
+                "ladoDerecho": {
+                  "tipoNodo": "NodoInt",
+                  "valor": "1",
+                  "tipo": "Int",
+                  "posicion": {
+                    "linea": "9",
+                    "columna": "9"
+                  }
+                },
+                "tipo": "Int"
+              }
+            },
+            {
+              "tipoNodo": "NodoRet",
+              "expresion": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "x",
+                "tipo": "Int",
+                "posicion": {
+                  "linea": "10",
+                  "columna": "8"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "bloqueStart": {
+    "posicion": {
+      "linea": 13,
+      "columna": 5
+    },
+    "sentencias":
+    [
+      {
+        "tipoNodo": "NodoAsignacion",
+        "izquierda": {
+          "tipoNodo": "NodoVariable",
+          "lexema": "d",
+          "tipo": "D",
+          "posicion": {
+            "linea": "15",
+            "columna": "2"
+          }
+        },
+        "derecha": {
+          "tipoNodo": "NodoLlamadaEncadenado",
+          "lexema": "D",
+          "parametros": [
+          ],
+          "tipo": "D",
+          "esEstatico": "false",
+          "posicion": {
+            "linea": "15",
+            "columna": "8"
+          }
+        }
+      },
+      {
+        "tipoNodo": "NodoVariable",
+        "lexema": "d",
+        "tipo": "D",
+        "posicion": {
+          "linea": "16",
+          "columna": "4"
+        }
+      }
+    ]
+  }
+}

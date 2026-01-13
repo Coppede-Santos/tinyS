@@ -1,0 +1,4 @@
+ERROR: SEMANTICO - DECLARACIONES
+
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
+|LINEA 2 | COLUMNA 14 | La clase no ha sido declarada anteriormente: Fibonacci|

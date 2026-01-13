@@ -1,0 +1,254 @@
+{
+  "clases": [
+    {
+      "nombre": "Circle",
+      "metodos": [
+        {
+          "nombre": "area",
+          "sentencias":
+          [
+            {
+              "tipoNodo": "NodoRet",
+              "expresion": {
+                "tipoNodo": "NodoExpBin",
+                "ladoIzquierdo": {
+                  "tipoNodo": "NodoExpBin",
+                  "ladoIzquierdo": {
+                    "tipoNodo": "NodoDouble",
+                    "valor": "3.1416",
+                    "tipo": "Double",
+                    "posicion": {
+                      "linea": "12",
+                      "columna": "20"
+                    }
+                  },
+                  "operador": "MULT",
+                  "ladoDerecho": {
+                    "tipoNodo": "NodoVariable",
+                    "lexema": "r",
+                    "tipo": "Double",
+                    "posicion": {
+                      "linea": "12",
+                      "columna": "22"
+                    }
+                  },
+                  "tipo": "Double"
+                },
+                "operador": "MULT",
+                "ladoDerecho": {
+                  "tipoNodo": "NodoVariable",
+                  "lexema": "r",
+                  "tipo": "Double",
+                  "posicion": {
+                    "linea": "12",
+                    "columna": "26"
+                  }
+                },
+                "tipo": "Double"
+              }
+            }
+          ]
+        },
+        {
+          "nombre": "Circle",
+          "sentencias":
+          [
+            {
+              "tipoNodo": "NodoAsignacion",
+              "izquierda": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "radius",
+                "tipo": "Double",
+                "posicion": {
+                  "linea": "16",
+                  "columna": "14"
+                }
+              },
+              "derecha": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "r",
+                "tipo": "Double",
+                "posicion": {
+                  "linea": "16",
+                  "columna": "16"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "bloqueStart": {
+    "posicion": {
+      "linea": 21,
+      "columna": 5
+    },
+    "sentencias":
+    [
+      {
+        "tipoNodo": "NodoAsignacion",
+        "izquierda": {
+          "tipoNodo": "NodoVariable",
+          "lexema": "c",
+          "tipo": "Circle",
+          "posicion": {
+            "linea": "24",
+            "columna": "5"
+          }
+        },
+        "derecha": {
+          "tipoNodo": "NodoLlamadaEncadenado",
+          "lexema": "Circle",
+          "parametros": [
+            {
+              "tipoNodo": "NodoDouble",
+              "valor": "0.0",
+              "tipo": "Double",
+              "posicion": {
+                "linea": "24",
+                "columna": "21"
+              }
+            }
+          ],
+          "tipo": "Circle",
+          "esEstatico": "false",
+          "posicion": {
+            "linea": "24",
+            "columna": "16"
+          }
+        }
+      },
+      {
+        "tipoNodo": "NodoAsignacion",
+        "izquierda": {
+          "tipoNodo": "NodoVariable",
+          "lexema": "r",
+          "tipo": "Double",
+          "posicion": {
+            "linea": "25",
+            "columna": "5"
+          }
+        },
+        "derecha": {
+          "tipoNodo": "NodoVariable",
+          "lexema": "IO",
+          "esEstatico": "true",
+          "tipo": "IO",
+          "posicion": {
+            "linea": "25",
+            "columna": "8"
+          },
+          "encadenado":
+          {
+            "tipoNodo": "NodoLlamadaEncadenado",
+            "lexema": "in_double",
+            "parametros": [
+            ],
+            "tipo": "Double",
+            "esEstatico": "true",
+            "posicion": {
+              "linea": "25",
+              "columna": "18"
+            }
+          }
+        }
+      },
+      {
+        "tipoNodo": "NodoAsignacion",
+        "izquierda": {
+          "tipoNodo": "NodoVariable",
+          "lexema": "c",
+          "tipo": "Circle",
+          "posicion": {
+            "linea": "26",
+            "columna": "5"
+          },
+          "encadenado":
+          {
+            "tipoNodo": "NodoVariable",
+            "lexema": "radius",
+            "tipo": "Double",
+            "posicion": {
+              "linea": "26",
+              "columna": "12"
+            }
+          }
+        },
+        "derecha": {
+          "tipoNodo": "NodoVariable",
+          "lexema": "r",
+          "tipo": "Double",
+          "posicion": {
+            "linea": "26",
+            "columna": "14"
+          }
+        }
+      },
+      {
+        "tipoNodo": "NodoVariable",
+        "lexema": "IO",
+        "esEstatico": "true",
+        "tipo": "IO",
+        "posicion": {
+          "linea": "27",
+          "columna": "7"
+        },
+        "encadenado":
+        {
+          "tipoNodo": "NodoLlamadaEncadenado",
+          "lexema": "out_double",
+          "parametros": [
+            {
+              "tipoNodo": "NodoVariable",
+              "lexema": "c",
+              "tipo": "Circle",
+              "posicion": {
+                "linea": "27",
+                "columna": "20"
+              },
+              "encadenado":
+              {
+                "tipoNodo": "NodoLlamadaEncadenado",
+                "lexema": "area",
+                "parametros": [
+                  {
+                    "tipoNodo": "NodoVariable",
+                    "lexema": "c",
+                    "tipo": "Circle",
+                    "posicion": {
+                      "linea": "27",
+                      "columna": "27"
+                    },
+                    "encadenado":
+                    {
+                      "tipoNodo": "NodoVariable",
+                      "lexema": "radius",
+                      "tipo": "Double",
+                      "posicion": {
+                        "linea": "27",
+                        "columna": "34"
+                      }
+                    }
+                  }
+                ],
+                "tipo": "Double",
+                "esEstatico": "false",
+                "posicion": {
+                  "linea": "27",
+                  "columna": "26"
+                }
+              }
+            }
+          ],
+          "tipo": "nil",
+          "esEstatico": "true",
+          "posicion": {
+            "linea": "27",
+            "columna": "18"
+          }
+        }
+      }
+    ]
+  }
+}
