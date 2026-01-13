@@ -1,5 +1,6 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorLexico.TokenType;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
@@ -17,7 +18,7 @@ public class NodoExpBin extends NodoExpUn{
         this.ladoIzquierdo = ladoIzquierdo;
     }
 
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico{
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
 
         if (ladoDerecho == null || operador == null || ladoIzquierdo == null)

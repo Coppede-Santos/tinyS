@@ -1,21 +1,25 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaClase;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.EntradaParametro;
+import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
+import org.w3c.dom.ls.LSOutput;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Objects;
 
 import static ast.AstJsonBuilder.*;
 
-public class NodoLlamadaEncadenado extends NodoVar{
+public class NodoLlamadaMetodo extends NodoVar{
 
     LinkedList<NodoExp> parametros = new LinkedList<>();
 
-    public NodoLlamadaEncadenado (String lex, int linea, int columna){
+    public NodoLlamadaMetodo(String lex, int linea, int columna){
         super(lex, linea, columna);
     }
 
@@ -27,7 +31,7 @@ public class NodoLlamadaEncadenado extends NodoVar{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
         boolean esConstructor = false;
         EntradaClase claseActual;
@@ -76,10 +80,22 @@ public class NodoLlamadaEncadenado extends NodoVar{
                         "no se encontro el parametro en la posicion " + i + " para el metodo " + lexema, "");
             }
 
-            if (!Objects.equals(parametroActual.tipo, parametroReferenciado.getTipo().getLexema())) {
+            EntradaClase entradaTipoParametroAcutal = st.buscarClase(parametroActual.tipo);
+
+            if (entradaTipoParametroAcutal == null){
+                throw new ClaseNoDeclaradaError(parametroActual.posicion.getColumna(),parametroActual.posicion.getLinea(), parametroActual.tipo);
+            }
+
+            if (!entradaTipoParametroAcutal.buscarAncestro(parametroReferenciado.getTipo().getLexema())) {
                 throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
                         "el tipo del parametro " + (i+1) + " no coincide con el tipo esperado en el metodo " + lexema, "");
             }
+
+
+//            if (!Objects.equals(parametroActual.tipo, parametroReferenciado.getTipo().getLexema())) {
+//                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
+//                        "el tipo del parametro " + (i+1) + " no coincide con el tipo esperado en el metodo " + lexema, "");
+//            }
 
             if (i != parametroReferenciado.getPosicionParametro()){
                 throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
@@ -127,7 +143,7 @@ public class NodoLlamadaEncadenado extends NodoVar{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
         String salida = "";
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoLlamadaEncadenado") + ",\n";
@@ -175,10 +191,21 @@ public class NodoLlamadaEncadenado extends NodoVar{
                         "no se encontro el parametro en la posicion " + i + " para el metodo " + lexema, "");
             }
 
-            if (!Objects.equals(parametroActual.tipo, parametroReferenciado.getTipo().getLexema())) {
+            EntradaClase entradaTipoParametroAcutal = st.buscarClase(parametroActual.tipo);
+
+            if (entradaTipoParametroAcutal == null){
+                throw new ClaseNoDeclaradaError(parametroActual.posicion.getColumna(),parametroActual.posicion.getLinea(), parametroActual.tipo);
+            }
+
+            if (!entradaTipoParametroAcutal.buscarAncestro(parametroReferenciado.getTipo().getLexema())) {
                 throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
                         "el tipo del parametro " + (i+1) + " no coincide con el tipo esperado en el metodo " + lexema, "");
             }
+
+//            if (!Objects.equals(parametroActual.tipo, parametroReferenciado.getTipo().getLexema())) {
+//                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
+//                        "el tipo del parametro " + (i+1) + " no coincide con el tipo esperado en el metodo " + lexema, "");
+//            }
 
             if (i != parametroReferenciado.getPosicionParametro()){
                 throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
@@ -219,6 +246,8 @@ public class NodoLlamadaEncadenado extends NodoVar{
         }
 
         return salida.toString();
+
+
     }
 
 }

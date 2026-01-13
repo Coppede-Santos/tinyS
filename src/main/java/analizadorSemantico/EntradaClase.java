@@ -79,6 +79,12 @@ public class EntradaClase extends Entrada {
         //agregarMetodosDeSuperClase();
     }
 
+    public boolean buscarAncestro(String nombre){
+        if (nombre.equals(this.lexema)) return true;
+        if (superClase == null) return false;
+        return superClase.buscarAncestro(nombre);
+    }
+
     private void agregarMetodosDeSuperClase() throws ErrorSemantico{
         if (superClase != null) {
             for (EntradaMetodo metodoSuperClase : superClase.metodos.values()) {

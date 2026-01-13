@@ -1884,12 +1884,12 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private void llamada_metodo(NodoLlamadaEncadenado nodoLlamadaEncadenado) throws IOException, ErrorTiny{
+    private void llamada_metodo(NodoLlamadaMetodo nodoLlamadaMetodo) throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == LEFT_PAREN ) {
-            argumentos_actuales(nodoLlamadaEncadenado);
+            argumentos_actuales(nodoLlamadaMetodo);
             NodoExp nodoExp = encadenado_factorizado();
-            nodoLlamadaEncadenado.setEncadenado(nodoExp);
+            nodoLlamadaMetodo.setEncadenado(nodoExp);
         }else {
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una llamada a metodo", currentToken. getLexema());
         }
@@ -1912,17 +1912,17 @@ public class Parser {
             macheo(IDCLASS);
             macheo(DOT);
             //Se crea el nodo del metodo que se llama con la clase estatica
-            NodoLlamadaEncadenado nodoLlamadaEncadenado = new NodoLlamadaEncadenado(currentToken.getLexema(),
+            NodoLlamadaMetodo nodoLlamadaMetodo = new NodoLlamadaMetodo(currentToken.getLexema(),
                     currentToken.getLine(), currentToken.getColumn());
             //encadenamos el metodo a la clase static
-            nodoLlamadaEncadenado.setEsEstatico(true);
-            nodoVarStatic.setEncadenado(nodoLlamadaEncadenado);
+            nodoLlamadaMetodo.setEsEstatico(true);
+            nodoVarStatic.setEncadenado(nodoLlamadaMetodo);
             macheo(IDOBJETS);
             //agregamos al nodo metodo todos sus parametros
-            llamada_metodo(nodoLlamadaEncadenado);
+            llamada_metodo(nodoLlamadaMetodo);
             //seguimos encadenando si es necesario
             NodoExp nodoEncadenado = encadenado_factorizado();
-            nodoLlamadaEncadenado.setEncadenado(nodoEncadenado);
+            nodoLlamadaMetodo.setEncadenado(nodoEncadenado);
             return nodoVarStatic;
         }else {
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una llamada a metodo estatico", currentToken. getLexema());
@@ -1957,16 +1957,16 @@ public class Parser {
         TokenType type = currentToken.getType();
         if(type == IDCLASS){
 
-            NodoLlamadaEncadenado nodoLlamadaEncadenado = new NodoLlamadaEncadenado(
+            NodoLlamadaMetodo nodoLlamadaMetodo = new NodoLlamadaMetodo(
                     currentToken.getLexema(),
                     currentToken.getLine(),
                     currentToken.getColumn());
             macheo(IDCLASS);
 
-            argumentos_actuales(nodoLlamadaEncadenado);
+            argumentos_actuales(nodoLlamadaMetodo);
             NodoExp nodoExp = encadenado_factorizado();
-            nodoLlamadaEncadenado.setEncadenado(nodoExp);
-            return nodoLlamadaEncadenado;
+            nodoLlamadaMetodo.setEncadenado(nodoExp);
+            return nodoLlamadaMetodo;
         }else{
             if (type == STR || type == DOUBLE || type == INT || type == BOOL){
 
@@ -1994,11 +1994,11 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private void argumentos_actuales(NodoLlamadaEncadenado nodoLlamadaEncadenado) throws IOException, ErrorTiny{
+    private void argumentos_actuales(NodoLlamadaMetodo nodoLlamadaMetodo) throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == LEFT_PAREN) {
             macheo(LEFT_PAREN);
-            lista_expresiones_factorizado(nodoLlamadaEncadenado);
+            lista_expresiones_factorizado(nodoLlamadaMetodo);
             macheo(RIGHT_PAREN);
         }else {
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una lista de argumentos", currentToken.getLexema());
@@ -2012,10 +2012,10 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private void lista_expresiones_factorizado(NodoLlamadaEncadenado nodoLlamadaEncadenado) throws IOException, ErrorTiny{
+    private void lista_expresiones_factorizado(NodoLlamadaMetodo nodoLlamadaMetodo) throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == LEFT_PAREN || type == SELF || type == NEW) {
-            lista_expresiones(nodoLlamadaEncadenado);
+            lista_expresiones(nodoLlamadaMetodo);
         }else {
             if (type == RIGHT_PAREN) {
                 return;
@@ -2038,12 +2038,12 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private void lista_expresiones(NodoLlamadaEncadenado nodoLlamadaEncadenado) throws IOException, ErrorTiny{
+    private void lista_expresiones(NodoLlamadaMetodo nodoLlamadaMetodo) throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == LEFT_PAREN || type == SELF || type == NEW) {
             NodoExp nodoExp = expOr();
-            nodoLlamadaEncadenado.agregarParametro(nodoExp);
-            lista_expresiones_prima(nodoLlamadaEncadenado);
+            nodoLlamadaMetodo.agregarParametro(nodoExp);
+            lista_expresiones_prima(nodoLlamadaMetodo);
         }else {
             throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una lista de expresiones", currentToken. getLexema());
         }
@@ -2056,11 +2056,11 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private void lista_expresiones_prima(NodoLlamadaEncadenado nodoLlamadaEncadenado) throws IOException, ErrorTiny{
+    private void lista_expresiones_prima(NodoLlamadaMetodo nodoLlamadaMetodo) throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == COMMA) {
             macheo(COMMA);
-            lista_expresiones(nodoLlamadaEncadenado);
+            lista_expresiones(nodoLlamadaMetodo);
         }else {
             if (type == RIGHT_PAREN) {
                 return;
@@ -2120,9 +2120,9 @@ public class Parser {
             return accesoVar_prima(token);
         }else {
             if (type == LEFT_PAREN) {
-                NodoLlamadaEncadenado nodoLlamadaEncadenado = new NodoLlamadaEncadenado(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
-                llamada_metodo(nodoLlamadaEncadenado);
-                return nodoLlamadaEncadenado;
+                NodoLlamadaMetodo nodoLlamadaMetodo = new NodoLlamadaMetodo(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
+                llamada_metodo(nodoLlamadaMetodo);
+                return nodoLlamadaMetodo;
             } else {
                 throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo, una operación o cerrar una expresión", currentToken. getLexema());
             }

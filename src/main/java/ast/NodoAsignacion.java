@@ -1,6 +1,7 @@
 package ast;
 
 import ErrorManage.ErrorTiny;
+import analizadorSemantico.EntradaClase;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.EntradaVariables;
 import analizadorSemantico.Errores.ErrorSemantico;
@@ -26,19 +27,23 @@ public class NodoAsignacion extends NodoSentencia{
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
-        if (izquierda == null || derecha == null) throw new AsignacionInvalidaError(posicion,"=");
+        if (izquierda == null || derecha == null) throw new AsignacionInvalidaError(posicion, "=");
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoAsignacion") + ",\n";
 
         salida += tabs(profundidad + 1) + claveJson("izquierda") + "{\n";
-        salida += izquierda.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += izquierda.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
         salida += tabs(profundidad + 1) + "},\n";
 
         salida += tabs(profundidad + 1) + claveJson("derecha") + "{\n";
-        salida += derecha.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
+        salida += derecha.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
         salida += tabs(profundidad + 1) + "}\n";
 
-        if (!Objects.equals(izquierda.getTipo(), derecha.getTipo()) && derecha.getTipo().isEmpty()) throw new TipoInvalidoError(posicion, izquierda.lexema, derecha.getTipo());
+        EntradaClase derechaClase = st.buscarClase(derecha.tipo);
+
+        if ((!derechaClase.buscarAncestro(izquierda.tipo)) && derecha.getTipo().isEmpty())
+            throw new TipoInvalidoError(posicion, izquierda.lexema, derecha.getTipo());
+
 
         // Array Int a;
         // a = new Int[5];
