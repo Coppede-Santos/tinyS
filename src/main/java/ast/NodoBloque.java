@@ -1,5 +1,6 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
@@ -21,7 +22,7 @@ public class NodoBloque extends NodoSentencia{
 
 
 
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico{
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
         salida += tabs(profundidad) + "[\n";
         for (NodoSentencia nodoSentencia : sentencias){

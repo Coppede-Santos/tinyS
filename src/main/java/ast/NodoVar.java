@@ -1,5 +1,6 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorSemantico.*;
 import analizadorSemantico.Errores.ErrorSemantico;
 
@@ -20,7 +21,7 @@ public class NodoVar extends NodoOperando {
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico, ErrorTiny {
         String salida = "";
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoVariable") + ",\n";
@@ -82,7 +83,7 @@ public class NodoVar extends NodoOperando {
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico, ErrorTiny {
         String salida = "";
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoVariable") + ",\n";

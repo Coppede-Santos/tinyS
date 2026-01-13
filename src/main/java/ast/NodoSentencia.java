@@ -1,5 +1,6 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.Posicion;
@@ -13,6 +14,6 @@ public abstract class NodoSentencia {
         this.posicion = new Posicion(linea, columna);
     }
 
-    public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico;
+    public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico, ErrorTiny;
 
 }

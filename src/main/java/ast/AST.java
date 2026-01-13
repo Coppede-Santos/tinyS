@@ -1,5 +1,6 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 
@@ -24,7 +25,7 @@ public class AST {
         this.start = start;
     }
 
-    public String chequeoDeSentencias(SymbolTable st) throws ErrorSemantico{
+    public String chequeoDeSentencias(SymbolTable st) throws ErrorTiny {
         int profundidad = 1;
         String salida = "";
         salida += "{\n";

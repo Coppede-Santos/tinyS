@@ -1,8 +1,11 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
 import analizadorSemantico.Errores.ErrorSemantico;
+import ast.Errores.TipoIndiceInvalidoError;
+import ast.Errores.TipoInvalidoError;
 
 import static ast.AstJsonBuilder.*;
 
@@ -22,7 +25,7 @@ public class NodoConstructorArray extends NodoOperando{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoConstructorArray") + ",\n";
@@ -32,7 +35,7 @@ public class NodoConstructorArray extends NodoOperando{
         salida += tabs(profundidad + 1) + "},\n";
 
         if (!dimension.getTipo().equals("Int")){
-            throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"Se esperaba tipo INT en la dimension del array","");
+            throw new TipoInvalidoError(posicion, "Array", dimension.getTipo());
         }
 
         // a = (new Array Int[dim]).length();
@@ -57,7 +60,7 @@ public class NodoConstructorArray extends NodoOperando{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
         throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"No se puede encadenar a un constructor de array","");
     }
 

@@ -1,9 +1,11 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaClase;
 import analizadorSemantico.EntradaMetodo;
-import analizadorSemantico.Errores.ErrorSemantico;
+import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import analizadorSemantico.SymbolTable;
+import ast.Errores.MetodoNoDeclaradoError;
 
 import java.util.HashMap;
 
@@ -22,14 +24,14 @@ public class NodoClass {
     }
 
 
-    public String chequeoDeSentencias(SymbolTable st) throws ErrorSemantico{
+    public String chequeoDeSentencias(SymbolTable st) throws ErrorTiny {
 
         EntradaMetodo entradaMetodo;
         NodoBloque bloque;
         EntradaClase entradaClase = st.buscarClase(nombre);
         int profundidad = 1;
 
-        if(entradaClase == null) throw new ErrorSemantico(0,0,"no tiene una clase definida","");
+        if(entradaClase == null) throw new ClaseNoDeclaradaError(0,0,nombre);
 
         st.setClassActual(entradaClase);
 
@@ -45,7 +47,7 @@ public class NodoClass {
             } else {
                 entradaMetodo = entradaClase.getMetodo(metodoLex);
 
-                if (entradaMetodo == null) throw new ErrorSemantico(0,0,"no tiene un metodo definido","");
+                if (entradaMetodo == null) throw new MetodoNoDeclaradoError(metodos.get(metodoLex).posicion, metodoLex);
             }
 
             bloque = metodos.get(metodoLex);

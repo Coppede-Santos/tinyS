@@ -1,9 +1,13 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.EntradaVariables;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
+import ast.Errores.AsignacionInvalidaError;
+import ast.Errores.TipoInvalidoError;
+import ast.Errores.VariableNoDeclaradaError;
 
 import java.util.Objects;
 
@@ -20,9 +24,9 @@ public class NodoAsignacion extends NodoSentencia{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
-        if (izquierda == null || derecha == null) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"aaaaaa","");
+        if (izquierda == null || derecha == null) throw new AsignacionInvalidaError(posicion,"=");
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoAsignacion") + ",\n";
 
@@ -34,7 +38,7 @@ public class NodoAsignacion extends NodoSentencia{
         salida += derecha.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
         salida += tabs(profundidad + 1) + "}\n";
 
-        if (!Objects.equals(izquierda.getTipo(), derecha.getTipo()) && derecha.getTipo().isEmpty()) throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"ooooooo","");
+        if (!Objects.equals(izquierda.getTipo(), derecha.getTipo()) && derecha.getTipo().isEmpty()) throw new TipoInvalidoError(posicion, izquierda.lexema, derecha.getTipo());
 
         // Array Int a;
         // a = new Int[5];
@@ -50,13 +54,13 @@ public class NodoAsignacion extends NodoSentencia{
             }
 
             if (variableIzquierda == null) {
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la variable " + izquierda.lexema + " no existe en el metodo " + entradaMetodo.getLexema(), "");
+                throw new VariableNoDeclaradaError(posicion, izquierda.lexema);
             }
 
             String subtipoIzq = variableIzquierda.getSubtipo().getLexema();
 
             if (!Objects.equals(subtipoIzq, ((NodoConstructorArray) derecha).subtipo)) {
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el subtipo del array en la asignacion no coincide", "");
+                throw new TipoInvalidoError(posicion, izquierda.lexema, subtipoIzq);
             }
         }
 

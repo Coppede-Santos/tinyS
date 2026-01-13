@@ -1,7 +1,12 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorSemantico.*;
+import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import analizadorSemantico.Errores.ErrorSemantico;
+import ast.Errores.TipoIndiceInvalidoError;
+import ast.Errores.TipoInvalidoError;
+import ast.Errores.VariableNoDeclaradaError;
 
 import java.util.Objects;
 
@@ -15,7 +20,7 @@ public class NodoArray extends NodoVar{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
 
         EntradaVariables variable = entradaMetodo.buscarVariableLocal(lexema);
@@ -28,7 +33,7 @@ public class NodoArray extends NodoVar{
         }
 
         if (variable == null) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la variable " + lexema + " no existe en el metodo " + entradaMetodo.getLexema(), "");
+            throw new VariableNoDeclaradaError(posicion, lexema);
         }
 
         EntradaClase subtipo = variable.getSubtipo();
@@ -42,7 +47,7 @@ public class NodoArray extends NodoVar{
         salida += tabs(profundidad + 1) + "},\n";
 
         if (!Objects.equals(indice.getTipo(), "Int")) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el indice de un array debe ser de tipo Int","");
+            throw new TipoIndiceInvalidoError(posicion, indice.getTipo());
         }
 
         if (encadenado != null){
@@ -63,23 +68,23 @@ public class NodoArray extends NodoVar{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
         String salida = "";
 
         // Fibonacci.a[2]
 
         EntradaClase entradaClase = st.buscarClase(tipoEncadenadoPrev);
         if (entradaClase == null) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + tipoEncadenadoPrev + " no existe","");
+            throw new ClaseNoDeclaradaError(posicion.getLinea(), posicion.getColumna(), tipoEncadenadoPrev);
         }
 
         EntradaAtributos atributo = entradaClase.buscarAtributo(lexema);
         if (atributo == null) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " no existe en la clase " + tipoEncadenadoPrev,"");
+            throw new VariableNoDeclaradaError(posicion, lexema);
         }
 
         if (!Objects.equals(atributo.getTipo().getLexema(), "Array")) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " no es un array","");
+            throw new TipoInvalidoError(posicion, lexema, atributo.getTipo().getLexema());
         }
 
         EntradaClase subtipo = atributo.getSubtipo();
@@ -93,7 +98,7 @@ public class NodoArray extends NodoVar{
         salida += tabs(profundidad + 1) + "},\n";
 
         if (!Objects.equals(indice.getTipo(), "Int")) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el indice de un array debe ser de tipo Int","");
+            throw new TipoIndiceInvalidoError(posicion, indice.getTipo());
         }
 
         if (encadenado != null){

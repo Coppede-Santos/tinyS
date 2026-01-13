@@ -1,8 +1,10 @@
 package ast;
 
+import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
+import ast.Errores.EncadenadoInvalido;
 
 import java.util.Objects;
 
@@ -21,12 +23,12 @@ public class NodoBool extends NodoOperando{
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
-        throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "prohibido encadenar una expresion","");
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
+        throw new EncadenadoInvalido(posicion, valor ? "true" : "false");
     }
 
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico {
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoBool") + ",\n";
@@ -38,7 +40,7 @@ public class NodoBool extends NodoOperando{
         salida += tabs(profundidad + 1) + "}\n";
 
         if (encadenado != null){
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
+            throw new EncadenadoInvalido(posicion, valor ? "true" : "false");
         }
 
         return salida;
