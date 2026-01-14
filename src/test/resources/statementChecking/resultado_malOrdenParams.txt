@@ -1,4 +1,4 @@
-ERROR: SEMANTICO - DECLARACIONES
- 
-| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: | 
-|LINEA 23 | COLUMNA 34 | el tipo del parametro 1 no coincide con el tipo esperado en el metodo repeatStr|
+ERROR: SEMANTICO - SENTENCIAS
+
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
+|LINEA 23 | COLUMNA 34 | Tipo de paramatro incorrecto: repeatStr|
