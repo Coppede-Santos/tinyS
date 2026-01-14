@@ -4,6 +4,7 @@ import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
 import analizadorSemantico.Errores.ErrorSemantico;
+import ast.Errores.EncadenadoInvalido;
 import ast.Errores.TipoIndiceInvalidoError;
 import ast.Errores.TipoInvalidoError;
 
@@ -61,7 +62,7 @@ public class NodoConstructorArray extends NodoOperando{
 
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
-        throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"No se puede encadenar a un constructor de array","");
+        throw new EncadenadoInvalido(posicion, tipoEncadenadoPrev);
     }
 
 }

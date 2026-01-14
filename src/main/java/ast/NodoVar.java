@@ -2,7 +2,11 @@ package ast;
 
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.*;
+import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import analizadorSemantico.Errores.ErrorSemantico;
+import ast.Errores.AtributoNoDeclaradoError;
+import ast.Errores.VariableNoDeclaradaError;
+import ast.Errores.VisibilidadError;
 
 import static ast.AstJsonBuilder.*;
 
@@ -46,14 +50,15 @@ public class NodoVar extends NodoOperando {
                 if (esEstatico) {
                     EntradaClase claseActual = st.buscarClase(lexema);
                     if (claseActual == null) {
-                        throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + lexema + " no existe", "");
+                        throw new ClaseNoDeclaradaError(posicion.getLinea(), posicion.getColumna(), lexema);
                     }
                     this.tipo = claseActual.getLexema();
 
                     salida += tabs(profundidad + 1) + claveJson("esEstatico") + valorJson("true") + ",\n";
 
                 } else {
-                    throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la variable " + lexema + " no existe en el metodo " + entradaMetodo.getLexema(), "");
+                    // ------------------------------------------------------------------------------------------------------------------------------------
+                    throw new VariableNoDeclaradaError(posicion,lexema);
                 }
             } else {
                 this.tipo = st.getClassActual().getLexema();
@@ -95,16 +100,16 @@ public class NodoVar extends NodoOperando {
 
         EntradaClase entradaClase = st.buscarClase(tipoEncadenadoPrev);
         if (entradaClase == null) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + tipoEncadenadoPrev + " no existe", "");
+            throw new ClaseNoDeclaradaError(posicion.getLinea(), posicion.getColumna(), tipoEncadenadoPrev);
         }
 
         EntradaAtributos atributo = entradaClase.buscarAtributo(lexema);
         if (atributo == null) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " no existe en la clase " + tipoEncadenadoPrev, "");
+            throw new AtributoNoDeclaradoError(posicion,lexema);
         }
 
         if (atributo.esPrivado() && !st.getClassActual().getLexema().equals(tipoEncadenadoPrev)) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " es privado en la clase " + tipoEncadenadoPrev, "");
+            throw new VisibilidadError(posicion,lexema);
         }
 
         this.tipo = atributo.getTipo().getLexema();

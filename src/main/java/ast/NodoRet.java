@@ -21,9 +21,6 @@ public class NodoRet extends NodoSentencia{
         this.exp = exp;
     }
 
-    public NodoExp getExp(){
-        return exp;
-    }
 
 
     @Override
@@ -40,7 +37,7 @@ public class NodoRet extends NodoSentencia{
             salida += "";
             if (retornoDeclarado == null){
                 return salida;
-            }else throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "El tipo de retorno () no coincide con el tipo de retorno del metodo ("+entradaMetodo.getTipoRetorno().getLexema()+")","");
+            }else throw new TipoInvalidoError(posicion, "ret","nil");
 
         }else{
             salida += exp.chequeoDeSentencias(entradaMetodo,st, profundidad + 1);
@@ -53,7 +50,7 @@ public class NodoRet extends NodoSentencia{
         //if(exp.getTipo() == "nil") exp.setTipo(null);
 
         if (retornoDeclarado == null){
-            if(exp.getTipo() != null) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "El tipo de retorno ("+exp.getTipo(),"");
+            if(exp.getTipo() != null) throw new TipoInvalidoError(posicion, "ret",exp.tipo);
 
         }else{
             EntradaClase tipoRetorno = st.buscarClase(exp.getTipo());

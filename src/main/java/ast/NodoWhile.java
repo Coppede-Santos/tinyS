@@ -4,6 +4,7 @@ import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
+import ast.Errores.TipoInvalidoError;
 
 import static ast.AstJsonBuilder.*;
 
@@ -29,8 +30,7 @@ public class NodoWhile extends NodoSentencia {
         salida += tabs(profundidad + 1) + "},\n";
 
         if (!condicion.tipo.equals("Bool")){
-            throw new ErrorSemantico(condicion.posicion.getLinea(), condicion.posicion.getColumna(),
-                    "La condicion de un while debe ser de tipo Bool","");
+            throw new TipoInvalidoError(condicion.posicion, condicion.tipo, "While" );
         }
 
         salida += tabs(profundidad + 1) + claveJson("sentencia") + "\n";

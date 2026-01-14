@@ -4,6 +4,8 @@ import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
+import ast.Errores.ExpresionInvalidaError;
+import ast.Errores.TipoInvalidoError;
 
 import static ast.AstJsonBuilder.*;
 
@@ -22,7 +24,8 @@ public class NodoIf extends NodoSentencia{
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
-        if (condicion == null || sentenciaIf == null) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), ",","");
+        //N0 debería llegar nunca
+        if (condicion == null || sentenciaIf == null) throw new ExpresionInvalidaError(posicion,"if");
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoIf") + ",\n";
         salida += tabs(profundidad + 1) + claveJson("condicion") + "{\n";
@@ -30,7 +33,7 @@ public class NodoIf extends NodoSentencia{
         salida += tabs(profundidad + 1) + "},\n";
 
         if (!condicion.tipo.equals("Bool")){
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "La condicion de un if debe ser de tipo Bool","");
+            throw new TipoInvalidoError(posicion, condicion.tipo, "Bool" );
         }
 
         salida += tabs(profundidad + 1) + claveJson("sentenciaIf");

@@ -14,6 +14,6 @@ public abstract class NodoSentencia {
         this.posicion = new Posicion(linea, columna);
     }
 
-    public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorSemantico, ErrorTiny;
+    public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws  ErrorTiny;
 
 }

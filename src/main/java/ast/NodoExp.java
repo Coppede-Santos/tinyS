@@ -31,5 +31,5 @@ public abstract class NodoExp extends NodoSentencia {
         return tipo;
     }
 
-    public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico, ErrorTiny;
+    public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws  ErrorTiny;
 }

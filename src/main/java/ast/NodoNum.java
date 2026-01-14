@@ -8,8 +8,4 @@ public abstract class NodoNum extends NodoOperando{
         super(type, linea, columna);
 
     }
-
-    public NodoNum(int linea, int columna) {
-        super(linea, columna);
-    }
 }

@@ -7,11 +7,12 @@ import analizadorSemantico.EntradaParametro;
 import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
-import org.w3c.dom.ls.LSOutput;
+import ast.Errores.MetodoNoDeclaradoError;
+import ast.Errores.ParametroTipoError;
+import ast.Errores.ParametrosCantidadError;
+import ast.Errores.EstaticoMetodoError;
 
-import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Objects;
 
 import static ast.AstJsonBuilder.*;
 
@@ -51,13 +52,11 @@ public class NodoLlamadaMetodo extends NodoVar{
         }
 
         if (metodoReferenciado == null) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                    "el metodo " + lexema + " no existe en la clase " + claseActual.getLexema(), "");
+            throw new MetodoNoDeclaradoError(posicion, lexema);
         }
 
         if (parametros.size() != metodoReferenciado.getCantidadParametros()) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                    "la cantidad de parametros en la llamada al metodo " + lexema + " no coincide con la cantidad esperada", "");
+            throw new ParametrosCantidadError(posicion,lexema);
         }
 
         salida += tabs(profundidad + 1) + claveJson("parametros") + "[\n";
@@ -76,8 +75,7 @@ public class NodoLlamadaMetodo extends NodoVar{
             parametroReferenciado = metodoReferenciado.buscarParametroPorPosicion(i);
 
             if (parametroReferenciado == null) {
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                        "no se encontro el parametro en la posicion " + i + " para el metodo " + lexema, "");
+                throw new ParametrosCantidadError(posicion,lexema);
             }
 
             EntradaClase entradaTipoParametroAcutal = st.buscarClase(parametroActual.tipo);
@@ -87,8 +85,7 @@ public class NodoLlamadaMetodo extends NodoVar{
             }
 
             if (!entradaTipoParametroAcutal.buscarAncestro(parametroReferenciado.getTipo().getLexema())) {
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                        "el tipo del parametro " + (i+1) + " no coincide con el tipo esperado en el metodo " + lexema, "");
+                throw new ParametroTipoError(posicion,entradaTipoParametroAcutal.getLexema());
             }
 
 
@@ -96,11 +93,7 @@ public class NodoLlamadaMetodo extends NodoVar{
 //                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
 //                        "el tipo del parametro " + (i+1) + " no coincide con el tipo esperado en el metodo " + lexema, "");
 //            }
-
-            if (i != parametroReferenciado.getPosicionParametro()){
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                        "el orden de los parametros no coincide con el orden esperado en el metodo " + lexema, "");
-            }
+//
 
         }
         salida += tabs(profundidad + 1) + "],\n";
@@ -154,20 +147,17 @@ public class NodoLlamadaMetodo extends NodoVar{
         EntradaParametro parametroReferenciado;
 
         if (metodoReferenciado == null) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                    "el metodo " + lexema + " no existe en la clase " + claseActual.getLexema(), "");
+            throw new MetodoNoDeclaradoError(posicion,lexema);
         }
 
         if (esEstatico) {
             if (!metodoReferenciado.esEstatico()) {
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                        "no se puede llamar de forma estatica al metodo no estatico " + lexema, "");
+                throw new EstaticoMetodoError(posicion,lexema);
             }
         }
 
         if (parametros.size() != metodoReferenciado.getCantidadParametros()) {
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                    "la cantidad de parametros en la llamada al metodo " + lexema + " no coincide con la cantidad esperada", "");
+            throw new ParametrosCantidadError(posicion,lexema);
         }
 
         salida += tabs(profundidad + 1) + claveJson("parametros") + "[\n";
@@ -187,9 +177,7 @@ public class NodoLlamadaMetodo extends NodoVar{
             parametroReferenciado = metodoReferenciado.buscarParametroPorPosicion(i);
 
             if (parametroReferenciado == null) {
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                        "no se encontro el parametro en la posicion " + i + " para el metodo " + lexema, "");
-            }
+                throw new ParametrosCantidadError(posicion,lexema);            }
 
             EntradaClase entradaTipoParametroAcutal = st.buscarClase(parametroActual.tipo);
 
@@ -198,8 +186,7 @@ public class NodoLlamadaMetodo extends NodoVar{
             }
 
             if (!entradaTipoParametroAcutal.buscarAncestro(parametroReferenciado.getTipo().getLexema())) {
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                        "el tipo del parametro " + (i+1) + " no coincide con el tipo esperado en el metodo " + lexema, "");
+                throw new ParametroTipoError(posicion, lexema);
             }
 
 //            if (!Objects.equals(parametroActual.tipo, parametroReferenciado.getTipo().getLexema())) {
@@ -207,10 +194,7 @@ public class NodoLlamadaMetodo extends NodoVar{
 //                        "el tipo del parametro " + (i+1) + " no coincide con el tipo esperado en el metodo " + lexema, "");
 //            }
 
-            if (i != parametroReferenciado.getPosicionParametro()){
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-                        "el orden de los parametros no coincide con el orden esperado en el metodo " + lexema, "");
-            }
+
 
         }
 

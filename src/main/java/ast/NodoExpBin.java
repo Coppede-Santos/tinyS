@@ -5,6 +5,9 @@ import analizadorLexico.TokenType;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
+import ast.Errores.EncadenadoInvalido;
+import ast.Errores.ExpresionInvalidaError;
+import ast.Errores.TipoInvalidoError;
 
 import java.util.Objects;
 
@@ -22,7 +25,7 @@ public class NodoExpBin extends NodoExpUn{
         String salida = "";
 
         if (ladoDerecho == null || operador == null || ladoIzquierdo == null)
-            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "", "");
+            throw new ExpresionInvalidaError(posicion, String.valueOf(operador));
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoExpBin") + ",\n";
 
@@ -36,7 +39,7 @@ public class NodoExpBin extends NodoExpUn{
         salida += ladoDerecho.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
         salida += tabs(profundidad + 1) + "},\n";
 
-        if (ladoDerecho.getTipo() == null || ladoIzquierdo.getTipo() == null) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "", "");
+        if (ladoDerecho.getTipo() == null || ladoIzquierdo.getTipo() == null) throw new ExpresionInvalidaError(posicion, String.valueOf(operador));
 
         String tipoDer = ladoDerecho.getTipo();
         String tipoIz = ladoIzquierdo.getTipo();
@@ -45,14 +48,14 @@ public class NodoExpBin extends NodoExpUn{
                 || (!Objects.equals(tipoDer, "Int") && !Objects.equals(tipoDer, "Double"));
 
         if(operador == TokenType.DIV){
-            if (!Objects.equals(tipoDer, "Int") && !Objects.equals(tipoIz, "Int"))
-                throw new ErrorSemantico(posicion.getLinea(),posicion.getColumna(),"","");
+            if (!Objects.equals(tipoDer, "Int") || !Objects.equals(tipoIz, "Int"))
+                throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             tipo = "Int";
         }
 
         if  (operador == TokenType.MINUS || operador == TokenType.MULT || operador == TokenType.SLASH || operador == TokenType.PERCENTAGE){
             if (algunTipoNoEsNumerico)
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+                throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             if (tipoDer.equals("Double") || tipoIz.equals("Double")){
                 tipo = "Double";
             }else tipo = "Int";
@@ -63,7 +66,7 @@ public class NodoExpBin extends NodoExpUn{
 
             if ((!Objects.equals(tipoDer, "Int") && !Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Str"))
                 || (!Objects.equals(tipoIz, "Int") &&  !Objects.equals(tipoIz, "Double") && !Objects.equals(tipoIz, "Str"))){
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
+                throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             }
 
             switch (tipoIz){
@@ -71,7 +74,7 @@ public class NodoExpBin extends NodoExpUn{
                     switch (tipoDer){
                         case "Int": tipo = "Int"; break;
                         case "Double": tipo = "Double"; break;
-                        default: throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
+                        default: throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
                     } break;
                 case "Double":
                    if (!Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Int")) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
@@ -81,12 +84,12 @@ public class NodoExpBin extends NodoExpUn{
                     if (!Objects.equals(tipoDer, "Str") || operador == TokenType.MULT) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
                     tipo = "Str";
                     break;
-                default: throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");
+                default: throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             }
         }
 
         if(operador == TokenType.GREATER || operador == TokenType.GREATER_EQUAL || operador == TokenType.LESS || operador == TokenType.LESS_EQUAL){
-            if (algunTipoNoEsNumerico) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+            if (algunTipoNoEsNumerico) throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             tipo = "Bool";
         }
 
@@ -96,20 +99,20 @@ public class NodoExpBin extends NodoExpUn{
                         || (Objects.equals(tipoDer, "Double") && Objects.equals(tipoIz, "Int")))
                     tipo = "Bool";
                 else{
-                    throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+                    throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
                 }
             }
 
             if(!Objects.equals(tipoDer, "Str") && !Objects.equals(tipoDer, "Int")
                     && !Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Bool")){
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+                throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             }
             tipo = "Bool";
         }
         
         if (operador == TokenType.AND || operador == TokenType.OR){
             if (!Objects.equals(tipoDer, "Bool") || !Objects.equals(tipoIz, "Bool"))
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "","");
+                throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             tipo = "Bool";
         }
 
@@ -124,8 +127,8 @@ public class NodoExpBin extends NodoExpUn{
         return salida;
     }
 
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorSemantico {
-        throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "prohibido encadenar una expresion binaria","");
+    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
+        throw new EncadenadoInvalido(posicion, tipoEncadenadoPrev);
     }
 
 }

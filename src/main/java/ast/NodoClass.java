@@ -31,6 +31,8 @@ public class NodoClass {
         EntradaClase entradaClase = st.buscarClase(nombre);
         int profundidad = 1;
 
+
+        //No deberia ser llamado nunca
         if(entradaClase == null) throw new ClaseNoDeclaradaError(0,0,nombre);
 
         st.setClassActual(entradaClase);
