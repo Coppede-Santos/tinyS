@@ -1,36 +1,36 @@
 package analizadorSemantico;
 
 public class EntradaVariables extends Entrada {
-    EntradaClase tipo; // Array
-    EntradaClase subtipo; // Int
+    String tipo; // Array
+    String subtipo; // Int
 
-    public EntradaVariables(String nombre, int linea, int columna, EntradaClase tipo) {
+    public EntradaVariables(String nombre, int linea, int columna, String tipo) {
         super(nombre, linea, columna);
         this.tipo = tipo;
     }
 
-    public EntradaVariables(String nombre, EntradaClase tipo) {
+    public EntradaVariables(String nombre, String tipo) {
         super(nombre);
         this.tipo = tipo;
     }
 
-    public EntradaVariables(String nombre, EntradaClase tipo, EntradaClase subtipo) {
+    public EntradaVariables(String nombre, String tipo, String subtipo) {
         super(nombre);
         this.tipo = tipo;
         this.subtipo = subtipo;
     }
 
-    public EntradaVariables(String nombre, int linea, int columna, EntradaClase tipo, EntradaClase subtipo) {
+    public EntradaVariables(String nombre, int linea, int columna, String tipo, String subtipo) {
         super(nombre, linea, columna);
         this.tipo = tipo;
         this.subtipo = subtipo;
     }
 
-    public EntradaClase getTipo() {
+    public String getTipo() {
         return tipo;
     }
 
-    public void setSubtipo(EntradaClase subtipo) {
+    public void setSubtipo(String subtipo) {
         this.subtipo = subtipo;
     }
 
@@ -42,8 +42,8 @@ public class EntradaVariables extends Entrada {
             tabs += "\t";
         }
 
-        String salida = consolidar(profundidad) + tabs + "\"tipo\": \"" + tipo.getLexema() +
-                "\",\n" + tabs + "\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo.getLexema() + "\"") : "null");
+        String salida = consolidar(profundidad) + tabs + "\"tipo\": \"" + tipo +
+                "\",\n" + tabs + "\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo + "\"") : "null");
         return salida;
     }
 }

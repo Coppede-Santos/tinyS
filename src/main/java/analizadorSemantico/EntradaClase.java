@@ -12,6 +12,7 @@ public class EntradaClase extends Entrada {
     HashMap<String, EntradaAtributos> atributos = new HashMap<>();
     HashMap<String, EntradaMetodo> metodos = new HashMap<>();
     EntradaMetodo constructor;
+    boolean estaConsolidada = false;
 
     public EntradaClase(String nombre) {
         super(nombre);

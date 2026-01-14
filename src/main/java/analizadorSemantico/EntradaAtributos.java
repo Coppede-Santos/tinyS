@@ -3,11 +3,7 @@ package analizadorSemantico;
 public class EntradaAtributos extends EntradaVariables{
     boolean esPrivado = true;
 
-    public EntradaAtributos(String nombre, int linea, int columna, EntradaClase tipo) {
-        super(nombre, linea, columna, tipo);
-    }
-
-    public EntradaAtributos(String nombre, int linea, int columna, EntradaClase tipo, boolean esPrivado) {
+    public EntradaAtributos(String nombre, int linea, int columna, String tipo, boolean esPrivado) {
         super(nombre, linea, columna, tipo);
         this.esPrivado = esPrivado;
     }
@@ -17,8 +13,8 @@ public class EntradaAtributos extends EntradaVariables{
     }
 
     public String consolidarAtributo(int profundidad) {
-        String salida = consolidar(profundidad) + "\t\t\t\t\t\"tipo\": \"" + tipo.getLexema() +
-                "\",\n\t\t\t\t\t\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo.getLexema() + "\"") : "null")+
+        String salida = consolidar(profundidad) + "\t\t\t\t\t\"tipo\": \"" + tipo +
+                "\",\n\t\t\t\t\t\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo + "\"") : "null")+
                 ",\n\t\t\t\t\t\"esPrivado\": " + esPrivado;
 
         return salida;
