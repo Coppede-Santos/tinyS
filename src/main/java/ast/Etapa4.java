@@ -7,6 +7,7 @@ import analizadorLexico.Token;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSintactico.Errores.ErrorSintactico;
 import analizadorSintactico.Parser;
+import ast.Errores.ErrorSentencia;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -76,11 +77,10 @@ public class Etapa4 {
             if (parser.s()) {
                 tablaSimbolos = parser.getTablaSimbolos().consolidarTS();
                 astJson = parser.getAST().chequeoDeSentencias(parser.getTablaSimbolos());
-                System.out.println(astJson);
-                resultadoAnalisis = "CORRECTO: SEMANTICO - DECLARACIONES\n";
+                resultadoAnalisis = "CORRECTO: SEMANTICO - SENTENCIAS\n";
             } else {
                 // Este caso maneja una falla sin excepción, que podría indicar un parseo incompleto.
-                resultadoAnalisis = "ERROR: SEMANTICO - DECLARACIONES\n";
+                resultadoAnalisis = "ERROR: SEMANTICO - SENTENCIAS\n";
             }
 
 
@@ -91,6 +91,8 @@ public class Etapa4 {
             resultadoAnalisis = "ERROR: LEXICO\n" + e.getMessage();
         } catch (ErrorSemantico e) {
             resultadoAnalisis = "ERROR: SEMANTICO - DECLARACIONES\n" + e.getMessage();
+        } catch (ErrorSentencia e){
+            resultadoAnalisis = "ERROR: SEMANTICO - SENTENCIAS\n" + e.getMessage();
         } catch (IOException e) {
             // Este error ocurre si hay problemas leyendo el archivo de entrada.
             System.err.println("Error de E/S al leer el archivo de entrada: " + e.getMessage());
