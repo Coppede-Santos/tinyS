@@ -185,6 +185,12 @@ public class TestEtapa4 {
     }
 
     @Test
+    @DisplayName("Test del programa malAccesoAtr2.s")
+    public void testMalAccesoAtr2() throws IOException, ErrorTiny {
+        testSemanticFile("malAccesoAtr2", false);
+    }
+
+    @Test
     @DisplayName("Test del programa malOrdenParams.s")
     public void testMalOrdenParams() throws IOException, ErrorTiny {
         testSemanticFile("malOrdenParams", false);

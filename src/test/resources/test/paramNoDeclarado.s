@@ -6,7 +6,7 @@ class Clase {
 }
 
 impl Clase {
-    st fn Int metodo() {
+    fn Int metodo() {
         a = 2;
         b = 3;
         c = a + b;

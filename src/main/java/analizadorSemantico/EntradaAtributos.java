@@ -2,18 +2,20 @@ package analizadorSemantico;
 
 public class EntradaAtributos extends EntradaVariables{
     boolean esPrivado = true;
+    String clasePropietaria;
 
-    public EntradaAtributos(String nombre, int linea, int columna, EntradaClase tipo) {
-        super(nombre, linea, columna, tipo);
-    }
-
-    public EntradaAtributos(String nombre, int linea, int columna, EntradaClase tipo, boolean esPrivado) {
+    public EntradaAtributos(String nombre, int linea, int columna, EntradaClase tipo, boolean esPrivado, String clasePropietaria) {
         super(nombre, linea, columna, tipo);
         this.esPrivado = esPrivado;
+        this.clasePropietaria = clasePropietaria;
     }
 
     public boolean esPrivado() {
         return esPrivado;
+    }
+
+    public String getClasePropietaria() {
+        return clasePropietaria;
     }
 
     public String consolidarAtributo(int profundidad) {

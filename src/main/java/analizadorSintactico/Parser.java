@@ -752,7 +752,8 @@ public class Parser {
                     currentToken.getLine(),
                     currentToken.getColumn(),
                     tipo,
-                    esPrivado);
+                    esPrivado,
+                    symbolTable.getClassActual().getLexema());
 
             if (subtipo != null) {
                 atributo.setSubtipo(subtipo);

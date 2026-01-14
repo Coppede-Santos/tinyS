@@ -42,6 +42,15 @@ public class NodoVar extends NodoOperando {
             claseReferenciada = st.getClassActual();
             if (claseReferenciada != null) {
                 variable = claseReferenciada.buscarAtributo(lexema);
+                if (variable != null && entradaMetodo.esEstatico()){
+                    throw new VisibilidadError(posicion,lexema);
+                }
+
+                EntradaAtributos atributo = (EntradaAtributos) variable;
+                if (atributo != null && atributo.esPrivado()
+                        && !st.getClassActual().getLexema().equals(atributo.getClasePropietaria())) {
+                    throw new VisibilidadError(posicion,lexema);
+                }
             }
         }
 
@@ -108,7 +117,9 @@ public class NodoVar extends NodoOperando {
             throw new AtributoNoDeclaradoError(posicion,lexema);
         }
 
-        if (atributo.esPrivado() && !st.getClassActual().getLexema().equals(tipoEncadenadoPrev)) {
+        if (atributo.esPrivado()
+                && (!st.getClassActual().getLexema().equals(tipoEncadenadoPrev)
+                || !atributo.getClasePropietaria().equals(tipoEncadenadoPrev))) {
             throw new VisibilidadError(posicion,lexema);
         }
 
