@@ -42,17 +42,21 @@ public class NodoVar extends NodoOperando {
         }
 
         if (variable == null) {
-            if (esEstatico) {
-                EntradaClase claseActual = st.buscarClase(lexema);
-                if (claseActual == null) {
-                    throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + lexema + " no existe", "");
+            if (!lexema.equals("self")) {
+                if (esEstatico) {
+                    EntradaClase claseActual = st.buscarClase(lexema);
+                    if (claseActual == null) {
+                        throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la clase " + lexema + " no existe", "");
+                    }
+                    this.tipo = claseActual.getLexema();
+
+                    salida += tabs(profundidad + 1) + claveJson("esEstatico") + valorJson("true") + ",\n";
+
+                } else {
+                    throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la variable " + lexema + " no existe en el metodo " + entradaMetodo.getLexema(), "");
                 }
-                this.tipo = claseActual.getLexema();
-
-                salida += tabs(profundidad + 1) + claveJson("esEstatico") + valorJson("true") + ",\n";
-
             } else {
-                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "la variable " + lexema + " no existe en el metodo " + entradaMetodo.getLexema(), "");
+                this.tipo = st.getClassActual().getLexema();
             }
         } else {
             this.tipo = variable.getTipo().getLexema();
@@ -97,6 +101,10 @@ public class NodoVar extends NodoOperando {
         EntradaAtributos atributo = entradaClase.buscarAtributo(lexema);
         if (atributo == null) {
             throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " no existe en la clase " + tipoEncadenadoPrev, "");
+        }
+
+        if (atributo.esPrivado() && !st.getClassActual().getLexema().equals(tipoEncadenadoPrev)) {
+            throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(), "el atributo " + lexema + " es privado en la clase " + tipoEncadenadoPrev, "");
         }
 
         this.tipo = atributo.getTipo().getLexema();
