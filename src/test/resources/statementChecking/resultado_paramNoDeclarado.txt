@@ -1,0 +1,4 @@
+ERROR: SEMANTICO - DECLARACIONES
+ 
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: | 
+|LINEA 13 | COLUMNA 17 | la variable e no existe en el metodo metodo|

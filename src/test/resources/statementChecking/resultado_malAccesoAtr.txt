@@ -1,0 +1,4 @@
+ERROR: SEMANTICO - DECLARACIONES
+ 
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: | 
+|LINEA 23 | COLUMNA 18 | el atributo b es privado en la clase A|
