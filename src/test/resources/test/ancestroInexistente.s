@@ -1,3 +1,7 @@
-class A:B {}
+class A : B {}
+
+impl A{
+ .(){}
+}
 
 start{}

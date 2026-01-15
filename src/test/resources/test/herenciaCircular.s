@@ -1,17 +1,35 @@
-class B : A {
+class A : B{
 }
 
-impl B {
-    .() {
-    }
+
+class B : C{}
+impl B{
+.(){}}
+
+impl A{
+.(){}}
+
+class C : D{
 }
 
-class A : B {
+
+class D : E{}
+impl C{
+.(){}}
+
+impl D{
+.(){}}
+
+class E : F{
 }
 
-impl A {
-    .() {
-    }
-}
+
+class F : A{}
+impl E{
+.(){}}
+
+impl F{
+.(){}}
+
 
 start{}

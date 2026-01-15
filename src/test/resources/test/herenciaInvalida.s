@@ -1,5 +1,0 @@
-class A : Int{
-}
-
-
-start{}

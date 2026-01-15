@@ -5,6 +5,7 @@ import analizadorSemantico.Errores.ErrorSemantico;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Objects;
 
 public class EntradaMetodo extends Entrada{
     EntradaClase tipoRetorno = null;
@@ -94,8 +95,8 @@ public class EntradaMetodo extends Entrada{
         for (EntradaParametro currentParametro : this.parametros.values()) {
             EntradaParametro parametro = metodo.buscarParametro(currentParametro.lexema);
             if (parametro == null) return false;
-            if (parametro.tipo != currentParametro.tipo) return false;
-            if (parametro.subtipo != currentParametro.subtipo) return false;
+            if (!Objects.equals(parametro.tipo, currentParametro.tipo)) return false;
+            if (!Objects.equals(parametro.subtipo, currentParametro.subtipo)) return false;
             if (parametro.posicionParametro != currentParametro.posicionParametro) return false;
         }
         return true;

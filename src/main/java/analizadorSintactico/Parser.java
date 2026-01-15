@@ -224,7 +224,7 @@ public class Parser {
 
             macheo(IDCLASS);
 
-            EntradaClase superClaseEntrada = clas_factorizado();
+            String superClaseEntrada = clas_factorizado();
 
             EntradaClase claseActual = symbolTable.getClassActual();
             claseActual.setSuperClase(superClaseEntrada);
@@ -242,22 +242,22 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private EntradaClase clas_factorizado() throws IOException, ErrorTiny {
+    private String clas_factorizado() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if(type == LEFT_BRACE){
 
             macheo(LEFT_BRACE);
             atributo_class_recursivo();
             macheo(RIGHT_BRACE);
-            return symbolTable.buscarClase("Object");
+            return "Object";
         }else{
             if(type == DOBLE_DOT ){
 
                 Token superClaseToken = herencia();
-                EntradaClase superClaseEntrada = symbolTable.buscarClase(superClaseToken.getLexema());
-                if(superClaseEntrada == null){
-                    throw new ClaseNoDeclaradaError(superClaseToken.getLine(),superClaseToken.getColumn(),superClaseToken.getLexema());
-                }
+                String superClaseEntrada = superClaseToken.getLexema();
+//                if(superClaseEntrada == null){
+//                    throw new ClaseNoDeclaradaError(superClaseToken.getLine(),superClaseToken.getColumn(),superClaseToken.getLexema());
+//                }
 
                 macheo(LEFT_BRACE);
                 atributo_class_recursivo();

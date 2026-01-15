@@ -67,22 +67,22 @@ public class SymbolTable
         EntradaClase obj = new EntradaClase("Object",0,0);
         insertarClase("Object", obj);
 
-        EntradaClase intClase = new EntradaClase("Int",0,0, obj);
+        EntradaClase intClase = new EntradaClase("Int",0,0, "Object");
         insertarClase("Int", intClase);
 
-        EntradaClase booleanClase = new EntradaClase("Bool",0,0, obj);
+        EntradaClase booleanClase = new EntradaClase("Bool",0,0, "Object");
         insertarClase("Bool", booleanClase);
 
-        EntradaClase stringClase = new EntradaClase("Str",0,0, obj);
+        EntradaClase stringClase = new EntradaClase("Str",0,0, "Object");
         insertarClase("Str", stringClase);
 
-        EntradaClase doubleClase = new EntradaClase("Double",0,0, obj);
+        EntradaClase doubleClase = new EntradaClase("Double",0,0, "Object");
         insertarClase("Double", doubleClase);
 
-        EntradaClase arrayClase = new EntradaClase("Array",0,0, obj);
+        EntradaClase arrayClase = new EntradaClase("Array",0,0, "Object");
         insertarClase("Array", arrayClase);
 
-        EntradaClase ioClase = new EntradaClase("IO",0,0, obj);
+        EntradaClase ioClase = new EntradaClase("IO",0,0, "Object");
         insertarClase("IO", ioClase);
 
     }
@@ -219,15 +219,15 @@ public class SymbolTable
     }
 
     public String consolidarTS() throws ErrorSemantico {
-        ordenarClasesPorPosicion();
+        //ordenarClasesPorPosicion();
         String salida = "{\n" +
                 "\t\"clases\": [\n";
         for (EntradaClase clase : clases.values()) {
 
             if (clase != clases.values().toArray()[clases.size() - 1]) {
-                salida += clase.consolidarClase(false);
+                salida += clase.consolidarClase(this,false);
             } else {
-                salida += clase.consolidarClase(true);
+                salida += clase.consolidarClase(this,true);
             }
         }
         salida += "\n \t ],\n" +
