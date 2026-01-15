@@ -8,6 +8,8 @@ import analizadorSemantico.SymbolTable;
 import ast.Errores.EncadenadoInvalido;
 import ast.Errores.ExpresionInvalidaError;
 
+import java.util.Objects;
+
 import static ast.AstJsonBuilder.*;
 
 public class NodoExpUn extends NodoExp{
@@ -40,13 +42,13 @@ public class NodoExpUn extends NodoExp{
         if (ladoDerecho.getTipo() == null) throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
 
         if (operador == TokenType.PLUS_PLUS || operador == TokenType.MINUS_MINUS || operador == TokenType.PLUS || operador == TokenType.MINUS ){
-            if(tipo != "Int" && tipo != "Double") throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
+            if(!Objects.equals(tipo, "Int") && !Objects.equals(tipo, "Double")) throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
         }
 
-        if (operador == TokenType.NOT){ if (tipo != "Bool") throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");}
+        if (operador == TokenType.NOT){ if (!Objects.equals(tipo, "Bool")) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");}
 
         if(operador == TokenType.LEFT_PAREN){
-            if (tipo != "Double") throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
+            if (!Objects.equals(tipo, "Double")) throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             tipo = "Int";
         }
 

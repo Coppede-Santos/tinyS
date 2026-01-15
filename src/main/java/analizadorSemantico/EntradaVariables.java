@@ -34,7 +34,7 @@ public class EntradaVariables extends Entrada {
         this.subtipo = subtipo;
     }
 
-    public EntradaClase getSubtipo() {
+    public String getSubtipo() {
         return subtipo;
     }
 

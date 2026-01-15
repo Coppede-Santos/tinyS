@@ -84,7 +84,7 @@ public class NodoLlamadaMetodo extends NodoVar{
                 throw new ClaseNoDeclaradaError(parametroActual.posicion.getColumna(),parametroActual.posicion.getLinea(), parametroActual.tipo);
             }
 
-            if (!entradaTipoParametroAcutal.buscarAncestro(parametroReferenciado.getTipo().getLexema())) {
+            if (!entradaTipoParametroAcutal.buscarAncestro(st,parametroReferenciado.getTipo())) {
                 throw new ParametroTipoError(posicion,entradaTipoParametroAcutal.getLexema());
             }
 
@@ -185,7 +185,7 @@ public class NodoLlamadaMetodo extends NodoVar{
                 throw new ClaseNoDeclaradaError(parametroActual.posicion.getColumna(),parametroActual.posicion.getLinea(), parametroActual.tipo);
             }
 
-            if (!entradaTipoParametroAcutal.buscarAncestro(parametroReferenciado.getTipo().getLexema())) {
+            if (!entradaTipoParametroAcutal.buscarAncestro(st,parametroReferenciado.getTipo())) {
                 throw new ParametroTipoError(posicion, lexema);
             }
 

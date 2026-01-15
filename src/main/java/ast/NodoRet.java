@@ -59,7 +59,7 @@ public class NodoRet extends NodoSentencia{
                 throw new ClaseNoDeclaradaError(posicion.getLinea(), posicion.getColumna(), exp.getTipo());
             }
 
-            if (!tipoRetorno.buscarAncestro(retornoDeclarado.getLexema())){
+            if (!tipoRetorno.buscarAncestro(st, retornoDeclarado.getLexema())){
                 throw new TipoInvalidoError(posicion, "ret", exp.getTipo());
             }
         }

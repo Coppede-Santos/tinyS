@@ -41,7 +41,7 @@ public class NodoAsignacion extends NodoSentencia{
 
         EntradaClase derechaClase = st.buscarClase(derecha.tipo);
 
-        if ((!derechaClase.buscarAncestro(izquierda.tipo)) && derecha.getTipo().isEmpty())
+        if ((!derechaClase.buscarAncestro(st,izquierda.tipo)) && derecha.getTipo().isEmpty())
             throw new TipoInvalidoError(posicion, izquierda.lexema, derecha.getTipo());
 
 
@@ -62,7 +62,7 @@ public class NodoAsignacion extends NodoSentencia{
                 throw new VariableNoDeclaradaError(posicion, izquierda.lexema);
             }
 
-            String subtipoIzq = variableIzquierda.getSubtipo().getLexema();
+            String subtipoIzq = variableIzquierda.getSubtipo();
 
             if (!Objects.equals(subtipoIzq, ((NodoConstructorArray) derecha).subtipo)) {
                 throw new TipoInvalidoError(posicion, izquierda.lexema, subtipoIzq);

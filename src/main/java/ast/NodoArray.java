@@ -36,9 +36,9 @@ public class NodoArray extends NodoVar{
             throw new VariableNoDeclaradaError(posicion, lexema);
         }
 
-        EntradaClase subtipo = variable.getSubtipo();
+        String subtipo = variable.getSubtipo();
 
-        this.tipo = subtipo.getLexema();
+        this.tipo = subtipo;
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoArray") + ",\n";
         salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
@@ -83,13 +83,13 @@ public class NodoArray extends NodoVar{
             throw new VariableNoDeclaradaError(posicion, lexema);
         }
 
-        if (!Objects.equals(atributo.getTipo().getLexema(), "Array")) {
-            throw new TipoInvalidoError(posicion, lexema, atributo.getTipo().getLexema());
+        if (!Objects.equals(atributo.getTipo(), "Array")) {
+            throw new TipoInvalidoError(posicion, lexema, atributo.getTipo());
         }
 
-        EntradaClase subtipo = atributo.getSubtipo();
+        String subtipo = atributo.getSubtipo();
 
-        this.tipo = subtipo.getLexema();
+        this.tipo = subtipo;
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoArray") + ",\n";
         salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";

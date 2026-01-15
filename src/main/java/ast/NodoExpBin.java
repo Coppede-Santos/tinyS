@@ -7,7 +7,6 @@ import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.EncadenadoInvalido;
 import ast.Errores.ExpresionInvalidaError;
-import ast.Errores.TipoInvalidoError;
 
 import java.util.Objects;
 
@@ -95,10 +94,8 @@ public class NodoExpBin extends NodoExpUn{
 
         if(operador == TokenType.EQUAL_EQUAL || operador == TokenType.NOT_EQUAL){
             if (!Objects.equals(tipoDer, tipoIz)){
-                if((Objects.equals(tipoDer, "Int") && Objects.equals(tipoIz, "Double"))
-                        || (Objects.equals(tipoDer, "Double") && Objects.equals(tipoIz, "Int")))
-                    tipo = "Bool";
-                else{
+                if(!((Objects.equals(tipoDer, "Int") && Objects.equals(tipoIz, "Double"))
+                        || (Objects.equals(tipoDer, "Double") && Objects.equals(tipoIz, "Int")))){
                     throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
                 }
             }

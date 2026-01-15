@@ -73,7 +73,7 @@ public class NodoVar extends NodoOperando {
                 this.tipo = st.getClassActual().getLexema();
             }
         } else {
-            this.tipo = variable.getTipo().getLexema();
+            this.tipo = variable.getTipo();
         }
 
         salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + ",\n";
@@ -123,7 +123,7 @@ public class NodoVar extends NodoOperando {
             throw new VisibilidadError(posicion,lexema);
         }
 
-        this.tipo = atributo.getTipo().getLexema();
+        this.tipo = atributo.getTipo();
 
         salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + ",\n";
         salida += tabs(profundidad + 1) + claveJson("posicion") + "{\n";
