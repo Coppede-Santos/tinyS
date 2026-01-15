@@ -1,29 +1,27 @@
 package analizadorSemantico;
 
-import analizadorSemantico.Errores.ClaseSinConstructorError;
-import analizadorSemantico.Errores.ErrorSemantico;
-import analizadorSemantico.Errores.RedefinirAtributoError;
-import analizadorSemantico.Errores.RedefinirMetodoError;
+import analizadorSemantico.Errores.*;
 
 import java.util.HashMap;
 
 public class EntradaClase extends Entrada {
-    EntradaClase superClase;
+    String superClase;
     HashMap<String, EntradaAtributos> atributos = new HashMap<>();
     HashMap<String, EntradaMetodo> metodos = new HashMap<>();
     EntradaMetodo constructor;
+    boolean estaConsolidada = false;
 
     public EntradaClase(String nombre) {
         super(nombre);
     }
 
-    public EntradaClase(String nombre, EntradaClase superClase) {
+    public EntradaClase(String nombre, String superClase) {
         super(nombre);
         this.superClase = superClase;
         //agregarMetodosDeSuperClase();
     }
 
-    public EntradaClase(String nombre, int linea, int columna, EntradaClase superClase) {
+    public EntradaClase(String nombre, int linea, int columna, String superClase) {
         super(nombre, linea, columna);
         this.superClase = superClase;
         //agregarMetodosDeSuperClase();
@@ -58,7 +56,7 @@ public class EntradaClase extends Entrada {
         return metodos.get(lexema);
     }
 
-    public EntradaClase getSuperClase() {
+    public String getSuperClase() {
         return superClase;
     }
 
@@ -74,18 +72,26 @@ public class EntradaClase extends Entrada {
         this.constructor = constructor;
     }
 
-    public void setSuperClase(EntradaClase superClase) {
+    public void setSuperClase(String superClase) {
         this.superClase = superClase;
         //agregarMetodosDeSuperClase();
     }
 
-    public boolean buscarAncestro(String nombre){
+    // public boolean buscarAncestro(String nombre){
+    //     if (nombre.equals(this.lexema)) return true;
+    //     if (superClase == null) return false;
+    //     return superClase.buscarAncestro(nombre);
+    // }
+
+    public boolean buscarAncestro(SymbolTable st,String nombre){
         if (nombre.equals(this.lexema)) return true;
         if (superClase == null) return false;
-        return superClase.buscarAncestro(nombre);
+        EntradaClase entradaSuperClase = st.buscarClase(superClase);
+        if (entradaSuperClase == null) return false;
+        return entradaSuperClase.buscarAncestro(st,nombre);
     }
 
-    private void agregarMetodosDeSuperClase() throws ErrorSemantico{
+    private void agregarMetodosDeSuperClase(EntradaClase superClase) throws ErrorSemantico{
         if (superClase != null) {
             for (EntradaMetodo metodoSuperClase : superClase.metodos.values()) {
 
@@ -102,7 +108,7 @@ public class EntradaClase extends Entrada {
         }
     }
 
-    private void agregarAtributosDeSuperClase() throws ErrorSemantico{
+    private void agregarAtributosDeSuperClase(EntradaClase superClase) throws ErrorSemantico{
         if (superClase != null) {
             for (String nombreAtributo : superClase.atributos.keySet()) {
                 EntradaAtributos atributo = this.buscarAtributo(nombreAtributo);
@@ -116,7 +122,7 @@ public class EntradaClase extends Entrada {
     }
 
 
-    public String consolidarClase(boolean claseFinal) throws ErrorSemantico {
+    public String consolidarClase(SymbolTable st,boolean claseFinal) throws ErrorSemantico {
 
         if (!lexema.equals("Object") && !lexema.equals("IO") && !lexema.equals("Int") && !lexema.equals("Bool") && !lexema.equals("Str") && !lexema.equals("Double")) {
             if (!tieneConstructor()) {
@@ -124,11 +130,35 @@ public class EntradaClase extends Entrada {
             }
         }
 
-        agregarMetodosDeSuperClase();
-        agregarAtributosDeSuperClase();
+        String salida = "";
 
-        String salida = "\t\t{\n" + consolidar(3) +
-                "\t\t\t\"superClase\": " + ((superClase != null) ? ("\"" + superClase.getLexema() + "\"") : "null") + ",\n" +
+        EntradaClase entradaSuperClase = st.buscarClase(superClase);
+
+        //Chequea que la clase no se encuentre en la linea de ancestros de su super clase
+        if (superClase != null) {
+            if (entradaSuperClase == null) {
+                throw new HerenciaInvalidaError(posicion.linea, posicion.columna, superClase);
+            }
+            if (entradaSuperClase.buscarAncestro(st,lexema)) {
+                throw new HerenciaCircularError(posicion.linea, posicion.columna, lexema);
+            }
+            if (!entradaSuperClase.estaConsolidada){
+                salida += entradaSuperClase.consolidarClase(st,false);
+                entradaSuperClase.estaConsolidada = true;
+            }
+        }
+
+
+
+
+
+
+
+        agregarMetodosDeSuperClase(entradaSuperClase);
+        agregarAtributosDeSuperClase(entradaSuperClase);
+
+        salida += "\t\t{\n" + consolidar(3) +
+                "\t\t\t\"superClase\": " + ((superClase != null) ? ("\"" + superClase + "\"") : "null") + ",\n" +
                 "\t\t\t\"atributos\": [\n";
         for (EntradaAtributos atributo : atributos.values()) {
             salida += "\t\t\t\t{\n" + atributo.consolidarAtributo(5);
@@ -149,7 +179,7 @@ public class EntradaClase extends Entrada {
 
         salida += "\t\t\t\"metodos\": [\n";
         for (EntradaMetodo metodo : metodos.values()) {
-            // Check if it is the last method
+
             if (metodo != metodos.values().toArray()[metodos.size() - 1]) {
                 salida += metodo.consolidarMetodo(4, false);
             } else {

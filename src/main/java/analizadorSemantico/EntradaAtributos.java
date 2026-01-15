@@ -4,7 +4,7 @@ public class EntradaAtributos extends EntradaVariables{
     boolean esPrivado = true;
     String clasePropietaria;
 
-    public EntradaAtributos(String nombre, int linea, int columna, EntradaClase tipo, boolean esPrivado, String clasePropietaria) {
+    public EntradaAtributos(String nombre, int linea, int columna, String tipo, boolean esPrivado, String clasePropietaria) {
         super(nombre, linea, columna, tipo);
         this.esPrivado = esPrivado;
         this.clasePropietaria = clasePropietaria;
@@ -19,8 +19,8 @@ public class EntradaAtributos extends EntradaVariables{
     }
 
     public String consolidarAtributo(int profundidad) {
-        String salida = consolidar(profundidad) + "\t\t\t\t\t\"tipo\": \"" + tipo.getLexema() +
-                "\",\n\t\t\t\t\t\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo.getLexema() + "\"") : "null")+
+        String salida = consolidar(profundidad) + "\t\t\t\t\t\"tipo\": \"" + tipo +
+                "\",\n\t\t\t\t\t\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo + "\"") : "null")+
                 ",\n\t\t\t\t\t\"esPrivado\": " + esPrivado;
 
         return salida;

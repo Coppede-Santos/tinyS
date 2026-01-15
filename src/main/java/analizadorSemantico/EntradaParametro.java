@@ -4,22 +4,22 @@ public class EntradaParametro extends EntradaVariables{
 
     int posicionParametro;
 
-    public EntradaParametro(String nombre, int linea, int columna, EntradaClase tipo, int posicionParametro) {
+    public EntradaParametro(String nombre, int linea, int columna, String tipo, int posicionParametro) {
         super(nombre, linea, columna, tipo);
         this.posicionParametro = posicionParametro;
     }
 
-    public EntradaParametro(String nombre, EntradaClase tipo, int posicionParametro) {
+    public EntradaParametro(String nombre, String tipo, int posicionParametro) {
         super(nombre, tipo);
         this.posicionParametro = posicionParametro;
     }
 
-    public EntradaParametro(String nombre, EntradaClase tipo, EntradaClase subtipo, int posicionParametro) {
+    public EntradaParametro(String nombre, String tipo, String subtipo, int posicionParametro) {
         super(nombre, tipo, subtipo);
         this.posicionParametro = posicionParametro;
     }
 
-    public EntradaParametro(String nombre, int linea, int columna, EntradaClase tipo, EntradaClase subtipo, int posicionParametro) {
+    public EntradaParametro(String nombre, int linea, int columna, String tipo, String subtipo, int posicionParametro) {
         super(nombre, linea, columna, tipo, subtipo);
         this.posicionParametro = posicionParametro;
     }
@@ -31,8 +31,8 @@ public class EntradaParametro extends EntradaVariables{
             tabs += "\t";
         }
 
-        return consolidar(profundidad) + tabs + "\"tipo\": \"" + tipo.getLexema() +
-                "\",\n" + tabs + "\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo.getLexema() + "\"") : "null")+
+        return consolidar(profundidad) + tabs + "\"tipo\": \"" + tipo +
+                "\",\n" + tabs + "\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo + "\"") : "null")+
                 ",\n" + tabs + "\"posicionParametro\": " + posicionParametro;
     }
 

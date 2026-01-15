@@ -229,7 +229,7 @@ public class Parser {
 
             macheo(IDCLASS);
 
-            EntradaClase superClaseEntrada = clas_factorizado();
+            String superClaseEntrada = clas_factorizado();
 
             EntradaClase claseActual = symbolTable.getClassActual();
             claseActual.setSuperClase(superClaseEntrada);
@@ -248,22 +248,22 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private EntradaClase clas_factorizado() throws IOException, ErrorTiny {
+    private String clas_factorizado() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if(type == LEFT_BRACE){
 
             macheo(LEFT_BRACE);
             atributo_class_recursivo();
             macheo(RIGHT_BRACE);
-            return symbolTable.buscarClase("Object");
+            return "Object";
         }else{
             if(type == DOBLE_DOT ){
 
                 Token superClaseToken = herencia();
-                EntradaClase superClaseEntrada = symbolTable.buscarClase(superClaseToken.getLexema());
-                if(superClaseEntrada == null){
-                    throw new ClaseNoDeclaradaError(superClaseToken.getLine(),superClaseToken.getColumn(),superClaseToken.getLexema());
-                }
+                String superClaseEntrada = superClaseToken.getLexema();
+//                if(superClaseEntrada == null){
+//                    throw new ClaseNoDeclaradaError(superClaseToken.getLine(),superClaseToken.getColumn(),superClaseToken.getLexema());
+//                }
 
                 macheo(LEFT_BRACE);
                 atributo_class_recursivo();
@@ -440,13 +440,12 @@ public class Parser {
     private void atributo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == STR || type == BOOL || type == INT || type == DOUBLE || type == ARRAY){
-            EntradaClase tipoClase = symbolTable.buscarClase(currentToken.getLexema());
+            String tipoClase = currentToken.getLexema();
             String subtipo = tipo();
 
             if (type == ARRAY) {
                 if (!subtipo.isEmpty()){
-                    EntradaClase subtipoClase = symbolTable.buscarClase(subtipo);
-                    lista_declaraciones_variables(tipoClase, subtipoClase, true);
+                    lista_declaraciones_variables(tipoClase, subtipo, true);
                 }
             } else {
                 lista_declaraciones_variables(tipoClase, null, true);
@@ -459,13 +458,12 @@ public class Parser {
 
                 type = currentToken.getType();
 
-                EntradaClase tipoClase = symbolTable.buscarClase(currentToken.getLexema());
+                String tipoClase = currentToken.getLexema();
                 String subtipo = tipo();
 
                 if (type == ARRAY) {
                     if (!subtipo.isEmpty()){
-                        EntradaClase subtipoClase = symbolTable.buscarClase(subtipo);
-                        lista_declaraciones_variables(tipoClase, subtipoClase, false);
+                        lista_declaraciones_variables(tipoClase, subtipo, false);
                     }
                 } else {
                     lista_declaraciones_variables(tipoClase, null, false);
@@ -683,13 +681,12 @@ public class Parser {
     private void decl_var_locales() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if(type==IDCLASS || type==STR || type==BOOL || type==INT || type==DOUBLE || type==ARRAY ){
-            EntradaClase tipoClase = symbolTable.buscarClase(currentToken.getLexema());
+            String tipoClase = currentToken.getLexema();
             String subtipo = tipo();
 
             if (type == ARRAY) {
                 if (!subtipo.isEmpty()){
-                    EntradaClase subtipoClase = symbolTable.buscarClase(subtipo);
-                    lista_declaraciones_variables(tipoClase, subtipoClase);
+                    lista_declaraciones_variables(tipoClase, subtipo);
                 }
             } else {
                 lista_declaraciones_variables(tipoClase, null);
@@ -708,7 +705,7 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private void lista_declaraciones_variables(EntradaClase tipo, EntradaClase subtipo) throws IOException, ErrorTiny {
+    private void lista_declaraciones_variables(String tipo, String subtipo) throws IOException, ErrorTiny {
         if(currentToken.getType()==IDOBJETS){
 
             if (symbolTable.getMetodoActual().buscarVariableLocal(currentToken.getLexema()) != null) {
@@ -741,7 +738,7 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private void lista_declaraciones_variables(EntradaClase tipo, EntradaClase subtipo, boolean esPrivado) throws IOException, ErrorTiny {
+    private void lista_declaraciones_variables(String tipo, String subtipo, boolean esPrivado) throws IOException, ErrorTiny {
         if(currentToken.getType()==IDOBJETS){
             if (symbolTable.getClassActual().buscarAtributo(currentToken.getLexema()) != null) {
                 throw new VariableRedefinidaError(currentToken.getLine(),currentToken.getColumn(),currentToken.getLexema());
@@ -776,7 +773,7 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
 
-    private void lista_declaraciones_variables_prima(EntradaClase tipo, EntradaClase subtipo) throws IOException, ErrorTiny {
+    private void lista_declaraciones_variables_prima(String tipo, String subtipo) throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if (type == COMMA){
             macheo(COMMA);
@@ -790,7 +787,7 @@ public class Parser {
         }
     }
 
-    private void lista_declaraciones_variables_prima(EntradaClase tipo, EntradaClase subtipo, boolean esPrivado) throws IOException, ErrorTiny {
+    private void lista_declaraciones_variables_prima(String tipo, String subtipo, boolean esPrivado) throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if (type == COMMA){
             macheo(COMMA);
@@ -886,7 +883,7 @@ public class Parser {
         if(type==IDCLASS || type==STR || type==BOOL || type==INT || type==DOUBLE || type==ARRAY ){
             TokenType tipoArgumento = type;
 
-            EntradaClase claseTipo = symbolTable.buscarClase(currentToken.getLexema());
+            String claseTipo = currentToken.getLexema();
 
             String subtipoArgumento = tipo();
 
@@ -899,8 +896,7 @@ public class Parser {
 
             if(tipoArgumento == ARRAY) {
                 if (!subtipoArgumento.isEmpty()){
-                    EntradaClase claseSubtipo = symbolTable.buscarClase(subtipoArgumento);
-                    parametro.setSubtipo(claseSubtipo);
+                    parametro.setSubtipo(subtipoArgumento);
                 }
             }
             if (metodoActual.buscarParametro(currentToken.getLexema()) != null) {
