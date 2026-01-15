@@ -1,0 +1,486 @@
+{
+	"clases": [
+		{
+			"lexema": "Object",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": null,
+			"atributos": [
+			], 
+			"metodos": [
+			]
+		},
+		{
+			"lexema": "Str",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"metodos": [
+				{
+					"lexema": "length",
+					"tipoRetorno": "Int",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				},
+				{
+					"lexema": "concat",
+					"tipoRetorno": "Str",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "s",
+							"tipo": "Str",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"lexema": "Array",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"constructor": [
+				{
+					"lexema": "Array",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "n",
+							"tipo": "Int",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				}
+			],
+			"metodos": [
+				{
+					"lexema": "length",
+					"tipoRetorno": "Int",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				}
+			]
+		},
+		{
+			"lexema": "Bool",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"metodos": [
+			]
+		},
+		{
+			"lexema": "IO",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"metodos": [
+				{
+					"lexema": "out_array_int",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "a",
+							"tipo": "Array",
+							"subtipo": "Int",
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "in_str",
+					"tipoRetorno": "Str",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				},
+				{
+					"lexema": "in_double",
+					"tipoRetorno": "Double",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				},
+				{
+					"lexema": "out_array_str",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "a",
+							"tipo": "Array",
+							"subtipo": "Str",
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "in_int",
+					"tipoRetorno": "Int",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				},
+				{
+					"lexema": "out_int",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "i",
+							"tipo": "Int",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "in_bool",
+					"tipoRetorno": "Bool",
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				},
+				{
+					"lexema": "out_str",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "s",
+							"tipo": "Str",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "out_double",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "d",
+							"tipo": "Double",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "out_array_double",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "a",
+							"tipo": "Array",
+							"subtipo": "Double",
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "out_bool",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "b",
+							"tipo": "Bool",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "out_array_bool",
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": true,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "a",
+							"tipo": "Array",
+							"subtipo": "Bool",
+							"posicionParametro": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"lexema": "Object",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": null,
+			"atributos": [
+			], 
+			"metodos": [
+			]
+		},
+		{
+			"lexema": "Fibonacci",
+			"posicion": {
+				"linea": 1,
+				"columna": 15
+			},
+			"superClase": "Object",
+			"atributos": [
+				{
+					"lexema": "suma",
+					"posicion": {
+						"linea": 2,
+						"columna": 13
+					},
+					"tipo": "Int",
+					"subtipo": null,
+					"esPrivado": false
+				},
+				{
+					"lexema": "i",
+					"posicion": {
+						"linea": 3,
+						"columna": 10
+					},
+					"tipo": "Int",
+					"subtipo": null,
+					"esPrivado": false
+				},
+				{
+					"lexema": "j",
+					"posicion": {
+						"linea": 3,
+						"columna": 12
+					},
+					"tipo": "Int",
+					"subtipo": null,
+					"esPrivado": false
+				}
+			], 
+			"constructor": [
+				{
+					"lexema": "Fibonacci",
+					"posicion": {
+						"linea": 27,
+						"columna": 2
+					},
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": false,
+					"variablesLocales": [
+					],
+					"parametros": [
+					]
+				}
+			],
+			"metodos": [
+				{
+					"lexema": "imprimo_sucesion",
+					"posicion": {
+						"linea": 37,
+						"columna": 20
+					},
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": false,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "s",
+							"posicion": {
+								"linea": 37,
+								"columna": 26
+							},
+							"tipo": "Int",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "imprimo_numero",
+					"posicion": {
+						"linea": 32,
+						"columna": 18
+					},
+					"tipoRetorno": null,
+					"subtipoRetorno": null,
+					"esEstatico": false,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "num",
+							"posicion": {
+								"linea": 32,
+								"columna": 26
+							},
+							"tipo": "Int",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				},
+				{
+					"lexema": "sucesion_fib",
+					"posicion": {
+						"linea": 6,
+						"columna": 20
+					},
+					"tipoRetorno": "Int",
+					"subtipoRetorno": null,
+					"esEstatico": false,
+					"variablesLocales": [
+					],
+					"parametros": [
+						{
+							"lexema": "n",
+							"posicion": {
+								"linea": 6,
+								"columna": 28
+							},
+							"tipo": "Int",
+							"subtipo": null,
+							"posicionParametro": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"lexema": "Double",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"metodos": [
+			]
+		},
+		{
+			"lexema": "Int",
+			"posicion": {
+				"linea": 0,
+				"columna": 0
+			},
+			"superClase": "Object",
+			"atributos": [
+			], 
+			"metodos": [
+			]
+		}
+ 	 ],
+	"start":
+		{
+			"lexema": "start",
+			"posicion": {
+				"linea": 43,
+				"columna": 6
+			},
+			"tipoRetorno": null,
+			"subtipoRetorno": null,
+			"esEstatico": false,
+			"variablesLocales": [
+				{
+					"lexema": "fib",
+					"posicion": {
+						"linea": 44,
+						"columna": 14
+					},
+					"tipo": "Fibonacci",
+					"subtipo": null
+				},
+				{
+					"lexema": "n",
+					"posicion": {
+						"linea": 45,
+						"columna": 6
+					},
+					"tipo": "Int",
+					"subtipo": null
+				}
+			],
+			"parametros": [
+			]
+		}
+
+}
