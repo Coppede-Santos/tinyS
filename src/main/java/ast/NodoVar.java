@@ -24,6 +24,10 @@ public class NodoVar extends NodoOperando {
 
     }
 
+    public String getLexema() {
+        return lexema;
+    }
+
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";

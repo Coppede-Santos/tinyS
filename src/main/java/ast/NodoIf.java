@@ -21,6 +21,18 @@ public class NodoIf extends NodoSentencia{
         this.sentenciaElse = sentenciaElse;
     }
 
+    public NodoExp getCondicion() {
+        return condicion;
+    }
+
+    public NodoSentencia getSentenciaElse() {
+        return sentenciaElse;
+    }
+
+    public NodoSentencia getSentenciaIf() {
+        return sentenciaIf;
+    }
+
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";

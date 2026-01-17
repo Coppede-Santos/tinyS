@@ -16,4 +16,6 @@ public abstract class NodoSentencia {
 
     public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws  ErrorTiny;
 
+
+    public abstract void accept();
 }

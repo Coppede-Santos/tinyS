@@ -22,6 +22,13 @@ public class NodoExpUn extends NodoExp{
         this.operador = type;
     }
 
+    public TokenType getOperador() {
+        return operador;
+    }
+
+    public NodoExp getLadoDerecho() {
+        return ladoDerecho;
+    }
 
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {

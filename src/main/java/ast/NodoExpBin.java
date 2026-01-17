@@ -20,6 +20,10 @@ public class NodoExpBin extends NodoExpUn{
         this.ladoIzquierdo = ladoIzquierdo;
     }
 
+    public NodoExp getLadoIzquierdo() {
+        return ladoIzquierdo;
+    }
+
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
 

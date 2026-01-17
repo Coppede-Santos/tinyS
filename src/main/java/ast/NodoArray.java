@@ -19,6 +19,10 @@ public class NodoArray extends NodoVar{
         super(lexema, linea, columna);
     }
 
+    public NodoExp getIndice() {
+        return indice;
+    }
+
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";

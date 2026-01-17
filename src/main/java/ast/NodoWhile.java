@@ -18,6 +18,14 @@ public class NodoWhile extends NodoSentencia {
         this.sentencia = sentencia;
     }
 
+    public NodoSentencia getSentencia() {
+        return sentencia;
+    }
+
+    public NodoExp getCondicion() {
+        return condicion;
+    }
+
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
