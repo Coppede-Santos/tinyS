@@ -19,6 +19,7 @@ import static ast.AstJsonBuilder.*;
 public class NodoLlamadaMetodo extends NodoVar{
 
     LinkedList<NodoExp> parametros = new LinkedList<>();
+    String clase = "";
 
     public NodoLlamadaMetodo(String lex, int linea, int columna){
         super(lex, linea, columna);
@@ -29,6 +30,14 @@ public class NodoLlamadaMetodo extends NodoVar{
     public void agregarParametro(NodoExp nodoExp){
         parametros.add(nodoExp);
 
+    }
+
+    public LinkedList<NodoExp> getParametros() {
+        return parametros;
+    }
+
+    public String getClase() {
+        return clase;
     }
 
     @Override
@@ -43,12 +52,22 @@ public class NodoLlamadaMetodo extends NodoVar{
         salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
 
         if (st.buscarClase(lexema) != null) {
+            // Es un constructor
             esConstructor = true;
             claseActual = st.buscarClase(lexema);
             metodoReferenciado  = claseActual.getConstructor();
+
+
+            //Seteamos para la gc
+            clase = claseActual.getLexema();
         } else {
+            // Es un metodo
             claseActual = st.getClassActual();
             metodoReferenciado = claseActual.buscarMetodo(lexema);
+
+            //Seteamos para la gc
+            clase = claseActual.getLexema();
+
         }
 
         if (metodoReferenciado == null) {
@@ -143,6 +162,10 @@ public class NodoLlamadaMetodo extends NodoVar{
         salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
 
         EntradaClase claseActual = st.buscarClase(tipoEncadenadoPrev);
+
+        //Seteamos para la gc
+        clase = claseActual.getLexema();
+
         EntradaMetodo metodoReferenciado = claseActual.buscarMetodo(lexema);
         EntradaParametro parametroReferenciado;
 

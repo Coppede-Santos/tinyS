@@ -24,6 +24,14 @@ public class NodoAsignacion extends NodoSentencia{
         this.derecha = derecha;
     }
 
+    public NodoVar getIzquierda() {
+        return izquierda;
+    }
+
+    public NodoExp getDerecha() {
+        return derecha;
+    }
+
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";

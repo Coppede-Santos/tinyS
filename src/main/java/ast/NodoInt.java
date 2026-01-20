@@ -19,6 +19,10 @@ public class NodoInt extends NodoNum{
         this.valor = valor;
     }
 
+    public int getValor() {
+        return valor;
+    }
+
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
         throw new EncadenadoInvalido(posicion,tipoEncadenadoPrev);

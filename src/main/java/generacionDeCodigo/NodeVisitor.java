@@ -7,6 +7,7 @@ import java.util.LinkedList;
 
 public class NodeVisitor {
     CodeGen codigo = new CodeGen();
+    SymbolTable st;
 
     public NodeVisitor(){
     }
