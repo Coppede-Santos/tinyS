@@ -1,10 +1,15 @@
 package generacionDeCodigo;
 
-import analizadorSemantico.EntradaClase;
+import analizadorSemantico.*;
+import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import ast.*;
+import ast.Errores.VariableNoDeclaradaError;
+import ast.Errores.VisibilidadError;
 
 import java.util.LinkedList;
 import java.util.Objects;
+
+import static ast.AstJsonBuilder.*;
 
 public class MethodBodyVisitor extends NodeVisitor {
 
@@ -338,6 +343,47 @@ public class MethodBodyVisitor extends NodeVisitor {
 //    public void generarCodigo(NodoArray na){
 //        na.
 //    }
+
+    public void generarCodigo(NodoVar nodoVar){
+
+        // Para cuando se tiene un objeto sin encadenado previo
+
+        EntradaMetodo entradaMetodo = st.getMetodoActual(); //Obtenemos el metodo actual
+        EntradaClase claseReferenciada; //inicializamos una clase
+        int offset;
+
+
+
+        EntradaVariables variable = entradaMetodo.buscarVariableLocal(nodoVar.getLexema());
+        if (variable != null) {
+            //El caso de que el objeto sea una variable
+            offset = (variable.getPosicionVariable() * (-4)) -4; //Buscamos la posición de la variable pero el offset apunta primero al enlace dinamico
+            codigo.agregarLinea("lw $a0 ," + offset + "($fp) #Buscamos la variable en la pila");
+        }else {
+            //El caso de que el objeto sea un parametro
+            EntradaParametro parametro = entradaMetodo.buscarParametro(nodoVar.getLexema());
+
+            if (variable != null) {
+                offset = (parametro.getPosicionParametro() * (4)) + 4; //Buscamos la posición del parametro pero el offset apunta primero al enlace dinamico y arriba esta el self
+                codigo.agregarLinea("lw $a0 ," + offset + "($fp) #Buscamos el parametro en la pila");
+
+
+
+            } else {
+                //El caso de que el objeto sea una variable de instancia
+                EntradaClase clase = st.getClassActual();
+                EntradaAtributos atributo = clase.buscarAtributo(nodoVar.getLexema());
+
+                codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
+
+                offset = (atributo.getPosicionAtributo() * (-4)) - 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
+                codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
+
+            }
+        }
+
+
+    }
 
 
 
