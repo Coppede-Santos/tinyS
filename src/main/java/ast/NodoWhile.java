@@ -5,6 +5,7 @@ import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.TipoInvalidoError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.*;
 
@@ -48,7 +49,7 @@ public class NodoWhile extends NodoSentencia {
     }
 
     @Override
-    public void accept() {
-
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

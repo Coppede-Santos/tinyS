@@ -2,13 +2,12 @@ package ast;
 
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
-import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.EncadenadoInvalido;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.Objects;
 
-import static ast.AstJsonBuilder.*;
 import static ast.AstJsonBuilder.claveJson;
 import static ast.AstJsonBuilder.tabs;
 import static ast.AstJsonBuilder.valorJson;
@@ -51,7 +50,7 @@ public class NodoBool extends NodoOperando{
     }
 
     @Override
-    public void accept() {
-
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

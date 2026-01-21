@@ -2,8 +2,8 @@ package ast;
 
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
-import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
+import generacionDeCodigo.MethodBodyVisitor;
 
 public abstract class NodoExp extends NodoSentencia {
 
@@ -20,8 +20,8 @@ public abstract class NodoExp extends NodoSentencia {
     }
 
     @Override
-    public void accept() {
-
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 
     public void setEncadenado(NodoExp encadenado) {

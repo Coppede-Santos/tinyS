@@ -3,10 +3,10 @@ package ast;
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.*;
 import analizadorSemantico.Errores.ClaseNoDeclaradaError;
-import analizadorSemantico.Errores.ErrorSemantico;
 import ast.Errores.TipoIndiceInvalidoError;
 import ast.Errores.TipoInvalidoError;
 import ast.Errores.VariableNoDeclaradaError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.Objects;
 
@@ -69,11 +69,6 @@ public class NodoArray extends NodoVar{
         salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + "\n";
 
         return salida;
-    }
-
-    @Override
-    public void accept() {
-
     }
 
     @Override

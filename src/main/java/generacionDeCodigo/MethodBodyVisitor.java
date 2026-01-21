@@ -1,12 +1,10 @@
 package generacionDeCodigo;
 
 import analizadorSemantico.EntradaClase;
-import analizadorSemantico.EntradaMetodo;
-import analizadorSemantico.EntradaParametro;
-import analizadorSemantico.SymbolTable;
 import ast.*;
 
 import java.util.LinkedList;
+import java.util.Objects;
 
 public class MethodBodyVisitor extends NodeVisitor {
 
@@ -16,9 +14,9 @@ public class MethodBodyVisitor extends NodeVisitor {
         String loopLabel = "loop" + genLabel(nw);
 
         codigo.agregarLinea(loopLabel + ":");
-        nw.getCondicion().accept(); //Esto genera el codigo de la expresion que sirve como condicion del while
+        nw.getCondicion().accept(this); //Esto genera el codigo de la expresion que sirve como condicion del while
         codigo.agregarLinea("bne $a0, 1, " + doneLabel); //Si la condicion es falsa, salta al doneLabel (La condición se guarda en $a0)
-        nw.getSentencia().accept(); //Genera el codigo de la sentencia dentro del while
+        nw.getSentencia().accept(this); //Genera el codigo de la sentencia dentro del while
         codigo.agregarLinea("j" + loopLabel);
         codigo.agregarLinea(doneLabel + ":");
     }
@@ -28,27 +26,27 @@ public class MethodBodyVisitor extends NodeVisitor {
         String falseLabel = "falseI" + genLabel(nf);
         String doneLabel = "doneI" + genLabel(nf);
 
-        nf.getCondicion().accept(); //Genera el codigo para la condición
+        nf.getCondicion().accept(this); //Genera el codigo para la condición
 
         codigo.agregarLinea("bne $ao, 1, " + falseLabel + "# Si no se cumple la condición salta a la labelFalse");
-        nf.getSentenciaIf().accept(); //Genera el codigo para la sentencia dentro del if
+        nf.getSentenciaIf().accept(this); //Genera el codigo para la sentencia dentro del if
 
 
         codigo.agregarLinea("j" + doneLabel + " #Salta al doneLabel");
 
         codigo.agregarLinea(falseLabel + ": Escribe la labelFalse" );
         if (nf.getSentenciaElse() != null) { //Si no tiene else lo deja vacio
-            nf.getSentenciaElse().accept();  //Genera el codigo para la sentencia dentro del else
+            nf.getSentenciaElse().accept(this);  //Genera el codigo para la sentencia dentro del else
         }
 
         codigo.agregarLinea(doneLabel + ": #Escribe la labelDone");
     }
 
     public void generarCodigo(NodoExpBin nodoExpBin){
-        nodoExpBin.getLadoIzquierdo().accept();
+        nodoExpBin.getLadoIzquierdo().accept(this);
         codigo.agregarLinea("sw $a0, 0($sp)"); //Guarda el valor del lado izquierdo en la pila
         codigo.agregarLinea("addi $sp, $sp, -4");
-        nodoExpBin.getLadoDerecho().accept();
+        nodoExpBin.getLadoDerecho().accept(this);
         codigo.agregarLinea("lw $t1, 4($sp)");
 
         switch (nodoExpBin.getOperador()){
@@ -66,14 +64,14 @@ public class MethodBodyVisitor extends NodeVisitor {
 
     public void generarCodigoPlus(NodoExpBin nodoExpBin){
 
-        if (nodoExpBin.getLadoIzquierdo().getTipo() == "String" || nodoExpBin.getLadoDerecho().getTipo() == "String") {
+        if (Objects.equals(nodoExpBin.getLadoIzquierdo().getTipo(), "String") || Objects.equals(nodoExpBin.getLadoDerecho().getTipo(), "String")) {
 
             //Hacer la llamada a metodo concat
             codigo.agregarLinea("jal concat");
 
         } else {
 
-            if(nodoExpBin.getLadoIzquierdo().getTipo() == "Double" || nodoExpBin.getLadoDerecho().getTipo() == "Double"){
+            if(Objects.equals(nodoExpBin.getLadoIzquierdo().getTipo(), "Double") || Objects.equals(nodoExpBin.getLadoDerecho().getTipo(), "Double")){
 
                 codigo.agregarLinea("lwc1 $f1, 0($sp)");
                 codigo.agregarLinea("add.d $f0, $f0, $f1");
@@ -82,9 +80,9 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         }
 
-        nodoExpBin.getLadoIzquierdo().accept();
+        nodoExpBin.getLadoIzquierdo().accept(this);
         codigo.agregarLinea("addi $sp, $sp, -4");
-        nodoExpBin.getLadoDerecho().accept();
+        nodoExpBin.getLadoDerecho().accept(this);
         codigo.agregarLinea("lw $t1, 4($sp)");
         codigo.agregarLinea("add $a0, $t1, $a0");
     }
@@ -157,14 +155,14 @@ public class MethodBodyVisitor extends NodeVisitor {
     public void generarCodigo(NodoAsignacion nodoAsignacion) {
 
         // LADO IZQUIERDO: dirección de la variable → $a0
-        nodoAsignacion.getIzquierda().accept();
+        nodoAsignacion.getIzquierda().accept(this);
 
         // push dirección
         codigo.agregarLinea("sw $a0, 0($sp)");
         codigo.agregarLinea("addi $sp, $sp, -4");
 
         // LADO DERECHO: dirección (CIR del objeto) → $a0
-        nodoAsignacion.getDerecha().accept();
+        nodoAsignacion.getDerecha().accept(this);
 
         // pop dirección
         codigo.agregarLinea("lw $t0, 4($sp)");
@@ -246,7 +244,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         LinkedList<NodoExp> parametros = nodoLlamadaMetodo.getParametros();
 
         for (int i = parametros.size()-1 ; i==0; i-=1) {
-            parametros.get(i).accept(); //Nos da la dirección de la CIR del argumento
+            parametros.get(i).accept(this); //Nos da la dirección de la CIR del argumento
             codigo.agregarLinea("sw $a0 0($sp) # Guardar el argumento en la pila");
             codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
         }
@@ -271,7 +269,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         }
 
-        int offSet = entradaClase.getMetodo(nodoLlamadaMetodo.getLexema().getPosicion()); //Obtemenos el offset del metodo
+        int offSet = entradaClase.getMetodo(nodoLlamadaMetodo.getLexema()).getPosicionMetodo(); //Obtemenos el offset del metodo
         codigo.agregarLinea("addi $t0, $t0, " + (offSet * 4) + " # Calcular la dirección del método en la vtable");
         codigo.agregarLinea("jalr $t0 # Llamar al método " + nodoLlamadaMetodo.getLexema());
 
@@ -302,13 +300,13 @@ public class MethodBodyVisitor extends NodeVisitor {
         LinkedList<NodoExp> parametros = nodoLlamadaMetodo.getParametros();
 
         for (int i = parametros.size()-1 ; i==0; i-=1) {
-            parametros.get(i).accept(); //Nos da la dirección de la CIR del argumento
+            parametros.get(i).accept(this); //Nos da la dirección de la CIR del argumento
             codigo.agregarLinea("sw $a0 0($sp) # Guardar el argumento en la pila");
             codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
         }
 
         //hacemos el codigo para el encadenado previo
-        nodoExp.accept();
+        nodoExp.accept(this);
 
         // Como tiene encadenado previo tenemos que buscar la dirección del objeto
         codigo.agregarLinea("sw $a0, 0($sp) # Guardar el argumento en la pila #movemos el objeto a la pila");
@@ -317,7 +315,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("lw $t0, 0($a0) # Cargar la vtable del objeto");
 
 
-        int offSet = entradaClase.getMetodo(nodoLlamadaMetodo.getLexema().getPosicion()); //Obtemenos el offset del metodo
+        int offSet = entradaClase.getMetodo(nodoLlamadaMetodo.getLexema()).getPosicionMetodo(); //Obtemenos el offset del metodo
         codigo.agregarLinea("addi $t0, $t0, " + (offSet * 4) + " # Calcular la dirección del método en la vtable");
         codigo.agregarLinea("jalr $t0 # Llamar al método " + nodoLlamadaMetodo.getLexema());
 
@@ -349,7 +347,6 @@ public class MethodBodyVisitor extends NodeVisitor {
 
     public String genLabel(NodoSentencia ns){
 
-        String salida = "L" + ns.posicion.getLinea() + "_" + ns.posicion.getColumna();
-        return salida;
+        return "L" + ns.posicion.getLinea() + "_" + ns.posicion.getColumna();
     }
 }

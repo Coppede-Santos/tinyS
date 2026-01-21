@@ -5,6 +5,7 @@ import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.Posicion;
 import analizadorSemantico.SymbolTable;
+import generacionDeCodigo.MethodBodyVisitor;
 
 public abstract class NodoSentencia {
 
@@ -17,5 +18,5 @@ public abstract class NodoSentencia {
     public abstract String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws  ErrorTiny;
 
 
-    public abstract void accept();
+    public abstract void accept(MethodBodyVisitor methodBodyVisitor);
 }

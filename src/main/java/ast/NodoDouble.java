@@ -2,11 +2,10 @@ package ast;
 
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
-import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.EncadenadoInvalido;
+import generacionDeCodigo.MethodBodyVisitor;
 
-import static ast.AstJsonBuilder.*;
 import static ast.AstJsonBuilder.claveJson;
 import static ast.AstJsonBuilder.tabs;
 import static ast.AstJsonBuilder.valorJson;
@@ -48,7 +47,7 @@ public class NodoDouble extends NodoNum{
     }
 
     @Override
-    public void accept() {
-
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

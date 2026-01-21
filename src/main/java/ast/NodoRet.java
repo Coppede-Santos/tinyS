@@ -4,12 +4,9 @@ import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaClase;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ClaseNoDeclaradaError;
-import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.TipoInvalidoError;
-import com.sun.source.tree.BreakTree;
-
-import javax.swing.*;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.*;
 
@@ -71,8 +68,8 @@ public class NodoRet extends NodoSentencia{
     }
 
     @Override
-    public void accept() {
-
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 
 }

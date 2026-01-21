@@ -4,11 +4,11 @@ import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaClase;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.EntradaVariables;
-import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.AsignacionInvalidaError;
 import ast.Errores.TipoInvalidoError;
 import ast.Errores.VariableNoDeclaradaError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.Objects;
 
@@ -98,7 +98,7 @@ public class NodoAsignacion extends NodoSentencia{
     }
 
     @Override
-    public void accept() {
-
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

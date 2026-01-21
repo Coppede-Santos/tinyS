@@ -213,4 +213,16 @@ public class EntradaClase extends Entrada {
         return salida;
 
     }
+
+    public int getTamanioObjeto() {
+        // 4 bytes por la vtable
+        int tamanio = 4;
+        // 4 bytes por cada atributo
+        tamanio += atributos.size() * 4;
+        return tamanio;
+    }
+
+    public HashMap<String, EntradaAtributos> getAtributos() {
+        return atributos;
+    }
 }

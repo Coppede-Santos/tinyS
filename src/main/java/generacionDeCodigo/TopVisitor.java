@@ -4,7 +4,7 @@ import analizadorSemantico.*;
 import ast.NodoBloque;
 import ast.NodoSentencia;
 
-import java.util.HashMap;
+import java.util.Objects;
 
 public class TopVisitor extends NodeVisitor {
 
@@ -12,7 +12,7 @@ public class TopVisitor extends NodeVisitor {
 
         codigo.agregarData("VTABLE_"+clase.getLexema()+": #Vtable de la clase "+clase.getLexema());
         for(EntradaMetodo metodo : clase.getMetodos().values()){
-            metodo.accept();
+            metodo.accept(this);
         }
 
     }
@@ -20,7 +20,7 @@ public class TopVisitor extends NodeVisitor {
     public void generarCodigo(EntradaVariables variable){
         // Cargamos el valor por defecto de la variable en $a0
 
-        if (variable.getTipo() == "Int"){
+        if (Objects.equals(variable.getTipo(), "Int")){
             codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
             codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
             codigo.agregarLinea("syscall ");
@@ -32,7 +32,7 @@ public class TopVisitor extends NodeVisitor {
 
             codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
         }
-        if (variable.getTipo() == "Double"){
+        if (Objects.equals(variable.getTipo(), "Double")){
             codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
             codigo.agregarLinea("li $a0, 12  # 8 bytes y su vtable");
             codigo.agregarLinea("syscall ");
@@ -43,9 +43,9 @@ public class TopVisitor extends NodeVisitor {
             codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
 
 
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");;
+            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
         }
-        if (variable.getTipo() == "Bool"){
+        if (Objects.equals(variable.getTipo(), "Bool")){
             codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
             codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
             codigo.agregarLinea("syscall ");
@@ -58,7 +58,7 @@ public class TopVisitor extends NodeVisitor {
 
             codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
         }
-        if (variable.getTipo() == "String"){
+        if (Objects.equals(variable.getTipo(), "String")){
             codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
             codigo.agregarLinea("li $a0, 8  # su vtable");
             codigo.agregarLinea("syscall ");
@@ -85,10 +85,12 @@ public class TopVisitor extends NodeVisitor {
             codigo.agregarLinea("la $t0, VTABLE_"+ clase.getLexema() +" # Cargar la dirección de la vtable de String en un temporal");
             codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR");
 
-            for (EntradaAtributos atributo : clase.getAtributos().value()){
-                atributo.accept();
-                i = atributo.getPosicion();
-                codigo.agregarText("sw $a0 " + (4*i) + "($v0) #Inicializamos el atributo "+ atributo.getLexema();;
+            int i;
+
+            for (EntradaAtributos atributo : clase.getAtributos().values()){
+                atributo.accept(this);
+                i = atributo.getPosicionAtributo();
+                codigo.agregarText("sw $a0 " + (4*i) + "($v0) #Inicializamos el atributo "+ atributo.getLexema());
             }
 
 
@@ -102,7 +104,7 @@ public class TopVisitor extends NodeVisitor {
 
         int z = entradaMetodo.getCantidadVariablesLocales() * 4;
 
-        codigo.agregarText(getLabel(entradaMetodo.getLexema()) +": # Label del metodo" );
+        codigo.agregarText(entradaMetodo.getLexema() +": # Label del metodo" );
 
         codigo.agregarText("sw $ra 0($sp) #guardamos en la pila el return address");
         codigo.agregarText("addiu $sp $sp -4 #restamos 4 bytes para guardar el return address");
@@ -110,16 +112,17 @@ public class TopVisitor extends NodeVisitor {
 
         codigo.agregarText("addi $sp $sp " + z + "#restamos 4 bytes para cada variable local");
 
-        int i = 0;
+        int i;
         for(EntradaVariables variable : entradaMetodo.getVariablesLocales().values()){
             // Inicializamos las variables locales
-            variable.accept();
-            i = variable.getPosicion();
+            variable.accept(this);
+            i = variable.getPosicionVariable();
             codigo.agregarText("sw $a0 " + (-4*i) + "($fp)");
         }
 
+        MethodBodyVisitor methodBodyVisitor = new MethodBodyVisitor();
         for (NodoSentencia sentencia : nodoBloque.getSentencias()) {
-            sentencia.accept();
+            sentencia.accept(methodBodyVisitor);
         }
 
        codigo.agregarText("lw $ra 0($fp) #cargamos el return address");

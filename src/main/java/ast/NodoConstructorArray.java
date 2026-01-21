@@ -3,10 +3,9 @@ package ast;
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
-import analizadorSemantico.Errores.ErrorSemantico;
 import ast.Errores.EncadenadoInvalido;
-import ast.Errores.TipoIndiceInvalidoError;
 import ast.Errores.TipoInvalidoError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.*;
 
@@ -61,8 +60,8 @@ public class NodoConstructorArray extends NodoOperando{
     }
 
     @Override
-    public void accept() {
-
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 
     @Override

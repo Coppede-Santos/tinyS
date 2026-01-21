@@ -1,12 +1,10 @@
 package analizadorSemantico;
 
-import java.util.HashMap;
-import java.util.Objects;
-import analizadorSemantico.Errores.ErrorSemantico;
+import java.util.*;
 
-import java.lang.reflect.Array;
+import generacionDeCodigo.TopVisitor;
+
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class EntradaMetodo extends Entrada{
     EntradaClase tipoRetorno = null;
@@ -175,5 +173,13 @@ public class EntradaMetodo extends Entrada{
         }
 
         return salida;
+    }
+
+    public void accept(TopVisitor topVisitor) {
+        topVisitor.generarCodigo();
+    }
+
+    public HashMap<String, EntradaVariables> getVariablesLocales() {
+        return variablesLocales;
     }
 }

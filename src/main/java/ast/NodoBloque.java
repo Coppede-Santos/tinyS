@@ -2,8 +2,8 @@ package ast;
 
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
-import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.LinkedList;
 
@@ -53,7 +53,7 @@ public class NodoBloque extends NodoSentencia{
     }
 
     @Override
-    public void accept() {
-
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

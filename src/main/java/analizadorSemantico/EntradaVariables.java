@@ -1,5 +1,7 @@
 package analizadorSemantico;
 
+import generacionDeCodigo.TopVisitor;
+
 public class EntradaVariables extends Entrada {
     String tipo; // Array
     String subtipo; // Int
@@ -58,5 +60,16 @@ public class EntradaVariables extends Entrada {
         String salida = consolidar(profundidad) + tabs + "\"tipo\": \"" + tipo +
                 "\",\n" + tabs + "\"subtipo\": " + ((subtipo != null) ? ("\"" + subtipo + "\"") : "null");
         return salida;
+    }
+
+    public boolean esPrimitivo() {
+        return switch (this.tipo) {
+            case "Int", "Double", "Bool", "Str" -> true;
+            default -> false;
+        };
+    }
+
+    public void accept(TopVisitor topVisitor) {
+        topVisitor.generarCodigo(this);
     }
 }

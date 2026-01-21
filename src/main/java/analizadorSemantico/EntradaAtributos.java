@@ -1,5 +1,7 @@
 package analizadorSemantico;
 
+import generacionDeCodigo.TopVisitor;
+
 public class EntradaAtributos extends EntradaVariables{
     boolean esPrivado = true;
     String clasePropietaria;
@@ -33,5 +35,9 @@ public class EntradaAtributos extends EntradaVariables{
                 ",\n\t\t\t\t\t\"esPrivado\": " + esPrivado;
 
         return salida;
+    }
+
+    public void accept(TopVisitor topVisitor) {
+
     }
 }
