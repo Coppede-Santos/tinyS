@@ -3,6 +3,7 @@ package analizadorSemantico;
 public class EntradaVariables extends Entrada {
     String tipo; // Array
     String subtipo; // Int
+    int posicionVariable;
 
     public EntradaVariables(String nombre, int linea, int columna, String tipo) {
         super(nombre, linea, columna);
@@ -36,6 +37,14 @@ public class EntradaVariables extends Entrada {
 
     public String getSubtipo() {
         return subtipo;
+    }
+
+    public int getPosicionVariable() {
+        return posicionVariable;
+    }
+
+    public void setPosicionVariable(int posicionVariable) {
+        this.posicionVariable = posicionVariable;
     }
 
     public String consolidarVariable(int profundidad) {

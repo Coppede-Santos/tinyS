@@ -133,6 +133,8 @@ public class EntradaMetodo extends Entrada{
 
         salida = tabs + "{\n";
 
+        int posicionActualVariable = 1;
+
         salida += consolidar(profundidad+1) +
                 tabs + "\t\"tipoRetorno\": " + ((tipoRetorno != null) ? ("\"" + tipoRetorno.getLexema() + "\"") : "null") + ",\n"+
                 tabs + "\t\"subtipoRetorno\": " + ((subtipoRetorno != null) ? ("\"" + subtipoRetorno.getLexema() + "\"") : "null") + ",\n"+
@@ -147,6 +149,9 @@ public class EntradaMetodo extends Entrada{
             } else {
                 salida += tabs + "\t\t}\n";
             }
+
+            variable.setPosicionVariable(posicionActualVariable);
+            posicionActualVariable++;
 
         }
         salida += tabs + "\t],\n"+
