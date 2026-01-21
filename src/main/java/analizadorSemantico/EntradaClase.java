@@ -136,6 +136,8 @@ public class EntradaClase extends Entrada {
         String salida = "";
 
         EntradaClase entradaSuperClase = st.buscarClase(superClase);
+        int cantidadMetodosSuperclase = 0;
+        int cantidadAtributosSuperclase = 0;
 
         //Chequea que la clase no se encuentre en la linea de ancestros de su super clase
         if (superClase != null) {
@@ -149,16 +151,14 @@ public class EntradaClase extends Entrada {
                 salida += entradaSuperClase.consolidarClase(st,false);
                 entradaSuperClase.estaConsolidada = true;
             }
+            cantidadMetodosSuperclase = entradaSuperClase.metodos.size();
+            cantidadAtributosSuperclase = entradaSuperClase.atributos.size();
         }
-
-
-
-
-
-
 
         agregarMetodosDeSuperClase(entradaSuperClase);
         agregarAtributosDeSuperClase(entradaSuperClase);
+
+        int posicionAtributoActual = cantidadAtributosSuperclase + 1;
 
         salida += "\t\t{\n" + consolidar(3) +
                 "\t\t\t\"superClase\": " + ((superClase != null) ? ("\"" + superClase + "\"") : "null") + ",\n" +
@@ -171,6 +171,11 @@ public class EntradaClase extends Entrada {
             } else {
                 salida += "\n\t\t\t\t}\n";
             }
+
+            if(atributo.getPosicionAtributo() == 0) {
+                atributo.setPosicionAtributo(posicionAtributoActual);
+                posicionAtributoActual++;
+            }
         }
         salida += "\t\t\t], \n";
         if (constructor != null) {
@@ -180,6 +185,8 @@ public class EntradaClase extends Entrada {
 
         }
 
+        int posicionMetodoActual = cantidadMetodosSuperclase + 1;
+
         salida += "\t\t\t\"metodos\": [\n";
         for (EntradaMetodo metodo : metodos.values()) {
 
@@ -187,6 +194,10 @@ public class EntradaClase extends Entrada {
                 salida += metodo.consolidarMetodo(4, false);
             } else {
                 salida += metodo.consolidarMetodo(4, true);
+            }
+            if(metodo.getPosicionMetodo() == 0) {
+                metodo.setPosicionMetodo(posicionMetodoActual);
+                posicionMetodoActual++;
             }
         }
         salida += "\t\t\t]\n";
@@ -196,6 +207,8 @@ public class EntradaClase extends Entrada {
         } else {
             salida += "\t\t},\n";
         }
+
+        this.estaConsolidada = true;
 
         return salida;
 

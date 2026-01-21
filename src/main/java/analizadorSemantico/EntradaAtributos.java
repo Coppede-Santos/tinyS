@@ -3,6 +3,7 @@ package analizadorSemantico;
 public class EntradaAtributos extends EntradaVariables{
     boolean esPrivado = true;
     String clasePropietaria;
+    int posicionAtributo;
 
     public EntradaAtributos(String nombre, int linea, int columna, String tipo, boolean esPrivado, String clasePropietaria) {
         super(nombre, linea, columna, tipo);
@@ -12,6 +13,14 @@ public class EntradaAtributos extends EntradaVariables{
 
     public boolean esPrivado() {
         return esPrivado;
+    }
+
+    public int getPosicionAtributo() {
+        return posicionAtributo;
+    }
+
+    public void setPosicionAtributo(int posicionAtributo) {
+        this.posicionAtributo = posicionAtributo;
     }
 
     public String getClasePropietaria() {
