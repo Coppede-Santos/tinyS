@@ -63,4 +63,9 @@ public class NodoIf extends NodoSentencia{
 
         return salida;
     }
+
+    @Override
+    public void accept() {
+
+    }
 }

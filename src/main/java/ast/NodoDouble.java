@@ -46,4 +46,9 @@ public class NodoDouble extends NodoNum{
 
         return salida;
     }
+
+    @Override
+    public void accept() {
+
+    }
 }

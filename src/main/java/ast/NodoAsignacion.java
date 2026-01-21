@@ -47,36 +47,58 @@ public class NodoAsignacion extends NodoSentencia{
         salida += derecha.chequeoDeSentencias(entradaMetodo, st, profundidad + 1);
         salida += tabs(profundidad + 1) + "}\n";
 
-        EntradaClase derechaClase = st.buscarClase(derecha.tipo);
 
-        if ((!derechaClase.buscarAncestro(st,izquierda.tipo)) && derecha.getTipo().isEmpty())
-            throw new TipoInvalidoError(posicion, izquierda.lexema, derecha.getTipo());
+        // Verificamos que el tipo de la derecha sea compatible con el tipo de la izquierda
+        // Si derecha es nil es compatible con todos
+        if (!derecha.getTipo().equals("nil")) {
+
+            //Buscamos el tipo de la derecha
+            EntradaClase derechaClase = st.buscarClase(derecha.tipo);
 
 
-        // Array Int a;
-        // a = new Int[5];
+            // Buscamos que el tipo de la izquierda sea ancestro de la clase derecha, en otro caso es error
+            if ((!derechaClase.buscarAncestro(st,izquierda.tipo)) && derecha.getTipo().isEmpty())
+                throw new TipoInvalidoError(posicion, izquierda.lexema, derecha.getTipo());
 
-        if (derecha.getClass() == NodoConstructorArray.class) {
-            EntradaVariables variableIzquierda = entradaMetodo.buscarVariableLocal(izquierda.lexema);
-            if (variableIzquierda == null) {
-                variableIzquierda = entradaMetodo.buscarParametro(izquierda.lexema);
-            }
 
-            if (variableIzquierda == null) {
-                variableIzquierda = st.getClassActual().buscarAtributo(izquierda.lexema);
-            }
+            // Array Int a;
+            // a = new Int[5];
 
-            if (variableIzquierda == null) {
-                throw new VariableNoDeclaradaError(posicion, izquierda.lexema);
-            }
+            // Si la derecha es un array, verificamos que el subtipo coincida con el de la variable izquierda
+            if (derecha.getClass() == NodoConstructorArray.class) {
 
-            String subtipoIzq = variableIzquierda.getSubtipo();
+                //Buscamos si izquierda es una variable local o parametro
+                EntradaVariables variableIzquierda = entradaMetodo.buscarVariableLocal(izquierda.lexema);
+                if (variableIzquierda == null) {
+                    variableIzquierda = entradaMetodo.buscarParametro(izquierda.lexema);
+                }
 
-            if (!Objects.equals(subtipoIzq, ((NodoConstructorArray) derecha).subtipo)) {
-                throw new TipoInvalidoError(posicion, izquierda.lexema, subtipoIzq);
+                //Si no es una variable tiene que ser un atributo
+                if (variableIzquierda == null) {
+                    variableIzquierda = st.getClassActual().buscarAtributo(izquierda.lexema);
+                }
+
+                //Si no es una variable ni atributo es error
+                if (variableIzquierda == null) {
+                    throw new VariableNoDeclaradaError(posicion, izquierda.lexema);
+                }
+
+
+                //Vemos el subtipo de la variable izquierda
+                String subtipoIzq = variableIzquierda.getSubtipo();
+
+                //Si no coincide es error
+                if (!Objects.equals(subtipoIzq, ((NodoConstructorArray) derecha).subtipo)) {
+                    throw new TipoInvalidoError(posicion, izquierda.lexema, subtipoIzq);
+                }
             }
         }
 
         return salida;
+    }
+
+    @Override
+    public void accept() {
+
     }
 }

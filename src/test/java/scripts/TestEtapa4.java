@@ -209,5 +209,11 @@ public class TestEtapa4 {
     }
 
 
+    @Test
+    @DisplayName("Test del programa asignacionNill.s")
+    public void testAsignacionNill() throws IOException, ErrorTiny {
+        testSemanticFile("asignacionNill", true);
+    }
+
 
 }

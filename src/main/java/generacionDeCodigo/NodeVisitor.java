@@ -17,12 +17,12 @@ public class NodeVisitor {
 
 
 
-    public visitChildren(NodoSentencia n) {
-        for node : n.getChildren() {
-            node.codeGenerator(this);
-
-        }
-    }
+//    public visitChildren(NodoSentencia n) {
+//        for node : n.getChildren() {
+//            node.codeGenerator(this);
+//
+//        }
+//    }
 
 
 

@@ -19,6 +19,11 @@ public abstract class NodoExp extends NodoSentencia {
         super(linea, columna);
     }
 
+    @Override
+    public void accept() {
+
+    }
+
     public void setEncadenado(NodoExp encadenado) {
         this.encadenado = encadenado;
     }

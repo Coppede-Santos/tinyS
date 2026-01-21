@@ -2,8 +2,11 @@ package generacionDeCodigo;
 
 import analizadorSemantico.EntradaClase;
 import analizadorSemantico.EntradaMetodo;
+import analizadorSemantico.EntradaParametro;
 import analizadorSemantico.SymbolTable;
 import ast.*;
+
+import java.util.LinkedList;
 
 public class MethodBodyVisitor extends NodeVisitor {
 
@@ -27,18 +30,18 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         nf.getCondicion().accept(); //Genera el codigo para la condición
 
-        codigo.agregarLinea("bne $ao, 1, " + falseLabel); //Si no se cumple la condición salta a la labelFalse
+        codigo.agregarLinea("bne $ao, 1, " + falseLabel + "# Si no se cumple la condición salta a la labelFalse");
         nf.getSentenciaIf().accept(); //Genera el codigo para la sentencia dentro del if
 
 
-        codigo.agregarLinea("j" + doneLabel); //Salta al doneLabel
+        codigo.agregarLinea("j" + doneLabel + " #Salta al doneLabel");
 
-        codigo.agregarLinea(falseLabel + ":"); //Escribe la labelFalse
+        codigo.agregarLinea(falseLabel + ": Escribe la labelFalse" );
         if (nf.getSentenciaElse() != null) { //Si no tiene else lo deja vacio
             nf.getSentenciaElse().accept();  //Genera el codigo para la sentencia dentro del else
         }
 
-        codigo.agregarLinea(doneLabel + ":"); //Escribe la labelDone
+        codigo.agregarLinea(doneLabel + ": #Escribe la labelDone");
     }
 
     public void generarCodigo(NodoExpBin nodoExpBin){
@@ -87,40 +90,40 @@ public class MethodBodyVisitor extends NodeVisitor {
     }
 
 
-    public void generarCodigo(NodoLlamadaMetodo nodoLlamadaMetodo){
-
-        //buscar la entrada clase en la tabla de símbolos
-        EntradaClase entradaClase =  st.buscarClase(nodoLlamadaMetodo.getClase());
-
-        //buscar la entranda metodo en la clase
-        EntradaMetodo entradaMetodo = entradaClase.buscarMetodo(nodoLlamadaMetodo.getLexema());
-
-        String retorno = entradaMetodo.getTipoRetorno();
-
-
-
-
-        // Generar código para los argumentos y guardarlos en la pila
-        for (NodoSentencia argumento : ) {
-            argumento.accept();
-            codigo.agregarLinea("addi $sp, $sp, -4");
-            codigo.agregarLinea("sw $a0, 0($sp)"); // Guardar el argumento en la pila
-        }
-
-        // Cargar la dirección del método desde la vtable
-        codigo.agregarLinea("lw $t0, 0($a0)  # Cargar la vtable del objeto");
-        codigo.agregarLinea("lw $t1, " + (nodoLlamadaMetodo.getOffset() * 4) + "($t0)  # Cargar la dirección del método");
-
-        // Llamar al método
-        codigo.agregarLinea("jalr $t1");
-
-        // Limpiar la pila después de la llamada
-        int numArgumentos = nodoLlamadaMetodo.getArgumentos().size();
-        if (numArgumentos > 0) {
-            codigo.agregarLinea("addi $sp, $sp, " + (numArgumentos * 4));
-        }
-
-    }
+//    public void generarCodigo(NodoLlamadaMetodo nodoLlamadaMetodo){
+//
+//        //buscar la entrada clase en la tabla de símbolos
+//        EntradaClase entradaClase =  st.buscarClase(nodoLlamadaMetodo.getClase());
+//
+//        //buscar la entranda metodo en la clase
+//        EntradaMetodo entradaMetodo = entradaClase.buscarMetodo(nodoLlamadaMetodo.getLexema());
+//
+//        String retorno = entradaMetodo.getTipoRetorno();
+//
+//
+//
+//
+//        // Generar código para los argumentos y guardarlos en la pila
+//        for (NodoSentencia argumento : ) {
+//            argumento.accept();
+//            codigo.agregarLinea("addi $sp, $sp, -4");
+//            codigo.agregarLinea("sw $a0, 0($sp)"); // Guardar el argumento en la pila
+//        }
+//
+//        // Cargar la dirección del método desde la vtable
+//        codigo.agregarLinea("lw $t0, 0($a0)  # Cargar la vtable del objeto");
+//        codigo.agregarLinea("lw $t1, " + (nodoLlamadaMetodo.getOffset() * 4) + "($t0)  # Cargar la dirección del método");
+//
+//        // Llamar al método
+//        codigo.agregarLinea("jalr $t1");
+//
+//        // Limpiar la pila después de la llamada
+//        int numArgumentos = nodoLlamadaMetodo.getArgumentos().size();
+//        if (numArgumentos > 0) {
+//            codigo.agregarLinea("addi $sp, $sp, " + (numArgumentos * 4));
+//        }
+//
+//    }
 
 
 
@@ -229,7 +232,49 @@ public class MethodBodyVisitor extends NodeVisitor {
     }
 
 
-    a = b + 2;
+    public void generarCodigo(NodoLlamadaMetodo nodoLlamadaMetodo){
+
+        EntradaMetodo entradaMetodo;
+
+
+        codigo.agregarLinea("sw $fp 0($sp) # Guardar el frame pointer actual en la pila");
+        codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
+        // Generar código para los argumentos y guardarlos en la pila
+
+        LinkedList<NodoExp> parametros = nodoLlamadaMetodo.getParametros();
+
+        for (int i = parametros.size()-1 ; i==0; i-=1) {
+            parametros.get(i).accept(); //Nos da la dirección de la CIR del argumento
+            codigo.agregarLinea("sw $a0 0($sp) # Guardar el argumento en la pila");
+            codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
+        }
+
+        if (nodoLlamadaMetodo.getEsEstatico()){
+            EntradaClase entradaClase = st.buscarClase(nodoLlamadaMetodo.getClase());
+
+            codigo.agregarLinea("ld $t0, VTABLE_" + nodoLlamadaMetodo.getClase() + " # Cargar la dirección de la vtable de la clase " + nodoLlamadaMetodo.getClase());
+
+            int offSet =entradaClase.metodoOffSet(nodoLlamadaMetodo.getLexema()); //Obtemenos el offset del metodo
+
+            codigo.agregarLinea("addi $t0, $t0, " + (offSet * 4) + " # Calcular la dirección del método en la vtable");
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+    }
+
+
+
 
 
 

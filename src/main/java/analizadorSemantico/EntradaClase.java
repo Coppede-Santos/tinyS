@@ -40,6 +40,9 @@ public class EntradaClase extends Entrada {
         atributos.put(nombreAtributo, entradaAtributo);
         return true;
     }
+    public HashMap<String, EntradaMetodo> getMetodos() {
+        return metodos;
+    }
 
     public EntradaMetodo buscarMetodo(String nombreMetodo) {
         return metodos.get(nombreMetodo);

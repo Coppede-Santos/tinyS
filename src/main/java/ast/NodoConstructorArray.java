@@ -61,6 +61,11 @@ public class NodoConstructorArray extends NodoOperando{
     }
 
     @Override
+    public void accept() {
+
+    }
+
+    @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
         throw new EncadenadoInvalido(posicion, tipoEncadenadoPrev);
     }

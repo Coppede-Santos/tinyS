@@ -49,4 +49,9 @@ public class NodoBool extends NodoOperando{
 
         return salida;
     }
+
+    @Override
+    public void accept() {
+
+    }
 }

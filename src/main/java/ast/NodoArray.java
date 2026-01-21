@@ -72,6 +72,11 @@ public class NodoArray extends NodoVar{
     }
 
     @Override
+    public void accept() {
+
+    }
+
+    @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
         String salida = "";
 

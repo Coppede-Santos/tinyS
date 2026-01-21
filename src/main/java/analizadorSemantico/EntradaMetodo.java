@@ -16,7 +16,6 @@ public class EntradaMetodo extends Entrada{
     HashMap <String, EntradaVariables> variablesLocales = new HashMap<>();
 
     public EntradaMetodo(){
-
     }
 
     public EntradaMetodo(String nombre, int linea, int columna) {
@@ -33,6 +32,10 @@ public class EntradaMetodo extends Entrada{
         super(nombre);
         this.esEstatico = esEstatico;
         this.tipoRetorno = tipoRetorno;
+    }
+
+    public int getCantidadVariablesLocales() {
+        return variablesLocales.size();
     }
 
     public EntradaParametro buscarParametro(String nombreParametro) {

@@ -19,7 +19,7 @@ import static ast.AstJsonBuilder.*;
 public class NodoLlamadaMetodo extends NodoVar{
 
     LinkedList<NodoExp> parametros = new LinkedList<>();
-    String clase = "";
+    String clase = ""; //Clase que contiene el metodo
 
     public NodoLlamadaMetodo(String lex, int linea, int columna){
         super(lex, linea, columna);

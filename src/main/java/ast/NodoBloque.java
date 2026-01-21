@@ -20,6 +20,10 @@ public class NodoBloque extends NodoSentencia{
         sentencias.add(nodoSentencia);
     }
 
+    public LinkedList<NodoSentencia> getSentencias() {
+        return sentencias;
+    }
+
 
 
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
@@ -46,5 +50,10 @@ public class NodoBloque extends NodoSentencia{
 
 
         return salida;
+    }
+
+    @Override
+    public void accept() {
+
     }
 }

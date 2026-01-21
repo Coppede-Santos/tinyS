@@ -24,6 +24,10 @@ public class NodoVar extends NodoOperando {
 
     }
 
+    public Boolean getEsEstatico() {
+        return esEstatico;
+    }
+
     public String getLexema() {
         return lexema;
     }

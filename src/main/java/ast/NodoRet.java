@@ -70,4 +70,9 @@ public class NodoRet extends NodoSentencia{
         return salida;
     }
 
+    @Override
+    public void accept() {
+
+    }
+
 }
