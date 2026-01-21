@@ -143,58 +143,6 @@
 			]
 		},
 		{
-			"lexema": "A",
-			"posicion": {
-				"linea": 1,
-				"columna": 7
-			},
-			"superClase": "Object",
-			"atributos": [
-			], 
-			"constructor": [
-				{
-					"lexema": "A",
-					"posicion": {
-						"linea": 6,
-						"columna": 1
-					},
-					"tipoRetorno": null,
-					"subtipoRetorno": null,
-					"esEstatico": false,
-					"variablesLocales": [
-					],
-					"parametros": [
-					]
-				}
-			],
-			"metodos": [
-				{
-					"lexema": "aaa",
-					"posicion": {
-						"linea": 7,
-						"columna": 11
-					},
-					"tipoRetorno": null,
-					"subtipoRetorno": null,
-					"esEstatico": false,
-					"variablesLocales": [
-					],
-					"parametros": [
-						{
-							"lexema": "a",
-							"posicion": {
-								"linea": 7,
-								"columna": 17
-							},
-							"tipo": "Int",
-							"subtipo": null,
-							"posicionParametro": 0
-						}
-					]
-				}
-			]
-		},
-		{
 			"lexema": "B",
 			"posicion": {
 				"linea": 3,

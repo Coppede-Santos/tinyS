@@ -14,6 +14,7 @@ public class EntradaMetodo extends Entrada{
     boolean esEstatico = false;
     HashMap <String, EntradaParametro> parametros = new HashMap<>();
     HashMap <String, EntradaVariables> variablesLocales = new HashMap<>();
+    int posicionMetodo;
 
     public EntradaMetodo(){
     }
@@ -97,7 +98,13 @@ public class EntradaMetodo extends Entrada{
         this.esEstatico = esEstatico;
     }
 
+    public int getPosicionMetodo() {
+        return posicionMetodo;
+    }
 
+    public void setPosicionMetodo(int posicionMetodo) {
+        this.posicionMetodo = posicionMetodo;
+    }
 
     public Boolean compararFirma(EntradaMetodo metodo) {
         if (tipoRetorno != metodo.tipoRetorno) return false;
