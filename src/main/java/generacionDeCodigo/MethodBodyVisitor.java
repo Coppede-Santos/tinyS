@@ -233,8 +233,10 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
     public void generarCodigo(NodoLlamadaMetodo nodoLlamadaMetodo){
+        // Nodo llamada metodo para cuando no hay encadenado previo
 
-        EntradaMetodo entradaMetodo;
+
+        EntradaClase entradaClase = st.buscarClase(nodoLlamadaMetodo.getClase());
 
 
         codigo.agregarLinea("sw $fp 0($sp) # Guardar el frame pointer actual en la pila");
@@ -250,29 +252,85 @@ public class MethodBodyVisitor extends NodeVisitor {
         }
 
         if (nodoLlamadaMetodo.getEsEstatico()){
-            EntradaClase entradaClase = st.buscarClase(nodoLlamadaMetodo.getClase());
+            //Es estatico
+            //No tiene encadenado previo
+            codigo.agregarLinea("li, $t0, 0 #Guardamos un valor nulo en el temporal");
+            codigo.agregarLinea("sw $t0, 0($sp) #Como es estatico se guarda un self nulo en el registro de activación para no romper la estructura");
+            codigo.agregarLinea("addiu $sp $sp -4 #movemos el puntero de la pila");
+
 
             codigo.agregarLinea("ld $t0, VTABLE_" + nodoLlamadaMetodo.getClase() + " # Cargar la dirección de la vtable de la clase " + nodoLlamadaMetodo.getClase());
 
-            int offSet =entradaClase.metodoOffSet(nodoLlamadaMetodo.getLexema()); //Obtemenos el offset del metodo
+        }else{
+            //Si no es estatico y no tiene un encadenado previo es un metodo que se llama desde self
+            codigo.agregarLinea("lw $t1, 4($fp) # Cargar la dirección del objeto (this) desde el frame pointer antrior");
+            codigo.agregarLinea("sw $t1, 0($sp) # Guardar el objeto (this) en la pila");
+            codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
 
-            codigo.agregarLinea("addi $t0, $t0, " + (offSet * 4) + " # Calcular la dirección del método en la vtable");
-
-
-
+            codigo.agregarLinea("lw $t0, 0($t1) # Cargar la vtable del objeto");
 
         }
 
+        int offSet = entradaClase.getMetodo(nodoLlamadaMetodo.getLexema().getPosicion()); //Obtemenos el offset del metodo
+        codigo.agregarLinea("addi $t0, $t0, " + (offSet * 4) + " # Calcular la dirección del método en la vtable");
+        codigo.agregarLinea("jalr $t0 # Llamar al método " + nodoLlamadaMetodo.getLexema());
 
+        codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el self");
 
+        for (int i = parametros.size()-1 ; i==0; i-=1) {
+            codigo.agregarLinea("addiu $sp $sp 4 # movemos el puntero de la pila");
+        }
 
-
-
-
-
+        codigo.agregarLinea("lw $fp 0($sp) # Restauramos el frame pointer");
+        codigo.agregarLinea("addiu $sp $sp 4 # sacamos el frame pointer de la pila");
 
     }
 
+
+
+    public void generarCodigo(NodoLlamadaMetodo nodoLlamadaMetodo, NodoExp nodoExp){
+        // Nodo llamada metodo para cuando hay encadenado previo
+
+
+        EntradaClase entradaClase = st.buscarClase(nodoLlamadaMetodo.getClase());
+
+
+        codigo.agregarLinea("sw $fp 0($sp) # Guardar el frame pointer actual en la pila");
+        codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
+        // Generar código para los argumentos y guardarlos en la pila
+
+        LinkedList<NodoExp> parametros = nodoLlamadaMetodo.getParametros();
+
+        for (int i = parametros.size()-1 ; i==0; i-=1) {
+            parametros.get(i).accept(); //Nos da la dirección de la CIR del argumento
+            codigo.agregarLinea("sw $a0 0($sp) # Guardar el argumento en la pila");
+            codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
+        }
+
+        //hacemos el codigo para el encadenado previo
+        nodoExp.accept();
+
+        // Como tiene encadenado previo tenemos que buscar la dirección del objeto
+        codigo.agregarLinea("sw $a0, 0($sp) # Guardar el argumento en la pila #movemos el objeto a la pila");
+        codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
+
+        codigo.agregarLinea("lw $t0, 0($a0) # Cargar la vtable del objeto");
+
+
+        int offSet = entradaClase.getMetodo(nodoLlamadaMetodo.getLexema().getPosicion()); //Obtemenos el offset del metodo
+        codigo.agregarLinea("addi $t0, $t0, " + (offSet * 4) + " # Calcular la dirección del método en la vtable");
+        codigo.agregarLinea("jalr $t0 # Llamar al método " + nodoLlamadaMetodo.getLexema());
+
+        codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el self");
+
+        for (int i = parametros.size()-1 ; i==0; i-=1) {
+            codigo.agregarLinea("addiu $sp $sp 4 # movemos el puntero de la pila");
+        }
+
+        codigo.agregarLinea("lw $fp 0($sp) # Restauramos el frame pointer");
+        codigo.agregarLinea("addiu $sp $sp 4 # sacamos el frame pointer de la pila");
+
+    }
 
 
 
