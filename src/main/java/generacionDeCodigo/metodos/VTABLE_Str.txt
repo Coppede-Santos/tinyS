@@ -1,0 +1,33 @@
+.data
+    VTABLE_Str:
+    	.word length
+    	.word concat
+
+.text
+
+length:
+	# Comienzo de start
+	move $fp $sp
+	sw $ra 0($sp)
+	addiu $sp $sp -4
+
+	# Cuerpo de length
+	lw $a0 4($fp) # Cargo el objeto
+	lw $a0 4($a0) # Cargo el valor del objeto str
+	li $t1 -1 # Guardo un contador
+
+	loop:
+		lb $t0 ($a0) # t0 = char actual
+		addi $a0 $a0 1 # Sumo un byte al valor str
+		addi $t1 $t1 1 # Sumo en uno el contador
+		bne $t0 $zero loop # Si llego a \0, salgo
+
+	move $a0, $t1 # Muevo el resultado en a0
+	li $v0, 1 # Imprimo str
+	syscall
+
+	# Final de start
+	lw $ra 4($sp)
+	addiu $sp $sp 12
+	lw $fp 0($sp)
+	jr $ra
