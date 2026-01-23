@@ -2,28 +2,28 @@ package analizadorSemantico;
 
 import generacionDeCodigo.TopVisitor;
 
-public class EntradaVariables extends Entrada {
+public class EntradaVariable extends Entrada {
     String tipo; // Array
     String subtipo; // Int
     int posicionVariable;
 
-    public EntradaVariables(String nombre, int linea, int columna, String tipo) {
+    public EntradaVariable(String nombre, int linea, int columna, String tipo) {
         super(nombre, linea, columna);
         this.tipo = tipo;
     }
 
-    public EntradaVariables(String nombre, String tipo) {
+    public EntradaVariable(String nombre, String tipo) {
         super(nombre);
         this.tipo = tipo;
     }
 
-    public EntradaVariables(String nombre, String tipo, String subtipo) {
+    public EntradaVariable(String nombre, String tipo, String subtipo) {
         super(nombre);
         this.tipo = tipo;
         this.subtipo = subtipo;
     }
 
-    public EntradaVariables(String nombre, int linea, int columna, String tipo, String subtipo) {
+    public EntradaVariable(String nombre, int linea, int columna, String tipo, String subtipo) {
         super(nombre, linea, columna);
         this.tipo = tipo;
         this.subtipo = subtipo;

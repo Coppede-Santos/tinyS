@@ -712,7 +712,7 @@ public class Parser {
                 throw new VariableRedefinidaError(currentToken.getLine(),currentToken.getColumn(),currentToken.getLexema());
             }
 
-            EntradaVariables variableLocal = new EntradaVariables(
+            EntradaVariable variableLocal = new EntradaVariable(
                     currentToken.getLexema(),
                     currentToken.getLine(),
                     currentToken.getColumn(),
@@ -744,7 +744,7 @@ public class Parser {
                 throw new VariableRedefinidaError(currentToken.getLine(),currentToken.getColumn(),currentToken.getLexema());
             }
 
-            EntradaAtributos atributo = new EntradaAtributos(
+            EntradaAtributo atributo = new EntradaAtributo(
                     currentToken.getLexema(),
                     currentToken.getLine(),
                     currentToken.getColumn(),
@@ -1207,7 +1207,7 @@ public class Parser {
         }else{
             if(type == LEFT_BRACKET){
                 macheo(LEFT_BRACKET);
-                NodoArray arreglo = new NodoArray(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
+                NodoArrayAcceso arreglo = new NodoArrayAcceso(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
                 arreglo.setIndice(expOr());
                 macheo(RIGHT_BRACKET);
                 return arreglo;
@@ -1863,7 +1863,7 @@ public class Parser {
         }else{
             if (type == LEFT_BRACKET){
                 macheo(LEFT_BRACKET);
-                NodoArray nodoArray = new NodoArray(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
+                NodoArrayAcceso nodoArray = new NodoArrayAcceso(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
                 nodoArray.setIndice(expOr());
                 macheo(RIGHT_BRACKET);
                 nodoArray.setEncadenado(encadenado_factorizado());

@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class EntradaClase extends Entrada {
     String superClase;
-    HashMap<String, EntradaAtributos> atributos = new HashMap<>();
+    HashMap<String, EntradaAtributo> atributos = new HashMap<>();
     HashMap<String, EntradaMetodo> metodos = new HashMap<>();
     EntradaMetodo constructor;
     boolean estaConsolidada = false;
@@ -30,11 +30,11 @@ public class EntradaClase extends Entrada {
         super(nombre, linea, columna);
     }
 
-    public EntradaAtributos buscarAtributo(String nombreAtributo) {
+    public EntradaAtributo buscarAtributo(String nombreAtributo) {
         return atributos.get(nombreAtributo);
     }
 
-    public boolean insertarAtributo(String nombreAtributo, EntradaAtributos entradaAtributo) {
+    public boolean insertarAtributo(String nombreAtributo, EntradaAtributo entradaAtributo) {
         if (atributos.containsKey(nombreAtributo))
             return false;
         atributos.put(nombreAtributo, entradaAtributo);
@@ -114,11 +114,11 @@ public class EntradaClase extends Entrada {
     private void agregarAtributosDeSuperClase(EntradaClase superClase) throws ErrorSemantico{
         if (superClase != null) {
             for (String nombreAtributo : superClase.atributos.keySet()) {
-                EntradaAtributos atributo = this.buscarAtributo(nombreAtributo);
+                EntradaAtributo atributo = this.buscarAtributo(nombreAtributo);
                 if ( atributo != null){
                     throw new RedefinirAtributoError( atributo.getLinea(), atributo.getColumna(), atributo.getLexema(), this.getLexema());
                 }
-                EntradaAtributos atributoSuperClase = superClase.atributos.get(nombreAtributo);
+                EntradaAtributo atributoSuperClase = superClase.atributos.get(nombreAtributo);
                 this.atributos.put(nombreAtributo, atributoSuperClase);
             }
         }
@@ -163,7 +163,7 @@ public class EntradaClase extends Entrada {
         salida += "\t\t{\n" + consolidar(3) +
                 "\t\t\t\"superClase\": " + ((superClase != null) ? ("\"" + superClase + "\"") : "null") + ",\n" +
                 "\t\t\t\"atributos\": [\n";
-        for (EntradaAtributos atributo : atributos.values()) {
+        for (EntradaAtributo atributo : atributos.values()) {
             salida += "\t\t\t\t{\n" + atributo.consolidarAtributo(5);
 
             if (atributo != atributos.values().toArray()[atributos.size() - 1]) {
@@ -222,7 +222,7 @@ public class EntradaClase extends Entrada {
         return tamanio;
     }
 
-    public HashMap<String, EntradaAtributos> getAtributos() {
+    public HashMap<String, EntradaAtributo> getAtributos() {
         return atributos;
     }
 }

@@ -17,7 +17,7 @@ public class TopVisitor extends NodeVisitor {
 
     }
 
-    public void generarCodigo(EntradaVariables variable){
+    public void generarCodigo(EntradaVariable variable){
         // Cargamos el valor por defecto de la variable en $a0
 
         if (Objects.equals(variable.getTipo(), "Int")){
@@ -87,7 +87,7 @@ public class TopVisitor extends NodeVisitor {
 
             int i;
 
-            for (EntradaAtributos atributo : clase.getAtributos().values()){
+            for (EntradaAtributo atributo : clase.getAtributos().values()){
                 atributo.accept(this);
                 i = atributo.getPosicionAtributo();
                 codigo.agregarText("sw $a0 " + (4*i) + "($v0) #Inicializamos el atributo "+ atributo.getLexema());
@@ -113,7 +113,7 @@ public class TopVisitor extends NodeVisitor {
         codigo.agregarText("addi $sp $sp " + z + "#restamos 4 bytes para cada variable local");
 
         int i;
-        for(EntradaVariables variable : entradaMetodo.getVariablesLocales().values()){
+        for(EntradaVariable variable : entradaMetodo.getVariablesLocales().values()){
             // Inicializamos las variables locales
             variable.accept(this);
             i = variable.getPosicionVariable();

@@ -2,12 +2,12 @@ package analizadorSemantico;
 
 import generacionDeCodigo.TopVisitor;
 
-public class EntradaAtributos extends EntradaVariables{
+public class EntradaAtributo extends EntradaVariable {
     boolean esPrivado = true;
     String clasePropietaria;
     int posicionAtributo;
 
-    public EntradaAtributos(String nombre, int linea, int columna, String tipo, boolean esPrivado, String clasePropietaria) {
+    public EntradaAtributo(String nombre, int linea, int columna, String tipo, boolean esPrivado, String clasePropietaria) {
         super(nombre, linea, columna, tipo);
         this.esPrivado = esPrivado;
         this.clasePropietaria = clasePropietaria;
