@@ -39,3 +39,94 @@ length:
 	addiu $sp $sp 12
 	lw $fp 0($sp)
 	jr $ra
+
+concat:
+	move $fp $sp
+	sw $ra 0($sp)
+	addiu $sp $sp -4
+
+	# Cuerpo de concat
+
+	## Paso1: Calcular longitud de la primer cadena
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+
+	lw $a0 4($fp) # Buscamos el primer param de concat
+	sw $a0 0($sp) # Lo guardamos en la pila
+	addiu $sp $sp -4
+	jal length
+
+	sw $a0, 0($sp) # Guardamos l1 en la pila
+	addiu $sp $sp -4
+
+	## Paso2: Calcular longitud de la segunda cadena
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+
+	lw $a0 8($fp) # Buscamos el segundo param de concat
+	sw $a0 0($sp) # Lo guardamos en la pila
+	addiu $sp $sp -4
+	jal length
+
+	sw $a0, 0($sp) # Guardamos l2 en la pila
+	addiu $sp $sp -4
+
+	## Paso3: Reservar memoria len1 + len2
+	## - Guardar la dirección de v0 en un registro para no perderlo
+	## - Crear CIR de Str nuevo, incluye guardar la VT
+
+	lw $t0, -4($fp) # Obtengo el CIR de l1
+	lw $t0, 4($t0) # Obtengo el len de l1
+	lw $t1, -8($fp) # Obtengo l2
+	lw $t1, 4($t1) # Obtengo el len de l2
+
+	#move $a0, $zero
+	add $a0, $t0, $t1 # a0 = l1 + l2
+	addi $a0, $a0, 4 # a0 = vt + len
+
+	li $v0, 9
+	syscall
+
+	move $a0, $v0 # Guardo la CIR
+
+	la $t0, VTABLE_Str
+	sw $t0, 0($v0) # Guardo la VT en el heap
+
+	## Paso4: Escribir cadena 1 en v0
+
+	lw $t0 4($fp) # Obtengo CIR de s1
+	addiu $t0 $t0 4 # Apunto t0 a s1.val
+
+	move $t2 $v0 # Apunto t2 al CIR de s1
+	addiu $t2 $t2 4 # Apunto t2 a s2.val
+
+	concat_loop_1:
+		lb $t1 ($t0) # Catga byte de s1
+		beq $t1 $zero exit_concat_loop_1# Si es \0, salgo del loop para no escribirlo
+		sb $t1 ($t2) # Escribe byte en rta
+		addiu $t0 $t0 1
+		addiu $t2 $t2 1
+		b concat_loop_1
+
+	exit_concat_loop_1:
+
+	## Paso5: Escribir cadena 2 en v0 + len1
+
+	lw $t0 8($fp) # Obtengo CIR de s2
+	addiu $t0 $t0 4 # Apunto t0 a s2.val
+
+	concat_loop_2:
+		lb $t1 ($t0) # Catga byte de s2
+		sb $t1 ($t2) # Escribe byte en rta
+		addiu $t0 $t0 1
+		addiu $t2 $t2 1
+		bne $t1 $zero concat_loop_2 # Si es \0, termino
+
+	# desalojo variables locales
+	addiu $sp $sp 8
+
+	# Final del concat
+	lw $ra 4($sp)
+	addiu $sp $sp 16
+	lw $fp 0($sp)
+	jr $ra
