@@ -13,7 +13,7 @@ length:
 
 	# Cuerpo de length
 	lw $a0 4($fp) # Cargo el objeto
-	lw $a0 4($a0) # Cargo el valor del objeto str
+	addiu $a0 $a0 4
 	li $t1 -1 # Guardo un contador
 
 	loop:
@@ -22,9 +22,17 @@ length:
 		addi $t1 $t1 1 # Sumo en uno el contador
 		bne $t0 $zero loop # Si llego a \0, salgo
 
+	# Creo CIR Int
+	addiu $t2, $t1, 4 # Sumo len + 4 VT
 	move $a0, $t1 # Muevo el resultado en a0
-	li $v0, 1 # Imprimo str
+	li $v0, 9 # Reservo bytes
 	syscall
+
+	lw $t0, VTABLE_Int
+	sw $t0, 0($v0)
+	sw $t1, 4($v0)
+
+	move $a0, $v0
 
 	# Final de start
 	lw $ra 4($sp)
