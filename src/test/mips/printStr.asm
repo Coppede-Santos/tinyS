@@ -1,19 +1,71 @@
-.data
-VTABLE_IO:
-    .word out_str
-    .word out_int
-    .word out_bool
-    .word out_double
-    .word out_array_int
-    .word out_array_str
-    .word out_array_bool
-    .word out_array_double
-    .word in_str
-    .word in_int
-    .word in_bool
-    .word in_double
-
 .text
+
+main:
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+	jal start
+	b exit
+	
+start:
+	move $fp $sp
+	sw $ra 0($sp)
+	addiu $sp $sp -4
+	
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+	jal IO_in_str
+	
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+	
+	sw $a0 0($sp)
+	addiu $sp $sp -4
+	
+	jal IO_out_str
+	
+	# final de cuerpo de start
+	lw $ra 4($sp)
+	addiu $sp $sp 8
+	lw $fp 0($sp)
+	
+	# exit
+	jr $ra
+	
+# --------------------------------------------
+# --------------------------------------------
+# --------------------------------------------	
+
+length:
+	move $fp $sp
+	sw $ra 0($sp)
+	addiu $sp $sp -4
+	
+	# Cuerpo de length
+	lw $a0 4($fp) # Cargo el objeto
+	lw $a0 4($a0) # Cargo el valor del objeto str
+	li $t1 -1 # Guardo un contador
+	
+	loop:
+		lb $t0 ($a0) # t0 = char actual
+		addi $a0 $a0 1 # Sumo un byte al valor str
+		addi $t1 $t1 1 # Sumo en uno el contador
+		bne $t0 $zero loop # Si llego a \0, salgo
+	
+	move $a0, $t1 # Muevo el resultado en a0
+	li $v0, 1 # Imprimo str
+	syscall
+	
+	# Final de start
+	lw $ra 4($sp)
+	addiu $sp $sp 12
+	lw $fp 0($sp)
+	jr $ra
+	
+save_str:
+	
+	
+concat:
+
 IO_in_str:
 	# Actualizamos frame pointer al de este metodo
 	move $fp $sp
@@ -25,50 +77,44 @@ IO_in_str:
 	# --- Se genera el codigo del metodo ---
 	move $t0 $sp # Guardo el tope en t0
 	addiu $sp $sp -1024 # Reservo 1024 bytes para el str
-
+	
 	move $a0 $sp
 	li $a1 1024
 	li $v0 8 # Leo el dato
 	syscall
-
+	
 	move $a0 $sp
 	li $t2 -1
-
+	
 	loop_IO_in_str:
 		lb $t3 ($a0)
 		addi $a0 $a0 1
 		addi $t2 $t2 1
 		bne $t3 $zero loop_IO_in_str
-
-	#li $v0 1
-	#move $a0 $t2
-	#syscall
-
-	addiu $t2 $t2 4
-
+	
 	li $v0 9
 	move $a0 $t2
 	syscall #Reservo espacio
-
+	
 	la $a0, VTABLE_Str
 	sw $a0, 0($v0)
-
+	
 	move $a0, $v0
-
+	
 	addiu $v0 $v0 4
-
+	
 	move $t1 $v0 # Guardo puntero destino
 	move $t3 $sp # Guardo puntero origen
-
+	
 	loop_IO_in_str_2:
 		lb $t2 ($t3)
 		sb $t2 ($t1)
 		addi $t3 $t3 1
 		addi $t1 $t1 1
 		bne $t2 $zero loop_IO_in_str_2
-
+		
 	addiu $sp $sp 1024
-
+	
 	# --------------------------------------
 
 
@@ -80,17 +126,17 @@ IO_in_str:
 	lw $fp 0($sp)
 
 	jr $ra
-
+	
 IO_out_str:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
-
+	
 	# Cuerpo de length
 	lw $t0 4($fp) # Cargo el objeto
 	addiu $t0 $t0 4
 	li $t1 -1 # Guardo un contador
-
+	
 	loop_IO_out_str:
 		lb $a0 ($t0) # t0 = char actual
 		addi $t0 $t0 1 # Sumo un byte al valor str
@@ -98,56 +144,27 @@ IO_out_str:
 		li $v0 11
 		syscall
 		bne $a0 $zero loop_IO_out_str # Si llego a \0, salgo
-
+	
 	move $a0, $t1 # Muevo el resultado en a0
-
+	
 	# Final de start
 	lw $ra 4($sp)
 	addiu $sp $sp 12
 	lw $fp 0($sp)
 	jr $ra
-
-IO_in_int:
-	move $fp $sp
-	sw $ra 0($sp)
-	addiu $sp $sp -4
-
-	# 1. Creo el CIR
-	li $v0 9
-	li $a0 8
+	
+exit:
+	li $v0, 10
 	syscall
+	
+.data 
+def_Str: .asciiz "0"
 
-	move $a0 $v0
+hello_world: .asciiz "Hello World"
 
-	la $t0 VTABLE_Int
-	sw $t0 0($a0)
-
-	# 2. Leo el int
-	li $v0 5
-	syscall
-
-	# 3. Guardo el int
-	sw $v0 4($a0)
-
-	# --
-	lw $ra 4($sp)
-	addiu $sp $sp 8
-	lw $fp 0($sp)
-	jr $ra
-
-
-IO_out_int:
-	move $fp $sp
-	sw $ra 0($sp)
-	addiu $sp $sp -4
-
-	# 1. Recupero el int y lo imprimo
-	lw $a0 4($a0)
-	li $v0 1
-	syscall
-
-	# --
-	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
-	jr $ra
+VTABLE_Str:
+	.word length
+	.word concat
+	
+	
+	
