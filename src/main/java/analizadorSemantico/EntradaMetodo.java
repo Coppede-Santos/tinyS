@@ -11,7 +11,7 @@ public class EntradaMetodo extends Entrada{
     EntradaClase subtipoRetorno = null;
     boolean esEstatico = false;
     HashMap <String, EntradaParametro> parametros = new HashMap<>();
-    HashMap <String, EntradaVariables> variablesLocales = new HashMap<>();
+    HashMap <String, EntradaVariable> variablesLocales = new HashMap<>();
     int posicionMetodo;
 
     public EntradaMetodo(){
@@ -57,11 +57,11 @@ public class EntradaMetodo extends Entrada{
         return true;
     }
 
-    public EntradaVariables buscarVariableLocal(String nombreVariableLocal) {
+    public EntradaVariable buscarVariableLocal(String nombreVariableLocal) {
         return variablesLocales.get(nombreVariableLocal);
     }
 
-    public boolean insertarVariableLocal(String nombreVariableLocal, EntradaVariables entradaVariableLocal) {
+    public boolean insertarVariableLocal(String nombreVariableLocal, EntradaVariable entradaVariableLocal) {
         if (variablesLocales.containsKey(nombreVariableLocal))
             return false;
         variablesLocales.put(nombreVariableLocal, entradaVariableLocal);
@@ -138,7 +138,7 @@ public class EntradaMetodo extends Entrada{
                 tabs + "\t\"subtipoRetorno\": " + ((subtipoRetorno != null) ? ("\"" + subtipoRetorno.getLexema() + "\"") : "null") + ",\n"+
                 tabs + "\t\"esEstatico\": " + esEstatico + ",\n" +
                 tabs + "\t\"variablesLocales\": [\n";
-        for (EntradaVariables variable : variablesLocales.values()) {
+        for (EntradaVariable variable : variablesLocales.values()) {
             salida += tabs + "\t\t{\n" +  variable.consolidarVariable(5) + "\n";
 
             // Check if it is the last variable
@@ -179,7 +179,7 @@ public class EntradaMetodo extends Entrada{
         topVisitor.generarCodigo();
     }
 
-    public HashMap<String, EntradaVariables> getVariablesLocales() {
+    public HashMap<String, EntradaVariable> getVariablesLocales() {
         return variablesLocales;
     }
 }

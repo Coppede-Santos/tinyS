@@ -1,6 +1,6 @@
 package analizadorSemantico;
 
-public class EntradaParametro extends EntradaVariables{
+public class EntradaParametro extends EntradaVariable {
 
     int posicionParametro;
 

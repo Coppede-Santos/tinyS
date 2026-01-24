@@ -3,7 +3,7 @@ package ast;
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaClase;
 import analizadorSemantico.EntradaMetodo;
-import analizadorSemantico.EntradaVariables;
+import analizadorSemantico.EntradaVariable;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.AsignacionInvalidaError;
 import ast.Errores.TipoInvalidoError;
@@ -68,7 +68,7 @@ public class NodoAsignacion extends NodoSentencia{
             if (derecha.getClass() == NodoConstructorArray.class) {
 
                 //Buscamos si izquierda es una variable local o parametro
-                EntradaVariables variableIzquierda = entradaMetodo.buscarVariableLocal(izquierda.lexema);
+                EntradaVariable variableIzquierda = entradaMetodo.buscarVariableLocal(izquierda.lexema);
                 if (variableIzquierda == null) {
                     variableIzquierda = entradaMetodo.buscarParametro(izquierda.lexema);
                 }

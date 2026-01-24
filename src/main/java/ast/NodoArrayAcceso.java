@@ -6,16 +6,15 @@ import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import ast.Errores.TipoIndiceInvalidoError;
 import ast.Errores.TipoInvalidoError;
 import ast.Errores.VariableNoDeclaradaError;
-import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.Objects;
 
 import static ast.AstJsonBuilder.*;
 
-public class NodoArray extends NodoVar{
+public class NodoArrayAcceso extends NodoVar{
     NodoExp indice;
 
-    public NodoArray(String lexema, int linea, int columna) {
+    public NodoArrayAcceso(String lexema, int linea, int columna) {
         super(lexema, linea, columna);
     }
 
@@ -27,7 +26,7 @@ public class NodoArray extends NodoVar{
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
 
-        EntradaVariables variable = entradaMetodo.buscarVariableLocal(lexema);
+        EntradaVariable variable = entradaMetodo.buscarVariableLocal(lexema);
         if (variable == null) {
             variable = entradaMetodo.buscarParametro(lexema);
         }
@@ -82,7 +81,7 @@ public class NodoArray extends NodoVar{
             throw new ClaseNoDeclaradaError(posicion.getLinea(), posicion.getColumna(), tipoEncadenadoPrev);
         }
 
-        EntradaAtributos atributo = entradaClase.buscarAtributo(lexema);
+        EntradaAtributo atributo = entradaClase.buscarAtributo(lexema);
         if (atributo == null) {
             throw new VariableNoDeclaradaError(posicion, lexema);
         }

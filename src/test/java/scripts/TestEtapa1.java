@@ -41,6 +41,15 @@ public class TestEtapa1 {
                     "Error en la línea " + (i + 1) + " del archivo " + fileName);
         }
     }
+
+
+//    @Test
+//    public void pp() throws IOException, ErrorLex {
+//        Boolean a  = System.in.read();
+//        System.out.println("hola");
+//    }
+
+
     @Test
     @DisplayName("Test del programa comentarios.s")
     public void testComentarios() throws IOException, ErrorLex {
