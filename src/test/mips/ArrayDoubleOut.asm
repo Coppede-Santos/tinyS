@@ -1,19 +1,235 @@
 .data
-VTABLE_IO:
-    .word out_str
-    .word out_int
-    .word out_bool
-    .word out_double
-    .word out_array_int
-    .word out_array_str
-    .word out_array_bool
-    .word out_array_double
-    .word in_str
-    .word in_int
-    .word in_bool
-    .word in_double
+
+	tag1: .asciiz "Java"
+	tag2: .asciiz "TinyS"
+	tag3: .asciiz "Python"
 
 .text
+
+main:
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+	jal start
+	b exit
+
+start:
+	move $fp $sp
+	sw $ra 0($sp)
+	addiu $sp $sp -4
+
+	# Array a; HARDCODEADO
+	li $v0 9
+	li $a0 20
+	syscall
+
+	lw $t0, VTABLE_Array
+	sw $t0, 0($v0)
+	li $t0, 3 # dim = 3
+	sw $t0, 4($v0)
+
+	# Guardo array en cola
+
+	move $a0, $v0
+
+	sw $a0, 0($sp)
+	addiu $sp $sp -4
+
+	# a[0] = double
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+
+	jal IO_in_double
+
+	move $v0, $a0
+
+	lw $a0, -4($fp)
+	sw $v0, 8($a0)
+
+	# a[1] = double
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+
+	jal IO_in_double
+
+	move $v0, $a0
+
+	lw $a0, -4($fp)
+	sw $v0, 12($a0)
+
+	# a[2] = double
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+
+	jal IO_in_double
+
+	move $v0, $a0
+
+	lw $a0, -4($fp)
+	sw $v0, 16($a0)
+
+	# IO.out_array(a)
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+
+	lw $a0 -4($fp)
+	sw $a0 0($sp)
+	addiu $sp $sp -4
+
+	jal IO_out_array_double
+
+	# desalojo variables locales
+	addiu $sp $sp 4
+
+	# final de cuerpo de start
+	lw $ra 4($sp)
+	addiu $sp $sp 8
+	lw $fp 0($sp)
+
+	# exit
+	jr $ra
+
+# --------------------------------------------
+# --------------------------------------------
+# --------------------------------------------
+
+save_str:
+	move $t0 $a0
+	move $t2 $v0
+	addiu $t2 $t2 4
+	save_str_loop:
+		lb $t1 ($t0)
+		sb $t1 ($t2)
+		addiu $t0 $t0 1
+		addiu $t2 $t2 1
+		bne $t1 $zero save_str_loop
+	jr $ra
+
+length:
+	move $fp $sp
+	sw $ra 0($sp)
+	addiu $sp $sp -4
+
+	# Cuerpo de length
+	lw $a0 4($fp) # Cargo el objeto
+	addiu $a0 $a0 4
+	li $t1 -1 # Guardo un contador
+
+	loop:
+		lb $t0 ($a0) # t0 = char actual
+		addi $a0 $a0 1 # Sumo un byte al valor str
+		addi $t1 $t1 1 # Sumo en uno el contador
+		bne $t0 $zero loop # Si llego a \0, salgo
+
+	# Creo CIR
+	addiu $t2, $t1, 4 # Sumo len + 4 VT
+	move $a0, $t1 # Muevo el resultado en a0
+	li $v0, 9 # Reservo bytes
+	syscall
+
+	lw $t0, VTABLE_Int
+	sw $t0, 0($v0)
+	sw $t1, 4($v0)
+
+	move $a0, $v0
+
+	# Final de start
+	lw $ra 4($sp)
+	addiu $sp $sp 12
+	lw $fp 0($sp)
+	jr $ra
+
+concat:
+	move $fp $sp
+	sw $ra 0($sp)
+	addiu $sp $sp -4
+
+	# Cuerpo de concat
+
+	## Paso1: Calcular longitud de la primer cadena
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+
+	lw $a0 4($fp) # Buscamos el primer param de concat
+	sw $a0 0($sp) # Lo guardamos en la pila
+	addiu $sp $sp -4
+	jal length
+
+	sw $a0, 0($sp) # Guardamos l1 en la pila
+	addiu $sp $sp -4
+
+	## Paso2: Calcular longitud de la segunda cadena
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+
+	lw $a0 8($fp) # Buscamos el segundo param de concat
+	sw $a0 0($sp) # Lo guardamos en la pila
+	addiu $sp $sp -4
+	jal length
+
+	sw $a0, 0($sp) # Guardamos l2 en la pila
+	addiu $sp $sp -4
+
+	## Paso3: Reservar memoria len1 + len2
+	## - Guardar la dirección de v0 en un registro para no perderlo
+	## - Crear CIR de Str nuevo, incluye guardar la VT
+
+	lw $t0, -4($fp) # Obtengo el CIR de l1
+	lw $t0, 4($t0) # Obtengo el len de l1
+	lw $t1, -8($fp) # Obtengo l2
+	lw $t1, 4($t1) # Obtengo el len de l2
+
+	#move $a0, $zero
+	add $a0, $t0, $t1 # a0 = l1 + l2
+	addi $a0, $a0, 4 # a0 = vt + len
+
+	li $v0, 9
+	syscall
+
+	move $a0, $v0 # Guardo la CIR
+
+	la $t0, VTABLE_Str
+	sw $t0, 0($v0) # Guardo la VT en el heap
+
+	## Paso4: Escribir cadena 1 en v0
+
+	lw $t0 4($fp) # Obtengo CIR de s1
+	addiu $t0 $t0 4 # Apunto t0 a s1.val
+
+	move $t2 $v0 # Apunto t2 al CIR de s1
+	addiu $t2 $t2 4 # Apunto t2 a s2.val
+
+	concat_loop_1:
+		lb $t1 ($t0) # Catga byte de s1
+		beq $t1 $zero exit_concat_loop_1# Si es \0, salgo del loop para no escribirlo
+		sb $t1 ($t2) # Escribe byte en rta
+		addiu $t0 $t0 1
+		addiu $t2 $t2 1
+		b concat_loop_1
+
+	exit_concat_loop_1:
+
+	## Paso5: Escribir cadena 2 en v0 + len1
+
+	lw $t0 8($fp) # Obtengo CIR de s2
+	addiu $t0 $t0 4 # Apunto t0 a s2.val
+
+	concat_loop_2:
+		lb $t1 ($t0) # Catga byte de s2
+		sb $t1 ($t2) # Escribe byte en rta
+		addiu $t0 $t0 1
+		addiu $t2 $t2 1
+		bne $t1 $zero concat_loop_2 # Si es \0, termino
+
+	# desalojo variables locales
+	addiu $sp $sp 8
+
+	# Final del concat
+	lw $ra 4($sp)
+	addiu $sp $sp 16
+	lw $fp 0($sp)
+	jr $ra
+
+
 IO_in_str:
 	# Actualizamos frame pointer al de este metodo
 	move $fp $sp
@@ -39,12 +255,6 @@ IO_in_str:
 		addi $a0 $a0 1
 		addi $t2 $t2 1
 		bne $t3 $zero loop_IO_in_str
-
-	#li $v0 1
-	#move $a0 $t2
-	#syscall
-
-	addiu $t2 $t2 4
 
 	li $v0 9
 	move $a0 $t2
@@ -543,3 +753,51 @@ IO_out_array_double:
 	addiu $sp $sp 12
 	lw $fp 0($sp)
 	jr $ra
+
+
+exit:
+	li $v0, 10
+	syscall
+
+.data
+def_Str: .asciiz "0"
+
+hello_world: .asciiz "Hello World"
+,_Im_Trudy: .asciiz ", I'm Christopher"
+
+hello_world_len: .word 11
+,_Im_Trudy_len: .word 17
+
+true: .asciiz "true"
+false: .asciiz "false"
+
+new_line: .asciiz "\n"
+
+left_bracket: .asciiz "["
+right_bracket: .asciiz "]"
+comma: .asciiz ","
+
+VTABLE_Str:
+	.word length
+	.word concat
+
+VTABLE_IO:
+    	.word IO_out_str
+    	.word IO_out_int
+    	.word IO_in_str
+    	.word IO_in_int
+    	.word IO_out_bool
+    	.word IO_out_double
+    	.word IO_out_array_int
+    	.word IO_out_array_str
+    	.word IO_out_array_bool
+    	.word IO_out_array_double
+    	.word IO_in_bool
+    	.word IO_in_double
+VTABLE_Int:
+
+VTABLE_Bool:
+
+VTABLE_Double:
+
+VTABLE_Array:
