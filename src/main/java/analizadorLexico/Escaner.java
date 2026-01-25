@@ -476,7 +476,12 @@ public class Escaner {
             return addToken(DOUBLE_LITERAL);
         }
         else{
-            return addToken(INTEGER_LITERAL);
+            try {
+                Integer.parseInt(buffer.substring(start, current));
+                return addToken(INTEGER_LITERAL);
+            } catch (NumberFormatException e) {
+                throw new IntegerInvalidoError(line, column, buffer.substring(start, current));
+            }
         }
 
     }
