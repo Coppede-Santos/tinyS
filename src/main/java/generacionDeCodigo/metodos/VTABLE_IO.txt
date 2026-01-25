@@ -1,17 +1,17 @@
 .data
 VTABLE_IO:
-    .word out_str
-    .word out_int
-    .word out_bool
-    .word out_double
-    .word out_array_int
-    .word out_array_str
-    .word out_array_bool
-    .word out_array_double
-    .word in_str
-    .word in_int
-    .word in_bool
-    .word in_double
+   	    .word IO_out_str
+    	.word IO_out_int
+    	.word IO_in_str
+    	.word IO_in_int
+    	.word IO_out_bool
+    	.word IO_out_double
+    	.word IO_out_array_int
+    	.word IO_out_array_str
+    	.word IO_out_array_bool
+    	.word IO_out_array_double
+    	.word IO_in_bool
+    	.word IO_in_double
 
 .text
 IO_in_str:
