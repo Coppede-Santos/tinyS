@@ -59,6 +59,16 @@ public class MethodBodyVisitor extends NodeVisitor {
             case MULT:
                 codigo.agregarLinea("mult $t1, $a0");
                 codigo.agregarLinea("mflo $a0");
+                break;
+            case DIV:
+                codigo.agregarLinea("beq $a0, $zero, ArrayIndexOutOfBoundsException"); // Manejo de división por cero
+                codigo.agregarLinea("div $t1, $a0");
+                codigo.agregarLinea("mflo $a0");
+                break;
+            case PERCENTAGE: // mod
+                codigo.agregarLinea("div $t1, $a0");
+                codigo.agregarLinea("mfhi $a0");
+                break;
         }
     }
 
@@ -554,8 +564,8 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("lw $t2, 4($a0) #Cargar el indice del array");
 
-        codigo.agregarLinea("slt $t3, $t1, t2 #Saber si el indice es mayor al tamaño del array");
-        codigo.agregarLinea("beq $t3, $zero, error_indice #Si es mayor salimos del metodo");
+        codigo.agregarLinea("slt $t3, $t1, $t2 #Saber si el indice es mayor al tamaño del array");
+        codigo.agregarLinea("beq $t3, $zero, ArrayIndexOutOfBoundsException #Si es mayor salimos del metodo");
 
         codigo.agregarLinea("mul $t2, $t2, 4 #Convertir el indice del array a bytes");
         codigo.agregarLinea("add $t0, $t0, $t2 #Obtenemos el valor del elemento del array");
