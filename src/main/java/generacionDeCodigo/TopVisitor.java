@@ -194,4 +194,8 @@ public class TopVisitor extends NodeVisitor {
                 clase.getLexema().equals("Object");
     }
 
+    public CodeGen getCodigo() {
+        return codigo;
+    }
+
 }
