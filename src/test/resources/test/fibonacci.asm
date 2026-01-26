@@ -772,6 +772,12 @@ main:
 
 	jr $ra #salimos del metodo
 
+	exit:
+
+	li $v0, 10  # syscall para exit
+
+	syscall  # salir del programa
+
 	
 .data
 VTABLE_IO:
@@ -1495,6 +1501,12 @@ save_str: # Escribe el contenido de $a0 en la direccion apuntada por v0 + 4
 		addiu $t2 $t2 1
 		bne $t1 $zero save_str_loop
 	jr $ra
+.data
+VTABLE_Int:
+VTABLE_Double:
+VTABLE_Bool:
+VTABLE_Object:
+
 .data
 DivisionByZeroExceptionMessage:
 	.asciiz "ERROR: DIVISION POR CERO"

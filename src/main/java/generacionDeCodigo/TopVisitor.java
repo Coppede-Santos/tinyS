@@ -34,6 +34,10 @@ public class TopVisitor extends NodeVisitor {
             }
         }
 
+        codigo.agregarLinea("exit:");
+        codigo.agregarLinea("li $v0, 10  # syscall para exit");
+        codigo.agregarLinea("syscall  # salir del programa");
+
     }
 
     public void generarCodigo(EntradaClase clase){

@@ -1,4 +1,10 @@
 .data
+VTABLE_Int:
+VTABLE_Double:
+VTABLE_Bool:
+VTABLE_Object:
+
+.data
 DivisionByZeroExceptionMessage:
 	.asciiz "ERROR: DIVISION POR CERO"
 ArrayIndexOutOfBoundsExceptionMessage:
