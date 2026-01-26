@@ -23,6 +23,10 @@ public class NodoClass {
         metodos.put(lexema,bloque);
     }
 
+    public NodoBloque getMetodo(String lexema){
+        return metodos.get(lexema);
+    }
+
 
     public String chequeoDeSentencias(SymbolTable st) throws ErrorTiny {
 

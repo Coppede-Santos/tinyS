@@ -8,6 +8,10 @@ import java.util.Objects;
 
 public class MethodBodyVisitor extends NodeVisitor {
 
+    public MethodBodyVisitor(SymbolTable st, AST ast) {
+        this.st = st;
+        this.ast = ast;
+    }
 
     public void generarCodigo(NodoWhile nw) {
         String doneLabel = "doneW" + genLabel(nw);
@@ -245,8 +249,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         EntradaClase entradaClase = st.buscarClase(nodoLlamadaMetodo.getClaseEncadenadoPrev());
 
-
-        codigo.agregarLinea("sw $fp 0($sp) # Guardar el frame pointer actual en la pila");
+        codigo.agregarLinea("sw $fp 0($sp) # Guardar el frame pointer anterior en la pila");
         codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
         // Generar código para los argumentos y guardarlos en la pila
 
@@ -256,15 +259,43 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("addi $sp, $sp, " + (-offSetTotalParametros) + " # guardamos en la pila el espacio para todos los argumentos");
 
-        if(nodoLlamadaMetodo.getEsEncadenado()){
-            //Si tiene un objeto como encadenado previo se va a encontrar en -> $a0, hay que guardarlo en la pila
-            codigo.agregarLinea("sw $a0, 0($sp) # Guardar el encadenado previo en la pila");
+        String encadenadoPrevio = nodoLlamadaMetodo.getClaseEncadenadoPrev();
+        String lexemaMetodo = nodoLlamadaMetodo.getLexema();
+
+        if (!lexemaMetodo.equals(encadenadoPrevio)) {
+            if (nodoLlamadaMetodo.getEsEncadenado()) {
+                //Si tiene un objeto como encadenado previo se va a encontrar en -> $a0, hay que guardarlo en la pila
+                codigo.agregarLinea("sw $a0, 0($sp) # Guardar el encadenado previo en la pila");
+                codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
+            } else {
+                //Si no tiene un encadenado previo, o no es un constructor, se asume que es un metodo llamado desde self
+                codigo.agregarLinea("lw $a0 4($fp) # Cargar el objeto (this) desde el frame pointer antrior");
+                codigo.agregarLinea("sw $a0, 0($sp) # Guardar el objeto de la llamada en la pila");
+                codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
+            }
+        } else {
+            // Si es un constructor, se crea un nuevo CIR para el objeto
+            codigo.agregarLinea("li $v0 9");
+            codigo.agregarLinea("li $a0 " + entradaClase.getTamanioObjeto() + " # Tamaño del objeto");
+            codigo.agregarLinea("syscall");
+
+            codigo.agregarLinea("sw $v0, 0($sp) # Guardar la dirección del nuevo objeto en la pila");
             codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
-        }else{
-            //Si no tiene un encadenado previo, solo puede ser una llamada desde self
-            codigo.agregarLinea("lw $a0 4($fp) # Cargar el objeto (this) desde el frame pointer antrior");
-            codigo.agregarLinea("sw $a0, 0($sp) # Guardar el objeto de la llamada en la pila");
-            codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
+
+            codigo.agregarLinea("lw $t0, VTABLE_" + entradaClase.getLexema() + " # Cargar la dirección de la vtable de la clase " + entradaClase.getLexema());
+            codigo.agregarLinea("sw $t0, 0($v0) # Guardar la vtable en la CIR del nuevo objeto");
+
+            for (EntradaAtributo atributo : entradaClase.getAtributos().values()) {
+
+                atributo.accept(new TopVisitor(this.st, this.ast));
+
+                // Recuperar la direccion de la clase
+                codigo.agregarLinea("lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila");
+
+                int offsetAtributo = (atributo.getPosicionAtributo() * 4) + 4; // Offset del atributo en la CIR
+                codigo.agregarLinea("sw $a0, " + offsetAtributo + "($t0) # Inicializar el atributo " + atributo.getLexema());
+            }
+
         }
 
         int offSetParametro = 4;
@@ -273,7 +304,6 @@ public class MethodBodyVisitor extends NodeVisitor {
             offSetParametro = offSetParametro + 4; //Calculamos el offset parametro
             codigo.agregarLinea("sw $a0 "+ offSetParametro+"($sp) # Guardar el argumento en la pila");
         }
-
 
 // Ya se guardo el self en la pila, no seria necesario este codigo
 //        if (nodoLlamadaMetodo.getEsEstatico()){

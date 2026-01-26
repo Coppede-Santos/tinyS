@@ -2,6 +2,7 @@ package analizadorSemantico;
 
 import java.util.*;
 
+import ast.NodoBloque;
 import generacionDeCodigo.TopVisitor;
 
 import java.util.HashMap;
@@ -175,8 +176,8 @@ public class EntradaMetodo extends Entrada{
         return salida;
     }
 
-    public void accept(TopVisitor topVisitor) {
-        topVisitor.generarCodigo();
+    public void accept(TopVisitor topVisitor, NodoBloque bloque) {
+        topVisitor.generarCodigo(this, bloque);
     }
 
     public HashMap<String, EntradaVariable> getVariablesLocales() {

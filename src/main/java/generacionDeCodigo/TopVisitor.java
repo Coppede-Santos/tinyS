@@ -1,18 +1,65 @@
 package generacionDeCodigo;
 
 import analizadorSemantico.*;
+import ast.AST;
 import ast.NodoBloque;
+import ast.NodoClass;
 import ast.NodoSentencia;
 
 import java.util.Objects;
 
 public class TopVisitor extends NodeVisitor {
 
+    public TopVisitor(SymbolTable st, AST ast) {
+        this.st = st;
+        this.ast = ast;
+    }
+
+    public void generarCodigo(){
+        codigo.agregarLinea("main:");
+        codigo.agregarLinea("sw $fp 0($sp)");
+        codigo.agregarLinea("jal start");
+        codigo.agregarLinea("b exit");
+
+        EntradaMetodo entradaStart = st.getStartMethod();
+        entradaStart.accept(this, ast.getStart());
+
+        // Generamos las vtables de las clases
+        for(EntradaClase clase : st.getClases().values()){
+            st.setClassActual(clase);
+            clase.accept(this);
+        }
+
+        // Generamos las vtables de los tipos primitivos
+        generarCodigo(st.buscarClase("Int"));
+        generarCodigo(st.buscarClase("Double"));
+        generarCodigo(st.buscarClase("Bool"));
+        generarCodigo(st.buscarClase("String"));
+
+    }
+
     public void generarCodigo(EntradaClase clase){
 
         codigo.agregarData("VTABLE_"+clase.getLexema()+": #Vtable de la clase "+clase.getLexema());
+
         for(EntradaMetodo metodo : clase.getMetodos().values()){
-            metodo.accept(this);
+            codigo.agregarData(".word " + getLabel(metodo));
+        }
+
+        NodoClass nodoClase = ast.getClass(clase.getLexema());
+
+        EntradaMetodo constructor = clase.getConstructor();
+        NodoBloque bloqueConstructor = nodoClase.getMetodo(constructor.getLexema());
+
+        constructor.accept(this, bloqueConstructor);
+
+        NodoBloque bloqueMetodo;
+
+        if (!esClasePrimitiva(st.getClassActual())) {
+            for (EntradaMetodo metodo : clase.getMetodos().values()) {
+                bloqueMetodo = nodoClase.getMetodo(metodo.getLexema());
+                metodo.accept(this, bloqueMetodo);
+            }
         }
 
     }
@@ -93,14 +140,13 @@ public class TopVisitor extends NodeVisitor {
                 codigo.agregarText("sw $a0 " + (4*i) + "($v0) #Inicializamos el atributo "+ atributo.getLexema());
             }
 
+            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto queda en $a0");
 
         }
 
     }
 
     public void generarCodigo(EntradaMetodo entradaMetodo, NodoBloque nodoBloque){
-
-
 
         int z = entradaMetodo.getCantidadVariablesLocales() * 4;
 
@@ -120,7 +166,7 @@ public class TopVisitor extends NodeVisitor {
             codigo.agregarText("sw $a0 " + (-4*i) + "($fp)");
         }
 
-        MethodBodyVisitor methodBodyVisitor = new MethodBodyVisitor();
+        MethodBodyVisitor methodBodyVisitor = new MethodBodyVisitor(st, ast);
         for (NodoSentencia sentencia : nodoBloque.getSentencias()) {
             sentencia.accept(methodBodyVisitor);
         }
@@ -134,9 +180,18 @@ public class TopVisitor extends NodeVisitor {
     }
 
 
-//    public String getLabel(EntradaMetodo metodo) {
-//        String label = "Metodo_" + metodo.getLexema() + "_" +metodo.getLinea() + "_" + metodo.getColumna();
-//        return label;
-//    }
+    public String getLabel(EntradaMetodo metodo) {
+        String label = "m_" + metodo.getLexema() + "_" +metodo.getLinea() + "_" + metodo.getColumna();
+        return label;
+    }
+
+    public boolean esClasePrimitiva(EntradaClase clase) {
+        return clase.getLexema().equals("Int") ||
+               clase.getLexema().equals("Double") ||
+               clase.getLexema().equals("Bool") ||
+               clase.getLexema().equals("Str") ||
+               clase.getLexema().equals("IO") ||
+                clase.getLexema().equals("Object");
+    }
 
 }

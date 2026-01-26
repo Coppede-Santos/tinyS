@@ -1,6 +1,7 @@
 package analizadorSemantico;
 
 import analizadorSemantico.Errores.*;
+import generacionDeCodigo.TopVisitor;
 
 import java.util.HashMap;
 
@@ -224,5 +225,9 @@ public class EntradaClase extends Entrada {
 
     public HashMap<String, EntradaAtributo> getAtributos() {
         return atributos;
+    }
+
+    public void accept(TopVisitor topVisitor) {
+        topVisitor.generarCodigo(this);
     }
 }

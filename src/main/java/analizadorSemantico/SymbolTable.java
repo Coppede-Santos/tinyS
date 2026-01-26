@@ -63,6 +63,10 @@ public class SymbolTable
         return startMethod != null;
     }
 
+    public HashMap<String, EntradaClase> getClases() {
+        return clases;
+    }
+
     public void inicializarTiposPrimitivos() {
         EntradaClase obj = new EntradaClase("Object",0,0);
         insertarClase("Object", obj);
