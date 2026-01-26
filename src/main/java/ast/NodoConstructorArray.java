@@ -24,6 +24,10 @@ public class NodoConstructorArray extends NodoOperando{
         this.dimension = nodoExp;
     }
 
+    public NodoExp getDimension(){
+        return dimension;
+    }
+
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
