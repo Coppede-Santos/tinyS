@@ -6,6 +6,7 @@ import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import ast.Errores.AtributoNoDeclaradoError;
 import ast.Errores.VariableNoDeclaradaError;
 import ast.Errores.VisibilidadError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.*;
 
@@ -117,6 +118,11 @@ public class NodoVar extends NodoOperando {
         }
 
         return salida;
+    }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 
     @Override

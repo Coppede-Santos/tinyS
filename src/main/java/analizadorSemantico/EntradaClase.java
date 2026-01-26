@@ -57,6 +57,9 @@ public class EntradaClase extends Entrada {
     }
 
     public EntradaMetodo getMetodo(String lexema) {
+        if (lexema.equals(this.getLexema())) {
+            return constructor;
+        }
         return metodos.get(lexema);
     }
 

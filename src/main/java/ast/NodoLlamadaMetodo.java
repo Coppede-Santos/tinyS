@@ -10,6 +10,7 @@ import ast.Errores.MetodoNoDeclaradoError;
 import ast.Errores.ParametroTipoError;
 import ast.Errores.ParametrosCantidadError;
 import ast.Errores.EstaticoMetodoError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.LinkedList;
 
@@ -261,4 +262,8 @@ public class NodoLlamadaMetodo extends NodoVar{
 
     }
 
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
+    }
 }

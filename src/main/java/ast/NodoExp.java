@@ -19,10 +19,10 @@ public abstract class NodoExp extends NodoSentencia {
         super(linea, columna);
     }
 
-    @Override
-    public void accept(MethodBodyVisitor methodBodyVisitor) {
-        methodBodyVisitor.generarCodigo(this);
-    }
+//    @Override
+//    public void accept(MethodBodyVisitor methodBodyVisitor) {
+//        methodBodyVisitor.generarCodigo(this);
+//    }
 
     public void setEncadenado(NodoExp encadenado) {
         this.encadenado = encadenado;

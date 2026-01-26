@@ -597,10 +597,9 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("addi $sp, $sp, " + (-offSetTotalParametros) + " # guardamos en la pila el espacio para todos los argumentos");
 
-        String encadenadoPrevio = nodoLlamadaMetodo.getClaseEncadenadoPrev();
         String lexemaMetodo = nodoLlamadaMetodo.getLexema();
 
-        if (!lexemaMetodo.equals(encadenadoPrevio)) {
+        if (!Character.isUpperCase(lexemaMetodo.charAt(0))) {
             if (nodoLlamadaMetodo.getEsEncadenado()) {
                 //Si tiene un objeto como encadenado previo se va a encontrar en -> $a0, hay que guardarlo en la pila
                 codigo.agregarLinea("sw $a0, 0($sp) # Guardar el encadenado previo en la pila");
