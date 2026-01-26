@@ -137,7 +137,7 @@ public class TopVisitor extends NodeVisitor {
             for (EntradaAtributo atributo : clase.getAtributos().values()){
                 atributo.accept(this);
                 i = atributo.getPosicionAtributo();
-                codigo.agregarText("sw $a0 " + (4*i) + "($v0) #Inicializamos el atributo "+ atributo.getLexema());
+                codigo.agregarLinea("sw $a0 " + (4*i) + "($v0) #Inicializamos el atributo "+ atributo.getLexema());
             }
 
             codigo.agregarLinea("move $a0, $v0 # La dirección del objeto queda en $a0");
@@ -150,20 +150,20 @@ public class TopVisitor extends NodeVisitor {
 
         int z = entradaMetodo.getCantidadVariablesLocales() * 4;
 
-        codigo.agregarText(entradaMetodo.getLexema() +": # Label del metodo" );
+        codigo.agregarLinea(entradaMetodo.getLexema() +": # Label del metodo" );
 
-        codigo.agregarText("sw $ra 0($sp) #guardamos en la pila el return address");
-        codigo.agregarText("addiu $sp $sp -4 #restamos 4 bytes para guardar el return address");
+        codigo.agregarLinea("sw $ra 0($sp) #guardamos en la pila el return address");
+        codigo.agregarLinea("addiu $sp $sp -4 #restamos 4 bytes para guardar el return address");
 
 
-        codigo.agregarText("addi $sp $sp " + z + "#restamos 4 bytes para cada variable local");
+        codigo.agregarLinea("addi $sp $sp " + z + "#restamos 4 bytes para cada variable local");
 
         int i;
         for(EntradaVariable variable : entradaMetodo.getVariablesLocales().values()){
             // Inicializamos las variables locales
             variable.accept(this);
             i = variable.getPosicionVariable();
-            codigo.agregarText("sw $a0 " + (-4*i) + "($fp)");
+            codigo.agregarLinea("sw $a0 " + (-4*i) + "($fp)");
         }
 
         MethodBodyVisitor methodBodyVisitor = new MethodBodyVisitor(st, ast);
@@ -171,10 +171,10 @@ public class TopVisitor extends NodeVisitor {
             sentencia.accept(methodBodyVisitor);
         }
 
-       codigo.agregarText("lw $ra 0($fp) #cargamos el return address");
-        codigo.agregarText("addiu $sp $sp "+ z + " #limpiamos la pila de las variables locales");
-        codigo.agregarText("addiu $sp $sp 4 #limpiamos la pila del return address");
-        codigo.agregarText("jr $ra #salimos del metodo");
+       codigo.agregarLinea("lw $ra 0($fp) #cargamos el return address");
+        codigo.agregarLinea("addiu $sp $sp "+ z + " #limpiamos la pila de las variables locales");
+        codigo.agregarLinea("addiu $sp $sp 4 #limpiamos la pila del return address");
+        codigo.agregarLinea("jr $ra #salimos del metodo");
 
 
     }
