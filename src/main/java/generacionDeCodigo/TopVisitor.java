@@ -149,7 +149,7 @@ public class TopVisitor extends NodeVisitor {
 
         int z = entradaMetodo.getCantidadVariablesLocales() * 4;
 
-        codigo.agregarLinea(entradaMetodo.getLexema() +": # Label del metodo" );
+        codigo.agregarLinea(getLabel(entradaMetodo) +": # Label del metodo" );
 
         codigo.agregarLinea("sw $ra 0($sp) #guardamos en la pila el return address");
         codigo.agregarLinea("addiu $sp $sp -4 #restamos 4 bytes para guardar el return address");

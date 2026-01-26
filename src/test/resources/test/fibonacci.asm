@@ -18,7 +18,7 @@ main:
 
 	b exit
 
-	start: # Label del metodo
+	m_start_43_6: # Label del metodo
 
 	sw $ra 0($sp) #guardamos en la pila el return address
 
@@ -286,7 +286,7 @@ main:
 
 	jr $ra #salimos del metodo
 
-	Fibonacci: # Label del metodo
+	m_Fibonacci_27_2: # Label del metodo
 
 	sw $ra 0($sp) #guardamos en la pila el return address
 
@@ -392,7 +392,7 @@ main:
 
 	jr $ra #salimos del metodo
 
-	imprimo_sucesion: # Label del metodo
+	m_imprimo_sucesion_37_20: # Label del metodo
 
 	sw $ra 0($sp) #guardamos en la pila el return address
 
@@ -498,7 +498,7 @@ main:
 
 	jr $ra #salimos del metodo
 
-	imprimo_numero: # Label del metodo
+	m_imprimo_numero_32_18: # Label del metodo
 
 	sw $ra 0($sp) #guardamos en la pila el return address
 
@@ -656,7 +656,7 @@ main:
 
 	jr $ra #salimos del metodo
 
-	sucesion_fib: # Label del metodo
+	m_sucesion_fib_6_20: # Label del metodo
 
 	sw $ra 0($sp) #guardamos en la pila el return address
 
