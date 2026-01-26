@@ -794,6 +794,13 @@ VTABLE_IO:
     	.word IO_in_bool
     	.word IO_in_double
 
+true: .asciiz "true"
+false: .asciiz "false"
+new_line: .asciiz "\n"
+left_bracket: .asciiz "["
+right_bracket: .asciiz "]"
+comma: .asciiz ","
+
 .text
 IO_in_str:
 	# Actualizamos frame pointer al de este metodo
@@ -1506,6 +1513,9 @@ VTABLE_Int:
 VTABLE_Double:
 VTABLE_Bool:
 VTABLE_Object:
+
+db_one: .double 1.0
+db_cero: .double 0.0
 
 .data
 DivisionByZeroExceptionMessage:

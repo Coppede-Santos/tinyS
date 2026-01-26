@@ -4,6 +4,9 @@ VTABLE_Double:
 VTABLE_Bool:
 VTABLE_Object:
 
+db_one: .double 1.0
+db_cero: .double 0.0
+
 .data
 DivisionByZeroExceptionMessage:
 	.asciiz "ERROR: DIVISION POR CERO"
