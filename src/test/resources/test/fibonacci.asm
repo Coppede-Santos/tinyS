@@ -14,7 +14,7 @@ main:
 
 	addiu $sp $sp -4
 
-	jal start
+	jal m_start_43_6
 
 	b exit
 
