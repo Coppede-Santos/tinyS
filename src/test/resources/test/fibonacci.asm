@@ -24,7 +24,7 @@ main:
 
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
 
-	addi $sp $sp -8#restamos 4 bytes para cada variable local
+	addi $sp $sp -8 #restamos 4 bytes para cada variable local
 
 	li $v0, 9  # Solicitar espacio en memoria
 
@@ -32,13 +32,61 @@ main:
 
 	syscall 
 
-	la $t0, VTABLE_Fibonacci # Cargar la dirección de la vtable de String en un temporal
+	la $t0, VTABLE_Fibonacci # Cargar la dirección de la vtable en un temporal
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR
 
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
 	sw $a0 4($v0) #Inicializamos el atributo suma
 
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
 	sw $a0 8($v0) #Inicializamos el atributo i
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
 
 	sw $a0 12($v0) #Inicializamos el atributo j
 
@@ -244,7 +292,7 @@ main:
 
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
 
-	addi $sp $sp 0#restamos 4 bytes para cada variable local
+	addi $sp $sp 0 #restamos 4 bytes para cada variable local
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
@@ -350,7 +398,7 @@ main:
 
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
 
-	addi $sp $sp 0#restamos 4 bytes para cada variable local
+	addi $sp $sp 0 #restamos 4 bytes para cada variable local
 
 	li $a0, 4 #reservamos 4 bytes en memoria para la VTABLE
 
@@ -456,7 +504,7 @@ main:
 
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
 
-	addi $sp $sp 0#restamos 4 bytes para cada variable local
+	addi $sp $sp 0 #restamos 4 bytes para cada variable local
 
 	li $a0, 4 #reservamos 4 bytes en memoria para la VTABLE
 
@@ -614,7 +662,7 @@ main:
 
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
 
-	addi $sp $sp 0#restamos 4 bytes para cada variable local
+	addi $sp $sp 0 #restamos 4 bytes para cada variable local
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
@@ -712,7 +760,7 @@ main:
 
 	bne $a0, 1, doneWS_25_4
 
-	jloopS_25_4
+	j loopS_25_4
 
 	doneWS_25_4:
 

@@ -128,7 +128,7 @@ public class TopVisitor extends NodeVisitor {
             codigo.agregarLinea("li $a0,"+ z +"# su vtable");
             codigo.agregarLinea("syscall ");
 
-            codigo.agregarLinea("la $t0, VTABLE_"+ clase.getLexema() +" # Cargar la dirección de la vtable de String en un temporal");
+            codigo.agregarLinea("la $t0, VTABLE_"+ clase.getLexema() +" # Cargar la dirección de la vtable en un temporal");
             codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR");
 
             int i;
@@ -155,7 +155,7 @@ public class TopVisitor extends NodeVisitor {
         codigo.agregarLinea("addiu $sp $sp -4 #restamos 4 bytes para guardar el return address");
 
 
-        codigo.agregarLinea("addi $sp $sp " + (-1)*z + "#restamos 4 bytes para cada variable local");
+        codigo.agregarLinea("addi $sp $sp " + (-1)*z + " #restamos 4 bytes para cada variable local");
 
         int i;
         for(EntradaVariable variable : entradaMetodo.getVariablesLocales().values()){

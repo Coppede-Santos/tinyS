@@ -23,7 +23,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         nw.getCondicion().accept(this); //Esto genera el codigo de la expresion que sirve como condicion del while
         codigo.agregarLinea("bne $a0, 1, " + doneLabel); //Si la condicion es falsa, salta al doneLabel (La condición se guarda en $a0)
         nw.getSentencia().accept(this); //Genera el codigo de la sentencia dentro del while
-        codigo.agregarLinea("j" + loopLabel);
+        codigo.agregarLinea("j " + loopLabel);
         codigo.agregarLinea(doneLabel + ":");
     }
 

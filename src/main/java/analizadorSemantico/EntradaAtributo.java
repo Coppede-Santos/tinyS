@@ -37,7 +37,4 @@ public class EntradaAtributo extends EntradaVariable {
         return salida;
     }
 
-    public void accept(TopVisitor topVisitor) {
-
-    }
 }
