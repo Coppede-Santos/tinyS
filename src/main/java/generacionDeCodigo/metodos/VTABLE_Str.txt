@@ -130,3 +130,15 @@ concat:
 	addiu $sp $sp 16
 	lw $fp 0($sp)
 	jr $ra
+
+save_str: # Escribe el contenido de $a0 en la direccion apuntada por v0 + 4
+	move $t0 $a0
+	move $t2 $v0
+	addiu $t2 $t2 4
+	save_str_loop:
+		lb $t1 ($t0)
+		sb $t1 ($t2)
+		addiu $t0 $t0 1
+		addiu $t2 $t2 1
+		bne $t1 $zero save_str_loop
+	jr $ra

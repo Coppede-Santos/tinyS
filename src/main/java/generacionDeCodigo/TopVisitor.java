@@ -18,23 +18,21 @@ public class TopVisitor extends NodeVisitor {
     public void generarCodigo(){
         codigo.agregarLinea("main:");
         codigo.agregarLinea("sw $fp 0($sp)");
+        codigo.agregarLinea("addiu $sp $sp -4");
         codigo.agregarLinea("jal start");
         codigo.agregarLinea("b exit");
 
         EntradaMetodo entradaStart = st.getStartMethod();
+        st.setMetodoActual(entradaStart);
         entradaStart.accept(this, ast.getStart());
 
         // Generamos las vtables de las clases
         for(EntradaClase clase : st.getClases().values()){
-            st.setClassActual(clase);
-            clase.accept(this);
+            if (!esClasePrimitiva(clase)){
+                st.setClassActual(clase);
+                clase.accept(this);
+            }
         }
-
-        // Generamos las vtables de los tipos primitivos
-        generarCodigo(st.buscarClase("Int"));
-        generarCodigo(st.buscarClase("Double"));
-        generarCodigo(st.buscarClase("Bool"));
-        generarCodigo(st.buscarClase("String"));
 
     }
 
@@ -57,6 +55,7 @@ public class TopVisitor extends NodeVisitor {
 
         if (!esClasePrimitiva(st.getClassActual())) {
             for (EntradaMetodo metodo : clase.getMetodos().values()) {
+                st.setMetodoActual(metodo);
                 bloqueMetodo = nodoClase.getMetodo(metodo.getLexema());
                 metodo.accept(this, bloqueMetodo);
             }
@@ -156,7 +155,7 @@ public class TopVisitor extends NodeVisitor {
         codigo.agregarLinea("addiu $sp $sp -4 #restamos 4 bytes para guardar el return address");
 
 
-        codigo.agregarLinea("addi $sp $sp " + z + "#restamos 4 bytes para cada variable local");
+        codigo.agregarLinea("addi $sp $sp " + (-1)*z + "#restamos 4 bytes para cada variable local");
 
         int i;
         for(EntradaVariable variable : entradaMetodo.getVariablesLocales().values()){
@@ -166,7 +165,7 @@ public class TopVisitor extends NodeVisitor {
             codigo.agregarLinea("sw $a0 " + (-4*i) + "($fp)");
         }
 
-        MethodBodyVisitor methodBodyVisitor = new MethodBodyVisitor(st, ast);
+        MethodBodyVisitor methodBodyVisitor = new MethodBodyVisitor(st, ast, codigo);
         for (NodoSentencia sentencia : nodoBloque.getSentencias()) {
             sentencia.accept(methodBodyVisitor);
         }
@@ -191,7 +190,9 @@ public class TopVisitor extends NodeVisitor {
                clase.getLexema().equals("Bool") ||
                clase.getLexema().equals("Str") ||
                clase.getLexema().equals("IO") ||
-                clase.getLexema().equals("Object");
+                clase.getLexema().equals("Object") ||
+                clase.getLexema().equals("Array")
+                ;
     }
 
     public CodeGen getCodigo() {

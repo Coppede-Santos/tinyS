@@ -6,13 +6,13 @@ import ast.*;
 import java.util.LinkedList;
 import java.util.Objects;
 
-import static analizadorLexico.TokenType.SLASH;
-
 public class MethodBodyVisitor extends NodeVisitor {
 
-    public MethodBodyVisitor(SymbolTable st, AST ast) {
+
+    public MethodBodyVisitor(SymbolTable st, AST ast, CodeGen codigo) {
         this.st = st;
         this.ast = ast;
+        this.codigo = codigo;
     }
 
     public void generarCodigo(NodoWhile nw) {
@@ -572,8 +572,13 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("la $t0, VTABLE_String # Cargar la dirección de la vtable de String en un temporal");
         codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR");
-        codigo.agregarLinea("li $t0, " + nodoString.getValor() + " # Guardamos el valor en la CIR en un temporal");
-        codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
+
+        String label = nodoString.posicion.getLinea() + "_" + nodoString.posicion.getColumna();
+
+        codigo.agregarData("str_const_" + label + ": .asciiz \"" + nodoString.getValor() + "\"");
+
+        codigo.agregarLinea("la $t0, str_const_" + label + " # Guardamos el valor en la CIR en un temporal");
+        codigo.agregarLinea("jal save_str #Guardamos el valor en la CIR");
 
 
         codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
