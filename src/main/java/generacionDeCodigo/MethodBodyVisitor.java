@@ -570,7 +570,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("li $a0, " + longitudCIR + "  #  len() bytes + padding + su vtable");
         codigo.agregarLinea("syscall ");
 
-        codigo.agregarLinea("la $t0, VTABLE_String # Cargar la dirección de la vtable de String en un temporal");
+        codigo.agregarLinea("la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal");
         codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR");
 
         String label = nodoString.posicion.getLinea() + "_" + nodoString.posicion.getColumna();
@@ -992,7 +992,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("li $t3, 8 #Tamaño de la CIR de bool");
                 }else{
                     if (Objects.equals(nodoArray.getTipo(), "String")) {
-                        codigo.agregarLinea("la $t1, VTABLE_String # Cargar la dirección de la vtable de String en un temporal");
+                        codigo.agregarLinea("la $t1, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal");
                         //codigo.agregarLinea("li $t2, 0 # Valor inicial del objeto String");
                         codigo.agregarLinea("li $t3, 8 #Tamaño de la CIR de String");
                     }

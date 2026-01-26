@@ -466,7 +466,7 @@ main:
 
 	syscall 
 
-	la $t0, VTABLE_String # Cargar la dirección de la vtable de String en un temporal
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
@@ -534,7 +534,7 @@ main:
 
 	syscall 
 
-	la $t0, VTABLE_String # Cargar la dirección de la vtable de String en un temporal
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
@@ -624,7 +624,7 @@ main:
 
 	syscall 
 
-	la $t0, VTABLE_String # Cargar la dirección de la vtable de String en un temporal
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
