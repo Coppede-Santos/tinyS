@@ -125,6 +125,10 @@ public class NodoVar extends NodoOperando {
         methodBodyVisitor.generarCodigo(this);
     }
 
+    public void acceptLadoIzquerdo(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigoAccesoVariable(this);
+    }
+
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
         //Hay un encadenado previo

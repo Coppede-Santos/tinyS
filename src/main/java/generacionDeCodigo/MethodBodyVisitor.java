@@ -507,7 +507,7 @@ public class MethodBodyVisitor extends NodeVisitor {
     public void generarCodigo(NodoAsignacion nodoAsignacion) {
 
         // LADO IZQUIERDO: dirección de la variable → $a0
-        nodoAsignacion.getIzquierda().accept(this);
+        nodoAsignacion.getIzquierda().acceptLadoIzquerdo(this);
 
         // push dirección
         codigo.agregarLinea("sw $a0, 0($sp)");
@@ -642,30 +642,14 @@ public class MethodBodyVisitor extends NodeVisitor {
             codigo.agregarLinea("sw $a0 "+ offSetParametro+"($sp) # Guardar el argumento en la pila");
         }
 
-// Ya se guardo el self en la pila, no seria necesario este codigo
-//        if (nodoLlamadaMetodo.getEsEstatico()){
-//            //Es estatico
-//            //No tiene encadenado previo
-//            codigo.agregarLinea("li, $t0, 0 #Guardamos un valor nulo en el temporal");
-//            codigo.agregarLinea("sw $t0, 0($sp) #Como es estatico se guarda un self nulo en el registro de activación para no romper la estructura");
-//            codigo.agregarLinea("addiu $sp $sp -4 #movemos el puntero de la pila");
-//
-//
-//            codigo.agregarLinea("ld $t0, VTABLE_" + nodoLlamadaMetodo.getClase() + " # Cargar la dirección de la vtable de la clase " + nodoLlamadaMetodo.getClase());
-//
-//        }else{
-//            //Si no es estatico y no tiene un encadenado previo es un metodo que se llama desde self
-//            codigo.agregarLinea("lw $t1, 4($fp) # Cargar la dirección del objeto (this) desde el frame pointer antrior");
-//            codigo.agregarLinea("sw $t1, 0($sp) # Guardar el objeto (this) en la pila");
-//            codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
-//
-//            codigo.agregarLinea("lw $t0, 0($t1) # Cargar la vtable del objeto");
-//
-//        }
-
         int offSetMetodo = entradaClase.getMetodo(nodoLlamadaMetodo.getLexema()).getPosicionMetodo(); //Obtemenos el offset del metodo
         codigo.agregarLinea("addi $t0, $t0, " + (offSetMetodo * 4) + " # Calcular la dirección del método en la vtable");
         codigo.agregarLinea("jalr $t0 # Llamar al método " + nodoLlamadaMetodo.getLexema());
+
+        if (nodoLlamadaMetodo.getEncadenado() != null){
+            nodoLlamadaMetodo.getEncadenado().accept(this);
+        }
+
 
         codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el self");
 
@@ -747,30 +731,48 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
         }else {
-            //El caso de que el objeto sea accedido directamente (sin encadenado previo)
-            EntradaVariable variable = entradaMetodo.buscarVariableLocal(nodoVar.getLexema());
-            if (variable != null) {
-                //El caso de que el objeto sea una variable
-                offset = (variable.getPosicionVariable() * (-4)) - 4; //Buscamos la posición de la variable pero el offset apunta primero al enlace dinamico
-                codigo.agregarLinea("lw $a0 ," + offset + "($fp) #Buscamos la variable en la pila");
-            } else {
-                //El caso de que el objeto sea un parametro
-                EntradaParametro parametro = entradaMetodo.buscarParametro(nodoVar.getLexema());
-                if (parametro != null) {
-                    offset = (parametro.getPosicionParametro() * (4)) + 4; //Buscamos la posición del parametro pero el offset apunta primero al enlace dinamico y arriba esta el self
-                    codigo.agregarLinea("lw $a0 ," + offset + "($fp) #Buscamos el parametro en la pila");
+            if(! nodoVar.getEsEstatico()){
+                //No es estatico
+                //El caso de que el objeto sea accedido directamente (sin encadenado previo)
+                EntradaVariable variable = entradaMetodo.buscarVariableLocal(nodoVar.getLexema());
+                if (variable != null) {
+                    //El caso de que el objeto sea una variable
+                    offset = (variable.getPosicionVariable() * (-4)) - 4; //Buscamos la posición de la variable pero el offset apunta primero al enlace dinamico
+                    codigo.agregarLinea("lw $a0 ," + offset + "($fp) #Buscamos la variable en la pila");
                 } else {
-                    //El caso de que el objeto sea una variable de instancia
-                    EntradaClase clase = st.getClassActual();
-                    EntradaAtributo atributo = clase.buscarAtributo(nodoVar.getLexema());
+                    //El caso de que el objeto sea un parametro
+                    EntradaParametro parametro = entradaMetodo.buscarParametro(nodoVar.getLexema());
+                    if (parametro != null) {
+                        offset = (parametro.getPosicionParametro() * (4)) + 4; //Buscamos la posición del parametro pero el offset apunta primero al enlace dinamico y arriba esta el self
+                        codigo.agregarLinea("lw $a0 ," + offset + "($fp) #Buscamos el parametro en la pila");
+                    } else {
+                        //El caso de que el objeto sea una variable de instancia
+                        EntradaClase clase = st.getClassActual();
+                        EntradaAtributo atributo = clase.buscarAtributo(nodoVar.getLexema());
 
-                    codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
+                        codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
 
-                    offset = (atributo.getPosicionAtributo() * (-4)) - 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
-                    codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
+                        offset = (atributo.getPosicionAtributo() * (-4)) - 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
+                        codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
 
+                    }
                 }
+            }else{
+                //Es estatico
+
+                codigo.agregarLinea("li $a0, 4 #reservamos 4 bytes en memoria para la VTABLE");
+                codigo.agregarLinea("li $v0 9  # Solicitar espacio en memoria");
+                codigo.agregarLinea("syscall ");
+
+                codigo.agregarLinea("la $a0, VTABLE_" + nodoVar.getLexema() + " # Cargar la dirección de la vtable de la clase " + nodoVar.getLexema());
+                codigo.agregarLinea("sw $a0, 0($v0) # Guardar la vtable en la CIR");
+                codigo.agregarLinea("move $a0, $v0 # La dirección del objeto queda en $a0");
             }
+        }
+
+
+        if (nodoVar.getEncadenado() != null){
+            nodoVar.getEncadenado().accept(this);
         }
 
     }
