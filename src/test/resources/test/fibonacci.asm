@@ -20,6 +20,8 @@ main:
 
 	m_start_43_6: # Label del metodo
 
+	move $fp $sp #El frame apunta al enlace dinamico
+
 	sw $ra 0($sp) #guardamos en la pila el return address
 
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
@@ -36,6 +38,10 @@ main:
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR
 
+	sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila
+
+	addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto
+
 	li $v0, 9  # Solicitar espacio en memoria
 
 	li $a0, 8  # 4 bytes y su vtable
@@ -51,6 +57,8 @@ main:
 	sw $t0, 4($v0) #Guardamos el valor en la CIR
 
 	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
 
 	sw $a0 4($v0) #Inicializamos el atributo suma
 
@@ -70,6 +78,8 @@ main:
 
 	move $a0, $v0 # La dirección del objeto Int queda en $a0
 
+	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
+
 	sw $a0 8($v0) #Inicializamos el atributo i
 
 	li $v0, 9  # Solicitar espacio en memoria
@@ -88,9 +98,13 @@ main:
 
 	move $a0, $v0 # La dirección del objeto Int queda en $a0
 
+	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
+
 	sw $a0 12($v0) #Inicializamos el atributo j
 
-	move $a0, $v0 # La dirección del objeto queda en $a0
+	lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0
+
+	addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila
 
 	sw $a0 -4($fp)
 
@@ -112,7 +126,7 @@ main:
 
 	sw $a0 -8($fp)
 
-	addiu $a0 $fp , -8 #Devolvemos la direccion de la variable en la pila
+	addiu $a0 $fp , -4 #Devolvemos la direccion de la variable en la pilafib_1
 
 	sw $a0, 0($sp)
 
@@ -138,13 +152,61 @@ main:
 
 	sw $t0, 0($v0) # Guardar la vtable en la CIR del nuevo objeto
 
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
 	lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila
 
 	sw $a0, 8($t0) # Inicializar el atributo suma
 
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
 	lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila
 
 	sw $a0, 12($t0) # Inicializar el atributo i
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
 
 	lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila
 
@@ -168,7 +230,7 @@ main:
 
 	sw $a0, 0($t0)
 
-	addiu $a0 $fp , -12 #Devolvemos la direccion de la variable en la pila
+	addiu $a0 $fp , -8 #Devolvemos la direccion de la variable en la pilan_2
 
 	sw $a0, 0($sp)
 
@@ -288,6 +350,8 @@ main:
 
 	m_Fibonacci_27_2: # Label del metodo
 
+	move $fp $sp #El frame apunta al enlace dinamico
+
 	sw $ra 0($sp) #guardamos en la pila el return address
 
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
@@ -394,6 +458,8 @@ main:
 
 	m_imprimo_sucesion_37_20: # Label del metodo
 
+	move $fp $sp #El frame apunta al enlace dinamico
+
 	sw $ra 0($sp) #guardamos en la pila el return address
 
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
@@ -499,6 +565,8 @@ main:
 	jr $ra #salimos del metodo
 
 	m_imprimo_numero_32_18: # Label del metodo
+
+	move $fp $sp #El frame apunta al enlace dinamico
 
 	sw $ra 0($sp) #guardamos en la pila el return address
 
@@ -657,6 +725,8 @@ main:
 	jr $ra #salimos del metodo
 
 	m_sucesion_fib_6_20: # Label del metodo
+
+	move $fp $sp #El frame apunta al enlace dinamico
 
 	sw $ra 0($sp) #guardamos en la pila el return address
 

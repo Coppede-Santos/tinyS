@@ -70,6 +70,7 @@ public class EntradaVariable extends Entrada {
     }
 
     public void accept(TopVisitor topVisitor) {
+
         topVisitor.generarCodigo(this);
     }
 }

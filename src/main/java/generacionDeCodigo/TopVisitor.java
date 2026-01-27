@@ -137,13 +137,21 @@ public class TopVisitor extends NodeVisitor {
 
             int i;
 
+
+            codigo.agregarLinea("sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila");
+            codigo.agregarLinea("addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto");
+
             for (EntradaAtributo atributo : clase.getAtributos().values()){
+
                 atributo.accept(this);
                 i = atributo.getPosicionAtributo();
+                codigo.agregarLinea("lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila");
                 codigo.agregarLinea("sw $a0 " + (4*i) + "($v0) #Inicializamos el atributo "+ atributo.getLexema());
             }
 
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto queda en $a0");
+
+            codigo.agregarLinea("lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0");
+            codigo.agregarLinea("addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila");
 
         }
 
@@ -155,6 +163,7 @@ public class TopVisitor extends NodeVisitor {
 
         codigo.agregarLinea(getLabel(entradaMetodo) +": # Label del metodo" );
 
+        codigo.agregarLinea("move $fp $sp #El frame apunta al enlace dinamico");
         codigo.agregarLinea("sw $ra 0($sp) #guardamos en la pila el return address");
         codigo.agregarLinea("addiu $sp $sp -4 #restamos 4 bytes para guardar el return address");
 
