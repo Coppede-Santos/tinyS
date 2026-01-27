@@ -126,7 +126,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     }else{
                         //El caso de que ambos sean int:
                         codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int izquierdo");
-                        codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int derecho");
+                        codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int derecho");
                         codigo.agregarLinea("add $t0, $t0, $t1 #sumar los dos int");
 
                         codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
@@ -182,7 +182,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 }else{
                     //El caso de que ambos sean int:
                     codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int izquierdo");
-                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int derecho");
+                    codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int derecho");
                     codigo.agregarLinea("sub $t0, $t0, $t1 #restar los dos int");
 
                     codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
@@ -236,7 +236,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 }else{
                     //El caso de que ambos sean int:
                     codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int izquierdo");
-                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int derecho");
+                    codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int derecho");
                     codigo.agregarLinea("mul $t0, $t0, $t1 #multiplicar los dos int");
 
                     codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
@@ -254,7 +254,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     // DIV es division entre enteros puramente
                     //El caso de que ambos sean int:
                     codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int izquierdo");
-                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int derecho");
+                    codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int derecho");
 
                     codigo.agregarLinea("beqz $t1, DivisionByZeroException #Si el lado derecho es igual a cero saltamos un error");
 
@@ -326,7 +326,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 }else{
                     //El caso de que ambos sean int:
                     codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int izquierdo");
-                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int derecho");
+                    codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int derecho");
 
                     codigo.agregarLinea("beqz $t1, DivisionByZeroException #Si el lado derecho es igual a cero saltamos un error");
 
@@ -389,7 +389,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 }else{
                     //El caso de que ambos sean int:
                     codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int izquierdo");
-                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int derecho");
+                    codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int derecho");
 
                     codigo.agregarLinea("beqz $t1, DivisionByZeroException #Si el lado derecho es igual a cero saltamos un error");
 
@@ -475,7 +475,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     } else {
                         //El caso de que ambos sean int:
                         codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
-                        codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+                        codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
 
 
                         codigo.agregarLinea("slt $t2, $t0, $t1 #Comparo si izquierda es más grande que derecha");
@@ -570,7 +570,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     } else {
                         //El caso de que ambos sean int:
                         codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
-                        codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+                        codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
 
 
                         codigo.agregarLinea("slt $t2, $t0, $t1 #Comparo si izquierda es más grande que derecha");
@@ -642,7 +642,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 } else {
                     //El caso de que ambos sean int:
                     codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
-                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+                    codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
 
 
                     codigo.agregarLinea("slt $t0, $t0, $t1 #Comparo si izquierda es más chico que derecha");
@@ -708,7 +708,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 } else {
                     //El caso de que ambos sean int:
                     codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
-                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+                    codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
 
 
                     codigo.agregarLinea("slt $t0, $t1, $t0 #Comparo si izquierda es más grande que derecha");
@@ -777,7 +777,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 } else {
                     //El caso de que ambos sean int:
                     codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
-                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+                    codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
 
 
                     codigo.agregarLinea("slt $t0, $t1, $t0 #Comparo si izquierda es más grande que derecha");
@@ -846,7 +846,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 } else {
                     //El caso de que ambos sean int:
                     codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
-                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+                    codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
 
 
                     codigo.agregarLinea("slt $t0, $t0, $t1 #Comparo si izquierda es más chico que derecha");
