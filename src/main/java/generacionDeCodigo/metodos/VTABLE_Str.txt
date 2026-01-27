@@ -142,3 +142,45 @@ save_str: # Escribe el contenido de $a0 en la direccion apuntada por v0 + 4
 		addiu $t2 $t2 1
 		bne $t1 $zero save_str_loop
 	jr $ra
+
+eq_str: # Compara dos strings, devuelve un CIR Bool
+	lw $t0 4($sp) # Cargo CIR1
+	lw $t1 8($sp) # Cargo CIR2
+
+	addiu $t0 $t0 4 # Obtengo str1
+	addiu $t1 $t1 4 # Obtengo str2
+
+	move $t2 $zero
+	addiu $t2 $t2 1 # areEqual = true
+
+	li $v0 9
+	li $a0 8
+	syscall
+
+	la $t4 VTABLE_Bool
+	sw $t4 0($v0)
+
+	eq_str_loop:
+		lb $t3 ($t0)
+		lb $t4 ($t1)
+
+		bne $t3 $t4 eq_str_false
+
+		addiu $t0 $t0 1
+		addiu $t1 $t1 1
+
+		beq $t3 $zero eq_str_true
+		b eq_str_loop
+
+	eq_str_false:
+		move $t2 $zero
+		sw $t2 4($v0)
+
+		b eq_str_return
+
+	eq_str_true:
+		sw $t2 4($v0)
+
+	eq_str_return:
+		move $a0 $v0
+		jr $ra
