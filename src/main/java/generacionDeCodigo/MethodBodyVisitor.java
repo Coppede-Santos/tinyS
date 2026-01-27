@@ -15,6 +15,12 @@ public class MethodBodyVisitor extends NodeVisitor {
         this.codigo = codigo;
     }
 
+    public void generarCodigo(NodoBloque nodoBloque){
+        for (NodoSentencia ns : nodoBloque.getSentencias()){
+            ns.accept(this);
+        }
+    }
+
     public void generarCodigo(NodoWhile nw) {
         String doneLabel = "doneW" + genLabel(nw);
         String loopLabel = "loop" + genLabel(nw);
@@ -805,6 +811,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 }
                 break;
             case GREATER_EQUAL:
+
                 if (esDouble) {
                     //El caso de que alguno de los dos sea double:
                     if (tipoIzq.equals("Int")) {
