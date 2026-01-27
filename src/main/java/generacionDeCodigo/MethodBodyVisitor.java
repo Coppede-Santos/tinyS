@@ -61,7 +61,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("sw $a0, 0($sp) #Guarda el valor de la expresión izq en la pila"); //Guarda el valor del lado izquierdo en la pila
         codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
         nodoExpBin.getLadoDerecho().accept(this);
-        codigo.agregarLinea("lw $t0, 4($sp) cargamos el valor del lado izquierdo en el temporal");
+        codigo.agregarLinea("lw $t0, 4($sp) # cargamos el valor del lado izquierdo en el temporal");
         codigo.agregarLinea("addi $sp, $sp, 4 #movemos el puntero de la pila");
         codigo.agregarLinea("move $t1, $a0 #movemos el valor del lado derecho al temporal");
 
@@ -761,7 +761,8 @@ public class MethodBodyVisitor extends NodeVisitor {
                     //El caso de que el objeto sea un parametro
                     EntradaParametro parametro = entradaMetodo.buscarParametro(nodoVar.getLexema());
                     if (parametro != null) {
-                        offset = (parametro.getPosicionParametro() * (4)) + 4; //Buscamos la posición del parametro pero el offset apunta primero al enlace dinamico y arriba esta el self
+                        // Posicion Parametro empieza en 0, y self ocupa 4($fp)
+                        offset = (parametro.getPosicionParametro() * (4)) + 8; //Buscamos la posición del parametro pero el offset apunta primero al enlace dinamico y arriba esta el self
                         codigo.agregarLinea("lw $a0 ," + offset + "($fp) #Buscamos el parametro en la pila");
                     } else {
                         //El caso de que el objeto sea una variable de instancia
@@ -770,7 +771,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                         codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
 
-                        offset = (atributo.getPosicionAtributo() * (-4)) - 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
+                        offset = atributo.getPosicionAtributo() * 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
                         codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
 
                     }
@@ -1031,6 +1032,18 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
         codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Array queda en $a0");
+
+    }
+
+    public void generarCodigo(NodoRet nodoRet) {
+
+        NodoExp expRet = nodoRet.getExp();
+
+        if (expRet != null) {
+            expRet.accept(this); // La dirección de la CIR del valor de retorno queda en $a0
+        } else {
+            codigo.agregarLinea("li $a0, 0 # Valor de retorno nulo");
+        }
 
     }
 

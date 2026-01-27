@@ -6,6 +6,7 @@ import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import ast.Errores.TipoIndiceInvalidoError;
 import ast.Errores.TipoInvalidoError;
 import ast.Errores.VariableNoDeclaradaError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.Objects;
 
@@ -123,5 +124,10 @@ public class NodoArrayAcceso extends NodoVar{
 
     public void setIndice(NodoExp indice) {
         this.indice = indice;
+    }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

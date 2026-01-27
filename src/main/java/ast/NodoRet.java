@@ -18,7 +18,9 @@ public class NodoRet extends NodoSentencia{
         this.exp = exp;
     }
 
-
+    public NodoExp getExp() {
+        return exp;
+    }
 
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {

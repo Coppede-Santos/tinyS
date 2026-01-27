@@ -499,7 +499,7 @@ main:
 
 	addiu $sp $sp -4 # movemos el puntero de la pila
 
-	lw $a0 ,4($fp) #Buscamos el parametro en la pila
+	lw $a0 ,8($fp) #Buscamos el parametro en la pila
 
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
@@ -665,7 +665,7 @@ main:
 
 	addiu $sp $sp -4 # movemos el puntero de la pila
 
-	lw $a0 ,4($fp) #Buscamos el parametro en la pila
+	lw $a0 ,8($fp) #Buscamos el parametro en la pila
 
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
@@ -849,13 +849,31 @@ main:
 
 	loopS_25_4:
 
-	lw $a0 ,4($fp) #Buscamos el parametro en la pila
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,8($t0) #Buscamos el atributo en la CIR
+
+	sw $a0, 0($sp) #Guarda el valor de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	lw $a0 ,8($fp) #Buscamos el parametro en la pila
+
+	lw $t0, 4($sp) # cargamos el valor del lado izquierdo en el temporal
+
+	addi $sp, $sp, 4 #movemos el puntero de la pila
+
+	move $t1, $a0 #movemos el valor del lado derecho al temporal
 
 	bne $a0, 1, doneWS_25_4
 
 	j loopS_25_4
 
 	doneWS_25_4:
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,4($t0) #Buscamos el atributo en la CIR
 
 	lw $ra 0($fp) #cargamos el return address
 
