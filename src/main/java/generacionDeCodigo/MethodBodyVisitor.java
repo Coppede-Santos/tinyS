@@ -394,7 +394,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("beqz $t1, DivisionByZeroException #Si el lado derecho es igual a cero saltamos un error");
 
 
-                    codigo.agregarLinea("div $t0, $t0, $t1 #multiplicar los dos int");
+                    codigo.agregarLinea("div $t0, $t0, $t1 #dividimos los dos int");
 
                     codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
                     codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
@@ -407,8 +407,463 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                 }
-        }
 
+            case EQUAL_EQUAL:
+                if (esString){
+                    // Si es string
+                    codigo.agregarLinea("sw $jp 0($sp) # Guardar el valor de $jp en la pila antes de la llamada a concat)");
+                    codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
+                    codigo.agregarLinea("sw $t1 0($sp) #Guardamos el valor de la expresión derecha en el la pila como un parametro de concat");
+                    codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
+                    codigo.agregarLinea("sw $t0 0($sp) #Guardamos el valor de la expresión izquierda en el la pila como self");
+                    codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
+
+                    codigo.agregarLinea("jal eq_str");
+
+                    codigo.agregarLinea("addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro de concat");
+                    codigo.agregarLinea("lw $jp, 0($sp) #Restauramos el valor de $jp en la pila");
+                    codigo.agregarLinea("addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior");
+                }else {
+
+
+                    if (esDouble) {
+                        //El caso de que alguno de los dos sea double:
+                        if (tipoIzq.equals("Int")) {
+                            codigo.agregarLinea("lwc1 $f0, 4($t1) #cargar el valor del int izquierdo");
+                            codigo.agregarLinea("cvt.d.w $f0, $f0 #convertir el int a double");
+
+                            codigo.agregarLinea("swc1 $f2 4($t1) #guardamos el valor de derecha en $f2");
+                            codigo.agregarLinea("swc1 $f3 8($t1) #guardamos el valor de derecha en $f3 para completar el double");
+
+
+                        } else {
+                            if (tipoDer.equals("Int")) {
+                                codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del int derecho");
+                                codigo.agregarLinea("cvt.d.w $f2, $f2 #convertir el int a double");
+                            } else {
+                                codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del double izquierdo");
+                                codigo.agregarLinea("lwc1 $f3, 8($t1) #cargar el valor del double derecho");
+                            }
+                            codigo.agregarLinea("swc1 $f0 4($t0) #guardamos el valor de izquierda en $f0");
+                            codigo.agregarLinea("swc1 $f1 8($t0) #guardamos el valor de izquierda en $f1 para completar el double");
+                        }
+
+
+                        // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
+
+                        codigo.agregarLinea("c.eq.d $f0, $f2 #comparamos si el double es igual al lado derecho");
+                        codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                        String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
+                        codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
+                        codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                        codigo.agregarLinea(label + ":");
+                        codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
+                        codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
+
+
+                        codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                        codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                        codigo.agregarLinea("syscall ");
+
+                        codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                        codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                        codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                        codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+
+                    } else {
+                        //El caso de que ambos sean int:
+                        codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
+                        codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+
+
+                        codigo.agregarLinea("slt $t2, $t0, $t1 #Comparo si izquierda es más grande que derecha");
+                        codigo.agregarLinea("slt $t3 , $t1, $t0 #Comparo si derecha es más grande que izquierda");
+                        codigo.agregarLinea("or $t0, $t2, $t3 #Si alguna de las dos es verdadera, entonces no son iguales");
+                        codigo.agregarLinea("xor $t0, $t0, 1 #Si ambas son iguales, seteamos el valor a 1, sino a 0");
+
+
+                        codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                        codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                        codigo.agregarLinea("syscall ");
+
+                        codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                        codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                        codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                        codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+                    }
+                }
+            case NOT_EQUAL:
+                if (esString){
+                    // Si es string
+                    codigo.agregarLinea("sw $jp 0($sp) # Guardar el valor de $jp en la pila antes de la llamada a concat)");
+                    codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
+                    codigo.agregarLinea("sw $t1 0($sp) #Guardamos el valor de la expresión derecha en el la pila como un parametro de concat");
+                    codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
+                    codigo.agregarLinea("sw $t0 0($sp) #Guardamos el valor de la expresión izquierda en el la pila como self");
+                    codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
+
+                    codigo.agregarLinea("jal eq_str");
+
+                    codigo.agregarLinea("addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro de concat");
+                    codigo.agregarLinea("lw $jp, 0($sp) #Restauramos el valor de $jp en la pila");
+                    codigo.agregarLinea("addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior");
+
+                    codigo.agregarLinea("lw $t0, 4($a0) #Cargar el valor resultado");
+                    codigo.agregarLinea("xor $t0, $t0, 1 #negamos el valor");
+                    codigo.agregarLinea("sw $t0 4($a0) #Guardar el nuevo valor");
+
+                }else {
+
+
+                    if (esDouble) {
+                        //El caso de que alguno de los dos sea double:
+                        if (tipoIzq.equals("Int")) {
+                            codigo.agregarLinea("lwc1 $f0, 4($t1) #cargar el valor del int izquierdo");
+                            codigo.agregarLinea("cvt.d.w $f0, $f0 #convertir el int a double");
+
+                            codigo.agregarLinea("swc1 $f2 4($t1) #guardamos el valor de derecha en $f2");
+                            codigo.agregarLinea("swc1 $f3 8($t1) #guardamos el valor de derecha en $f3 para completar el double");
+
+
+                        } else {
+                            if (tipoDer.equals("Int")) {
+                                codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del int derecho");
+                                codigo.agregarLinea("cvt.d.w $f2, $f2 #convertir el int a double");
+                            } else {
+                                codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del double izquierdo");
+                                codigo.agregarLinea("lwc1 $f3, 8($t1) #cargar el valor del double derecho");
+                            }
+                            codigo.agregarLinea("swc1 $f0 4($t0) #guardamos el valor de izquierda en $f0");
+                            codigo.agregarLinea("swc1 $f1 8($t0) #guardamos el valor de izquierda en $f1 para completar el double");
+                        }
+
+
+                        // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
+
+                        codigo.agregarLinea("c.eq.d $f0, $f2 #comparamos si el double es igual al lado derecho");
+                        codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                        String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
+                        codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
+                        codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                        codigo.agregarLinea(label + ":");
+                        codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
+                        codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
+
+                        codigo.agregarLinea("xor $t0, $t0, 1 #Si ambas son iguales, seteamos el valor a 0, sino a 1");
+
+
+                        codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                        codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                        codigo.agregarLinea("syscall ");
+
+                        codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                        codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                        codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                        codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+
+                    } else {
+                        //El caso de que ambos sean int:
+                        codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
+                        codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+
+
+                        codigo.agregarLinea("slt $t2, $t0, $t1 #Comparo si izquierda es más grande que derecha");
+                        codigo.agregarLinea("slt $t3 , $t1, $t0 #Comparo si derecha es más grande que izquierda");
+                        codigo.agregarLinea("or $t0, $t2, $t3 #Si alguna de las dos es verdadera, entonces no son iguales");
+
+
+                        codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                        codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                        codigo.agregarLinea("syscall ");
+
+                        codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                        codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                        codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                        codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+                    }
+                }
+            case LESS:
+
+                if (esDouble) {
+                    //El caso de que alguno de los dos sea double:
+                    if (tipoIzq.equals("Int")) {
+                        codigo.agregarLinea("lwc1 $f0, 4($t1) #cargar el valor del int izquierdo");
+                        codigo.agregarLinea("cvt.d.w $f0, $f0 #convertir el int a double");
+
+                        codigo.agregarLinea("swc1 $f2 4($t1) #guardamos el valor de derecha en $f2");
+                        codigo.agregarLinea("swc1 $f3 8($t1) #guardamos el valor de derecha en $f3 para completar el double");
+
+
+                    } else {
+                        if (tipoDer.equals("Int")) {
+                            codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del int derecho");
+                            codigo.agregarLinea("cvt.d.w $f2, $f2 #convertir el int a double");
+                        } else {
+                            codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del double izquierdo");
+                            codigo.agregarLinea("lwc1 $f3, 8($t1) #cargar el valor del double derecho");
+                        }
+                        codigo.agregarLinea("swc1 $f0 4($t0) #guardamos el valor de izquierda en $f0");
+                        codigo.agregarLinea("swc1 $f1 8($t0) #guardamos el valor de izquierda en $f1 para completar el double");
+                    }
+
+
+                    // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
+
+                    codigo.agregarLinea("c.lt.d $f0, $f2 #comparamos si el double de la izquierda es menor al lado derecho");
+                    codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                    String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
+                    codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
+                    codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                    codigo.agregarLinea(label + ":");
+                    codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
+                    codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
+
+
+
+                    codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                    codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("syscall ");
+
+                    codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                    codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                    codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+
+                } else {
+                    //El caso de que ambos sean int:
+                    codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
+                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+
+
+                    codigo.agregarLinea("slt $t0, $t0, $t1 #Comparo si izquierda es más chico que derecha");
+
+                    codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                    codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("syscall ");
+
+                    codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                    codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                    codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+                }
+            case LESS_EQUAL:
+                if (esDouble) {
+                    //El caso de que alguno de los dos sea double:
+                    if (tipoIzq.equals("Int")) {
+                        codigo.agregarLinea("lwc1 $f0, 4($t1) #cargar el valor del int izquierdo");
+                        codigo.agregarLinea("cvt.d.w $f0, $f0 #convertir el int a double");
+
+                        codigo.agregarLinea("swc1 $f2 4($t1) #guardamos el valor de derecha en $f2");
+                        codigo.agregarLinea("swc1 $f3 8($t1) #guardamos el valor de derecha en $f3 para completar el double");
+
+
+                    } else {
+                        if (tipoDer.equals("Int")) {
+                            codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del int derecho");
+                            codigo.agregarLinea("cvt.d.w $f2, $f2 #convertir el int a double");
+                        } else {
+                            codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del double izquierdo");
+                            codigo.agregarLinea("lwc1 $f3, 8($t1) #cargar el valor del double derecho");
+                        }
+                        codigo.agregarLinea("swc1 $f0 4($t0) #guardamos el valor de izquierda en $f0");
+                        codigo.agregarLinea("swc1 $f1 8($t0) #guardamos el valor de izquierda en $f1 para completar el double");
+                    }
+
+
+                    // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
+
+                    codigo.agregarLinea("c.le.d $f0, $f2 #comparamos si el double de la izquierda es menor o igual al lado derecho");
+                    codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                    String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
+                    codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
+                    codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                    codigo.agregarLinea(label + ":");
+                    codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
+                    codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
+
+
+                    codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                    codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("syscall ");
+
+                    codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                    codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                    codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+
+                } else {
+                    //El caso de que ambos sean int:
+                    codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
+                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+
+
+                    codigo.agregarLinea("slt $t0, $t1, $t0 #Comparo si izquierda es más grande que derecha");
+                    codigo.agregarLinea("xori $t0, $t0, 1 niego lo anterior para obtener menor o igual");
+
+                    codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                    codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("syscall ");
+
+                    codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                    codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                    codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+                }
+            case GREATER:
+                if (esDouble) {
+                    //El caso de que alguno de los dos sea double:
+                    if (tipoIzq.equals("Int")) {
+                        codigo.agregarLinea("lwc1 $f0, 4($t1) #cargar el valor del int izquierdo");
+                        codigo.agregarLinea("cvt.d.w $f0, $f0 #convertir el int a double");
+
+                        codigo.agregarLinea("swc1 $f2 4($t1) #guardamos el valor de derecha en $f2");
+                        codigo.agregarLinea("swc1 $f3 8($t1) #guardamos el valor de derecha en $f3 para completar el double");
+
+
+                    } else {
+                        if (tipoDer.equals("Int")) {
+                            codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del int derecho");
+                            codigo.agregarLinea("cvt.d.w $f2, $f2 #convertir el int a double");
+                        } else {
+                            codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del double izquierdo");
+                            codigo.agregarLinea("lwc1 $f3, 8($t1) #cargar el valor del double derecho");
+                        }
+                        codigo.agregarLinea("swc1 $f0 4($t0) #guardamos el valor de izquierda en $f0");
+                        codigo.agregarLinea("swc1 $f1 8($t0) #guardamos el valor de izquierda en $f1 para completar el double");
+                    }
+
+
+                    // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
+
+                    codigo.agregarLinea("c.le.d $f0, $f2 #comparamos si el double de la izquierda es menor o igual al lado derecho");
+                    codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                    String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
+                    codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
+                    codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                    codigo.agregarLinea(label + ":");
+                    codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
+                    codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
+
+                    codigo.agregarLinea("xor $t0, $t0, 1 #negamos lo anterior");
+
+
+                    codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                    codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("syscall ");
+
+                    codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                    codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                    codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+
+                } else {
+                    //El caso de que ambos sean int:
+                    codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
+                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+
+
+                    codigo.agregarLinea("slt $t0, $t1, $t0 #Comparo si izquierda es más grande que derecha");
+
+                    codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                    codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("syscall ");
+
+                    codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                    codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                    codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+                }
+            case GREATER_EQUAL:
+                if (esDouble) {
+                    //El caso de que alguno de los dos sea double:
+                    if (tipoIzq.equals("Int")) {
+                        codigo.agregarLinea("lwc1 $f0, 4($t1) #cargar el valor del int izquierdo");
+                        codigo.agregarLinea("cvt.d.w $f0, $f0 #convertir el int a double");
+
+                        codigo.agregarLinea("swc1 $f2 4($t1) #guardamos el valor de derecha en $f2");
+                        codigo.agregarLinea("swc1 $f3 8($t1) #guardamos el valor de derecha en $f3 para completar el double");
+
+
+                    } else {
+                        if (tipoDer.equals("Int")) {
+                            codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del int derecho");
+                            codigo.agregarLinea("cvt.d.w $f2, $f2 #convertir el int a double");
+                        } else {
+                            codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del double izquierdo");
+                            codigo.agregarLinea("lwc1 $f3, 8($t1) #cargar el valor del double derecho");
+                        }
+                        codigo.agregarLinea("swc1 $f0 4($t0) #guardamos el valor de izquierda en $f0");
+                        codigo.agregarLinea("swc1 $f1 8($t0) #guardamos el valor de izquierda en $f1 para completar el double");
+                    }
+
+
+                    // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
+
+                    codigo.agregarLinea("c.lt.d $f0, $f2 #comparamos si el double de la izquierda es menor al lado derecho");
+                    codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                    String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
+                    codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
+                    codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                    codigo.agregarLinea(label + ":");
+                    codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
+                    codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
+
+                    codigo.agregarLinea("xor $t0, $t0, 1 #negamos lo anterior");
+
+
+
+                    codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                    codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("syscall ");
+
+                    codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                    codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                    codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+
+                } else {
+                    //El caso de que ambos sean int:
+                    codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
+                    codigo.agregarLinea("lw $t1 4($t0) #Cargar el valor del int o bool derecho");
+
+
+                    codigo.agregarLinea("slt $t0, $t0, $t1 #Comparo si izquierda es más chico que derecha");
+                    codigo.agregarLinea("xori $t0, $t0, 1 niego lo anterior para obtener mayor o igual");
+
+                    codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                    codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("syscall ");
+
+                    codigo.agregarLinea("move $a0 $v0 #La dirección del objeto Double queda en $a0");
+
+                    codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                    codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
+
+                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+                }
+        }
 
     }
 
