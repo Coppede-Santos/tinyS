@@ -609,13 +609,15 @@ public class MethodBodyVisitor extends NodeVisitor {
                 //Si tiene un objeto como encadenado previo se va a encontrar en -> $a0, hay que guardarlo en la pila
                 codigo.agregarLinea("sw $a0, 0($sp) # Guardar el encadenado previo en la pila");
                 codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
-            } else {
+            }
+            else {
                 //Si no tiene un encadenado previo, o no es un constructor, se asume que es un metodo llamado desde self
                 codigo.agregarLinea("lw $a0 4($fp) # Cargar el objeto (this) desde el frame pointer antrior");
                 codigo.agregarLinea("sw $a0, 0($sp) # Guardar el objeto de la llamada en la pila");
                 codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
             }
-        } else {
+        }
+        else {
             // Si es un constructor, se crea un nuevo CIR para el objeto
             codigo.agregarLinea("li $v0 9");
             codigo.agregarLinea("li $a0 " + entradaClase.getTamanioObjeto() + " # Tamaño del objeto");
@@ -624,7 +626,7 @@ public class MethodBodyVisitor extends NodeVisitor {
             codigo.agregarLinea("sw $v0, 0($sp) # Guardar la dirección del nuevo objeto en la pila");
             codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
 
-            codigo.agregarLinea("lw $t0, VTABLE_" + entradaClase.getLexema() + " # Cargar la dirección de la vtable de la clase " + entradaClase.getLexema());
+            codigo.agregarLinea("la $t0, VTABLE_" + entradaClase.getLexema() + " # Cargar la dirección de la vtable de la clase " + entradaClase.getLexema());
             codigo.agregarLinea("sw $t0, 0($v0) # Guardar la vtable en la CIR del nuevo objeto");
 
             for (EntradaAtributo atributo : entradaClase.getAtributos().values()) {
@@ -634,9 +636,11 @@ public class MethodBodyVisitor extends NodeVisitor {
                 // Recuperar la direccion de la clase
                 codigo.agregarLinea("lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila");
 
-                int offsetAtributo = (atributo.getPosicionAtributo() * 4) + 4; // Offset del atributo en la CIR
+                int offsetAtributo = atributo.getPosicionAtributo() * 4; // Offset del atributo en la CIR
                 codigo.agregarLinea("sw $a0, " + offsetAtributo + "($t0) # Inicializar el atributo " + atributo.getLexema());
             }
+
+            codigo.agregarLinea("lw $t0, 0($t0) # Guardar en t0 la vtable del objeto");
 
         }
 
@@ -647,21 +651,30 @@ public class MethodBodyVisitor extends NodeVisitor {
             codigo.agregarLinea("sw $a0 "+ offSetParametro+"($sp) # Guardar el argumento en la pila");
         }
 
+        if (nodoLlamadaMetodo.getEsEncadenado()) {
+            codigo.agregarLinea("lw $t0 4($sp) # Cargar el objeto del encadenado previo desde la pila");
+            codigo.agregarLinea("lw $t0, 0($t0) # Cargar la vtable del objeto");
+        }
+
         int offSetMetodo = entradaClase.getMetodo(nodoLlamadaMetodo.getLexema()).getPosicionMetodo(); //Obtemenos el offset del metodo
-        codigo.agregarLinea("addi $t0, $t0, " + (offSetMetodo * 4) + " # Calcular la dirección del método en la vtable");
+        codigo.agregarLinea("lw $t0, " + (offSetMetodo * 4) + "($t0) # Calcular la dirección del método en la vtable");
         codigo.agregarLinea("jalr $t0 # Llamar al método " + nodoLlamadaMetodo.getLexema());
+
+        if (nodoLlamadaMetodo.getEsEncadenado()){
+            codigo.agregarLinea("lw $fp 4($sp) # Restauramos el frame pointer");
+            codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el self");
+        }
 
         if (nodoLlamadaMetodo.getEncadenado() != null){
             nodoLlamadaMetodo.getEncadenado().accept(this);
         }
 
-
-        codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el self");
-
-        codigo.agregarLinea("addiu $sp $sp " + (offSetTotalParametros) + " #Sacamos el espacio para todos los parametros");
-
-        codigo.agregarLinea("lw $fp 0($sp) # Restauramos el frame pointer");
-        codigo.agregarLinea("addiu $sp $sp 4 # sacamos el frame pointer de la pila");
+//
+//
+//        codigo.agregarLinea("addiu $sp $sp " + (offSetTotalParametros) + " #Sacamos el espacio para todos los parametros");
+//
+//        codigo.agregarLinea("lw $fp 0($sp) # Restauramos el frame pointer");
+//        codigo.agregarLinea("addiu $sp $sp 4 # sacamos el frame pointer de la pila");
 
     }
 
@@ -742,7 +755,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 EntradaVariable variable = entradaMetodo.buscarVariableLocal(nodoVar.getLexema());
                 if (variable != null) {
                     //El caso de que el objeto sea una variable
-                    offset = (variable.getPosicionVariable() * (-4)) - 4; //Buscamos la posición de la variable pero el offset apunta primero al enlace dinamico
+                    offset = variable.getPosicionVariable() * (-4); //Buscamos la posición de la variable pero el offset apunta primero al enlace dinamico
                     codigo.agregarLinea("lw $a0 ," + offset + "($fp) #Buscamos la variable en la pila");
                 } else {
                     //El caso de que el objeto sea un parametro
@@ -829,9 +842,9 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
 
-                    offset = (atributo.getPosicionAtributo() * (-4)) - 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
+                    offset = atributo.getPosicionAtributo() * 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
                     //codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
-                    codigo.agregarLinea("addiu $a0 $t0 , " + offset + " #Devolvemos la direccion del atributo en la CIR");
+                    codigo.agregarLinea("addiu $a0 $t0 " + offset + " #Devolvemos la direccion del atributo en la CIR");
                 }
             }
         }

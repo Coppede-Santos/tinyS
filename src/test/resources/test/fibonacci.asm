@@ -1,5 +1,6 @@
 .data
 VTABLE_Fibonacci: #Vtable de la clase Fibonacci
+.word m_Fibonacci_27_2
 .word m_imprimo_sucesion_37_20
 .word m_imprimo_numero_32_18
 .word m_sucesion_fib_6_20
@@ -148,7 +149,7 @@ main:
 
 	addiu $sp $sp -4 # movemos el puntero de la pila
 
-	lw $t0, VTABLE_Fibonacci # Cargar la dirección de la vtable de la clase Fibonacci
+	la $t0, VTABLE_Fibonacci # Cargar la dirección de la vtable de la clase Fibonacci
 
 	sw $t0, 0($v0) # Guardar la vtable en la CIR del nuevo objeto
 
@@ -170,7 +171,7 @@ main:
 
 	lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila
 
-	sw $a0, 8($t0) # Inicializar el atributo suma
+	sw $a0, 4($t0) # Inicializar el atributo suma
 
 	li $v0, 9  # Solicitar espacio en memoria
 
@@ -190,7 +191,7 @@ main:
 
 	lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila
 
-	sw $a0, 12($t0) # Inicializar el atributo i
+	sw $a0, 8($t0) # Inicializar el atributo i
 
 	li $v0, 9  # Solicitar espacio en memoria
 
@@ -210,19 +211,13 @@ main:
 
 	lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila
 
-	sw $a0, 16($t0) # Inicializar el atributo j
+	sw $a0, 12($t0) # Inicializar el atributo j
 
-	addi $t0, $t0, 0 # Calcular la dirección del método en la vtable
+	lw $t0, 0($t0) # Guardar en t0 la vtable del objeto
+
+	lw $t0, 0($t0) # Calcular la dirección del método en la vtable
 
 	jalr $t0 # Llamar al método Fibonacci
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	addiu $sp $sp 0 #Sacamos el espacio para todos los parametros
-
-	lw $fp 0($sp) # Restauramos el frame pointer
-
-	addiu $sp $sp 4 # sacamos el frame pointer de la pila
 
 	lw $t0, 4($sp)
 
@@ -258,17 +253,17 @@ main:
 
 	addiu $sp $sp -4 # movemos el puntero de la pila
 
-	addi $t0, $t0, 20 # Calcular la dirección del método en la vtable
+	lw $t0 4($sp) # Cargar el objeto del encadenado previo desde la pila
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 20($t0) # Calcular la dirección del método en la vtable
 
 	jalr $t0 # Llamar al método in_int
 
+	lw $fp 4($sp) # Restauramos el frame pointer
+
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	addiu $sp $sp 0 #Sacamos el espacio para todos los parametros
-
-	lw $fp 0($sp) # Restauramos el frame pointer
-
-	addiu $sp $sp 4 # sacamos el frame pointer de la pila
 
 	lw $t0, 4($sp)
 
@@ -298,7 +293,7 @@ main:
 
 	addiu $sp $sp -4 # movemos el puntero de la pila
 
-	lw $a0 ,-8($fp) #Buscamos la variable en la pila
+	lw $a0 ,-4($fp) #Buscamos la variable en la pila
 
 	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
 
@@ -310,41 +305,47 @@ main:
 
 	addiu $sp $sp -4 # movemos el puntero de la pila
 
-	lw $a0 ,-12($fp) #Buscamos la variable en la pila
+	lw $a0 ,-8($fp) #Buscamos la variable en la pila
 
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
-	addi $t0, $t0, 12 # Calcular la dirección del método en la vtable
+	lw $t0 4($sp) # Cargar el objeto del encadenado previo desde la pila
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 12($t0) # Calcular la dirección del método en la vtable
 
 	jalr $t0 # Llamar al método sucesion_fib
 
+	lw $fp 4($sp) # Restauramos el frame pointer
+
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	addiu $sp $sp 4 #Sacamos el espacio para todos los parametros
-
-	lw $fp 0($sp) # Restauramos el frame pointer
-
-	addiu $sp $sp 4 # sacamos el frame pointer de la pila
 
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
-	addi $t0, $t0, 24 # Calcular la dirección del método en la vtable
+	lw $t0 4($sp) # Cargar el objeto del encadenado previo desde la pila
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 24($t0) # Calcular la dirección del método en la vtable
 
 	jalr $t0 # Llamar al método out_int
 
+	lw $fp 4($sp) # Restauramos el frame pointer
+
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	addiu $sp $sp 4 #Sacamos el espacio para todos los parametros
-
-	lw $fp 0($sp) # Restauramos el frame pointer
-
-	addiu $sp $sp 4 # sacamos el frame pointer de la pila
 
 	lw $ra 0($fp) #cargamos el return address
 
 	addiu $sp $sp 8 #limpiamos la pila de las variables locales
 
-	addiu $sp $sp 4 #limpiamos la pila del return address
+	addiu $sp $sp 8 #limpiamos la pila del return address
+
+	# Devolvemos el self del constructor en $a0
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 0($sp) #restauramos el frame pointer
 
 	jr $ra #salimos del metodo
 
@@ -360,7 +361,7 @@ main:
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	addiu $a0 $t0 , -12 #Devolvemos la direccion del atributo en la CIR
+	addiu $a0 $t0 8 #Devolvemos la direccion del atributo en la CIR
 
 	sw $a0, 0($sp)
 
@@ -390,7 +391,7 @@ main:
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	addiu $a0 $t0 , -16 #Devolvemos la direccion del atributo en la CIR
+	addiu $a0 $t0 12 #Devolvemos la direccion del atributo en la CIR
 
 	sw $a0, 0($sp)
 
@@ -420,7 +421,7 @@ main:
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	addiu $a0 $t0 , -8 #Devolvemos la direccion del atributo en la CIR
+	addiu $a0 $t0 4 #Devolvemos la direccion del atributo en la CIR
 
 	sw $a0, 0($sp)
 
@@ -447,12 +448,22 @@ main:
 	addi $sp, $sp, 4
 
 	sw $a0, 0($t0)
+
+	# Devolvemos el self del constructor en $a0
+
+	lw $a0 4($fp) # cargamos el self en $a0
 
 	lw $ra 0($fp) #cargamos el return address
 
 	addiu $sp $sp 0 #limpiamos la pila de las variables locales
 
-	addiu $sp $sp 4 #limpiamos la pila del return address
+	addiu $sp $sp 8 #limpiamos la pila del return address
+
+	# Devolvemos el self del constructor en $a0
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 0($sp) #restauramos el frame pointer
 
 	jr $ra #salimos del metodo
 
@@ -492,17 +503,17 @@ main:
 
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
-	addi $t0, $t0, 24 # Calcular la dirección del método en la vtable
+	lw $t0 4($sp) # Cargar el objeto del encadenado previo desde la pila
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 24($t0) # Calcular la dirección del método en la vtable
 
 	jalr $t0 # Llamar al método out_int
 
+	lw $fp 4($sp) # Restauramos el frame pointer
+
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	addiu $sp $sp 4 #Sacamos el espacio para todos los parametros
-
-	lw $fp 0($sp) # Restauramos el frame pointer
-
-	addiu $sp $sp 4 # sacamos el frame pointer de la pila
 
 	li $a0, 4 #reservamos 4 bytes en memoria para la VTABLE
 
@@ -544,23 +555,29 @@ main:
 
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
-	addi $t0, $t0, 32 # Calcular la dirección del método en la vtable
+	lw $t0 4($sp) # Cargar el objeto del encadenado previo desde la pila
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
 
 	jalr $t0 # Llamar al método out_str
 
+	lw $fp 4($sp) # Restauramos el frame pointer
+
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	addiu $sp $sp 4 #Sacamos el espacio para todos los parametros
-
-	lw $fp 0($sp) # Restauramos el frame pointer
-
-	addiu $sp $sp 4 # sacamos el frame pointer de la pila
 
 	lw $ra 0($fp) #cargamos el return address
 
 	addiu $sp $sp 0 #limpiamos la pila de las variables locales
 
-	addiu $sp $sp 4 #limpiamos la pila del return address
+	addiu $sp $sp 8 #limpiamos la pila del return address
+
+	# Devolvemos el self del constructor en $a0
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 0($sp) #restauramos el frame pointer
 
 	jr $ra #salimos del metodo
 
@@ -614,17 +631,17 @@ main:
 
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
-	addi $t0, $t0, 32 # Calcular la dirección del método en la vtable
+	lw $t0 4($sp) # Cargar el objeto del encadenado previo desde la pila
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
 
 	jalr $t0 # Llamar al método out_str
 
+	lw $fp 4($sp) # Restauramos el frame pointer
+
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	addiu $sp $sp 4 #Sacamos el espacio para todos los parametros
-
-	lw $fp 0($sp) # Restauramos el frame pointer
-
-	addiu $sp $sp 4 # sacamos el frame pointer de la pila
 
 	li $a0, 4 #reservamos 4 bytes en memoria para la VTABLE
 
@@ -652,17 +669,17 @@ main:
 
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
-	addi $t0, $t0, 24 # Calcular la dirección del método en la vtable
+	lw $t0 4($sp) # Cargar el objeto del encadenado previo desde la pila
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 24($t0) # Calcular la dirección del método en la vtable
 
 	jalr $t0 # Llamar al método out_int
 
+	lw $fp 4($sp) # Restauramos el frame pointer
+
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	addiu $sp $sp 4 #Sacamos el espacio para todos los parametros
-
-	lw $fp 0($sp) # Restauramos el frame pointer
-
-	addiu $sp $sp 4 # sacamos el frame pointer de la pila
 
 	li $a0, 4 #reservamos 4 bytes en memoria para la VTABLE
 
@@ -704,23 +721,29 @@ main:
 
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
-	addi $t0, $t0, 32 # Calcular la dirección del método en la vtable
+	lw $t0 4($sp) # Cargar el objeto del encadenado previo desde la pila
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
 
 	jalr $t0 # Llamar al método out_str
 
+	lw $fp 4($sp) # Restauramos el frame pointer
+
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	addiu $sp $sp 4 #Sacamos el espacio para todos los parametros
-
-	lw $fp 0($sp) # Restauramos el frame pointer
-
-	addiu $sp $sp 4 # sacamos el frame pointer de la pila
 
 	lw $ra 0($fp) #cargamos el return address
 
 	addiu $sp $sp 0 #limpiamos la pila de las variables locales
 
-	addiu $sp $sp 4 #limpiamos la pila del return address
+	addiu $sp $sp 8 #limpiamos la pila del return address
+
+	# Devolvemos el self del constructor en $a0
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 0($sp) #restauramos el frame pointer
 
 	jr $ra #salimos del metodo
 
@@ -736,7 +759,7 @@ main:
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	addiu $a0 $t0 , -12 #Devolvemos la direccion del atributo en la CIR
+	addiu $a0 $t0 8 #Devolvemos la direccion del atributo en la CIR
 
 	sw $a0, 0($sp)
 
@@ -766,7 +789,7 @@ main:
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	addiu $a0 $t0 , -16 #Devolvemos la direccion del atributo en la CIR
+	addiu $a0 $t0 12 #Devolvemos la direccion del atributo en la CIR
 
 	sw $a0, 0($sp)
 
@@ -796,7 +819,7 @@ main:
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	addiu $a0 $t0 , -8 #Devolvemos la direccion del atributo en la CIR
+	addiu $a0 $t0 4 #Devolvemos la direccion del atributo en la CIR
 
 	sw $a0, 0($sp)
 
@@ -838,7 +861,13 @@ main:
 
 	addiu $sp $sp 0 #limpiamos la pila de las variables locales
 
-	addiu $sp $sp 4 #limpiamos la pila del return address
+	addiu $sp $sp 8 #limpiamos la pila del return address
+
+	# Devolvemos el self del constructor en $a0
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 0($sp) #restauramos el frame pointer
 
 	jr $ra #salimos del metodo
 
@@ -851,18 +880,19 @@ main:
 	
 .data
 VTABLE_IO:
-   	    .word IO_out_str
-    	.word IO_out_int
-    	.word IO_in_str
-    	.word IO_in_int
-    	.word IO_out_bool
-    	.word IO_out_double
+        .word IO
     	.word IO_out_array_int
-    	.word IO_out_array_str
-    	.word IO_out_array_bool
-    	.word IO_out_array_double
-    	.word IO_in_bool
+    	.word IO_in_str
     	.word IO_in_double
+    	.word IO_out_array_str
+    	.word IO_in_int
+    	.word IO_out_int
+    	.word IO_in_bool
+   	    .word IO_out_str
+    	.word IO_out_double
+    	.word IO_out_array_double
+    	.word IO_out_bool
+    	.word IO_out_array_bool
 
 true: .asciiz "true"
 false: .asciiz "false"
@@ -872,6 +902,8 @@ right_bracket: .asciiz "]"
 comma: .asciiz ","
 
 .text
+IO:
+
 IO_in_str:
 	# Actualizamos frame pointer al de este metodo
 	move $fp $sp

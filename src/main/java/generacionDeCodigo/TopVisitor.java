@@ -42,15 +42,16 @@ public class TopVisitor extends NodeVisitor {
 
     public void generarCodigo(EntradaClase clase){
 
+        EntradaMetodo constructor = clase.getConstructor();
+
         codigo.agregarData("VTABLE_"+clase.getLexema()+": #Vtable de la clase "+clase.getLexema());
+        codigo.agregarData(".word " + getLabel(constructor));
 
         for(EntradaMetodo metodo : clase.getMetodos().values()){
             codigo.agregarData(".word " + getLabel(metodo));
         }
 
         NodoClass nodoClase = ast.getClass(clase.getLexema());
-
-        EntradaMetodo constructor = clase.getConstructor();
         NodoBloque bloqueConstructor = nodoClase.getMetodo(constructor.getLexema());
 
         constructor.accept(this, bloqueConstructor);
@@ -93,7 +94,7 @@ public class TopVisitor extends NodeVisitor {
             codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
 
 
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
+            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Double queda en $a0");
         }
         if (Objects.equals(variable.getTipo(), "Bool")){
             codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
@@ -106,7 +107,7 @@ public class TopVisitor extends NodeVisitor {
             codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
 
 
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
+            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Bool queda en $a0");
         }
         if (Objects.equals(variable.getTipo(), "String")){
             codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
@@ -119,7 +120,7 @@ public class TopVisitor extends NodeVisitor {
             codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
 
 
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
+            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto String queda en $a0");
         }
 
         if (!variable.esPrimitivo()){
@@ -183,9 +184,23 @@ public class TopVisitor extends NodeVisitor {
             sentencia.accept(methodBodyVisitor);
         }
 
-       codigo.agregarLinea("lw $ra 0($fp) #cargamos el return address");
+        String lexemaMetodo = entradaMetodo.getLexema();
+
+        if (Character.isUpperCase(lexemaMetodo.charAt(0))) {
+            codigo.agregarLinea("# Devolvemos el self del constructor en $a0");
+            codigo.agregarLinea("lw $a0 4($fp) # cargamos el self en $a0");
+        }
+
+        codigo.agregarLinea("lw $ra 0($fp) #cargamos el return address");
         codigo.agregarLinea("addiu $sp $sp "+ z + " #limpiamos la pila de las variables locales");
-        codigo.agregarLinea("addiu $sp $sp 4 #limpiamos la pila del return address");
+        codigo.agregarLinea("addiu $sp $sp 8 #limpiamos la pila del return address");
+
+        //if (Character.isUpperCase(lexemaMetodo.charAt(0))) {
+        codigo.agregarLinea("# Devolvemos el self del constructor en $a0");
+        codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el self");
+        //}
+
+        codigo.agregarLinea("lw $fp 0($sp) #restauramos el frame pointer");
         codigo.agregarLinea("jr $ra #salimos del metodo");
 
 
