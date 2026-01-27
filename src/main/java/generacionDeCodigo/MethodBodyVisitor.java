@@ -712,7 +712,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
                     codigo.agregarLinea("slt $t0, $t1, $t0 #Comparo si izquierda es más grande que derecha");
-                    codigo.agregarLinea("xori $t0, $t0, 1 niego lo anterior para obtener menor o igual");
+                    codigo.agregarLinea("xori $t0, $t0, #1 niego lo anterior para obtener menor o igual");
 
                     codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
                     codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
@@ -850,7 +850,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
                     codigo.agregarLinea("slt $t0, $t0, $t1 #Comparo si izquierda es más chico que derecha");
-                    codigo.agregarLinea("xori $t0, $t0, 1 niego lo anterior para obtener mayor o igual");
+                    codigo.agregarLinea("xori $t0, $t0, #1 niego lo anterior para obtener mayor o igual");
 
                     codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
                     codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
