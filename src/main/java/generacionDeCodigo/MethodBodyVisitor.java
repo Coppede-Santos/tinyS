@@ -21,6 +21,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea(loopLabel + ":");
         nw.getCondicion().accept(this); //Esto genera el codigo de la expresion que sirve como condicion del while
+        codigo.agregarLinea("lw $a0, 4($a0) # Carga el valor de la condicion"); //Cargamos el valor de la condicion en $a0 (Asumimos que es un Int)
         codigo.agregarLinea("bne $a0, 1, " + doneLabel); //Si la condicion es falsa, salta al doneLabel (La condición se guarda en $a0)
         nw.getSentencia().accept(this); //Genera el codigo de la sentencia dentro del while
         codigo.agregarLinea("j " + loopLabel);
@@ -33,7 +34,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         String doneLabel = "doneI" + genLabel(nf);
 
         nf.getCondicion().accept(this); //Genera el codigo para la condición
-
+        codigo.agregarLinea("lw $a0, 4($a0) # Carga el valor de la condicion"); //Cargamos el valor de la condicion en $a0 (Asumimos que es un Int)
         codigo.agregarLinea("bne $ao, 1, " + falseLabel + "# Si no se cumple la condición salta a la labelFalse");
         nf.getSentenciaIf().accept(this); //Genera el codigo para la sentencia dentro del if
 
@@ -196,6 +197,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                 }
+                break;
             case MULT:
                 if (esDouble) {
                     //El caso de que alguno de los dos sea double:
@@ -250,6 +252,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                 }
+                break;
             case DIV:
                     // DIV es division entre enteros puramente
                     //El caso de que ambos sean int:
@@ -271,6 +274,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR");
 
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+                break;
 
             case PERCENTAGE: // mod
                 if (esDouble) {
@@ -345,6 +349,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                 }
+                break;
             case SLASH:
                 if (esDouble) {
                     //El caso de que alguno de los dos sea double:
@@ -407,6 +412,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                 }
+                break;
 
             case EQUAL_EQUAL:
                 if (esString){
@@ -496,6 +502,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                         codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                     }
                 }
+                break;
             case NOT_EQUAL:
                 if (esString){
                     // Si es string
@@ -590,6 +597,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                         codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                     }
                 }
+                break;
             case LESS:
 
                 if (esDouble) {
@@ -658,6 +666,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                 }
+                break;
             case LESS_EQUAL:
                 if (esDouble) {
                     //El caso de que alguno de los dos sea double:
@@ -712,7 +721,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
                     codigo.agregarLinea("slt $t0, $t1, $t0 #Comparo si izquierda es más grande que derecha");
-                    codigo.agregarLinea("xori $t0, $t0, #1 niego lo anterior para obtener menor o igual");
+                    codigo.agregarLinea("xori $t0, $t0, 1 # niego lo anterior para obtener menor o igual");
 
                     codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
                     codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
@@ -725,6 +734,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                 }
+                break;
             case GREATER:
                 if (esDouble) {
                     //El caso de que alguno de los dos sea double:
@@ -793,6 +803,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                 }
+                break;
             case GREATER_EQUAL:
                 if (esDouble) {
                     //El caso de que alguno de los dos sea double:
@@ -850,7 +861,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
                     codigo.agregarLinea("slt $t0, $t0, $t1 #Comparo si izquierda es más chico que derecha");
-                    codigo.agregarLinea("xori $t0, $t0, #1 niego lo anterior para obtener mayor o igual");
+                    codigo.agregarLinea("xori $t0, $t0, 1 #niego lo anterior para obtener mayor o igual");
 
                     codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
                     codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
@@ -863,6 +874,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
                 }
+                break;
         }
 
     }
