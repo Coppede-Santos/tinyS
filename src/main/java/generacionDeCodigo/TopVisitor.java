@@ -62,7 +62,7 @@ public class TopVisitor extends NodeVisitor {
             for (EntradaMetodo metodo : clase.getMetodos().values()) {
                 st.setMetodoActual(metodo);
                 bloqueMetodo = nodoClase.getMetodo(metodo.getLexema());
-                metodo.accept(this, bloqueMetodo);
+                if (bloqueMetodo != null) metodo.accept(this, bloqueMetodo);
             }
         }
 
