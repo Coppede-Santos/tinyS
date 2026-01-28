@@ -127,7 +127,7 @@ main:
 
 	sw $a0 -8($fp)
 
-	addiu $a0 $fp , -4 #Devolvemos la direccion de la variable en la pilafib_1
+	addiu $a0 $fp , -4 #Devolvemos la direccion de la variable en la pila fib_1
 
 	sw $a0, 0($sp)
 
@@ -139,79 +139,87 @@ main:
 
 	addi $sp, $sp, 0 # guardamos en la pila el espacio para todos los argumentos
 
-	li $v0 9
+	li $v0, 9  # Solicitar espacio en memoria
 
-	li $a0 16 # Tamaño del objeto
+	li $a0, 16 #su vtable
 
-	syscall
+	syscall 
 
-	sw $v0, 0($sp) # Guardar la dirección del nuevo objeto en la pila
+	la $t0, VTABLE_Fibonacci # Cargar la dirección de la vtable en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR
+
+	sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila
+
+	addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
+
+	sw $a0 4($v0) #Inicializamos el atributo suma
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
+
+	sw $a0 8($v0) #Inicializamos el atributo i
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
+
+	sw $a0 12($v0) #Inicializamos el atributo j
+
+	lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0
+
+	addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila
+
+	sw $a0, 0($sp) # Guardar el objeto de la llamada en la pila
 
 	addiu $sp $sp -4 # movemos el puntero de la pila
-
-	la $t0, VTABLE_Fibonacci # Cargar la dirección de la vtable de la clase Fibonacci
-
-	sw $t0, 0($v0) # Guardar la vtable en la CIR del nuevo objeto
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 0 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila
-
-	sw $a0, 4($t0) # Inicializar el atributo suma
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 0 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila
-
-	sw $a0, 8($t0) # Inicializar el atributo i
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 0 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila
-
-	sw $a0, 12($t0) # Inicializar el atributo j
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
@@ -221,13 +229,21 @@ main:
 
 	jalr $t0 # Llamar al método Fibonacci
 
+	addi $sp $sp 0 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
 	lw $t0, 4($sp)
 
 	addi $sp, $sp, 4
 
 	sw $a0, 0($t0)
 
-	addiu $a0 $fp , -8 #Devolvemos la direccion de la variable en la pilan_2
+	addiu $a0 $fp , -8 #Devolvemos la direccion de la variable en la pila n_2
 
 	sw $a0, 0($sp)
 
@@ -263,9 +279,13 @@ main:
 
 	jalr $t0 # Llamar al método in_int
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 0 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	lw $t0, 4($sp)
 
@@ -319,9 +339,13 @@ main:
 
 	jalr $t0 # Llamar al método sucesion_fib
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
@@ -333,21 +357,19 @@ main:
 
 	jalr $t0 # Llamar al método out_int
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	lw $ra 0($fp) #cargamos el return address
 
 	addiu $sp $sp 8 #limpiamos la pila de las variables locales
 
-	addiu $sp $sp 8 #limpiamos la pila del return address
-
-	# Devolvemos el self del constructor en $a0
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 0($sp) #restauramos el frame pointer
+	addiu $sp $sp 4 #limpiamos la pila del return address
 
 	jr $ra #salimos del metodo
 
@@ -459,13 +481,7 @@ main:
 
 	addiu $sp $sp 0 #limpiamos la pila de las variables locales
 
-	addiu $sp $sp 8 #limpiamos la pila del return address
-
-	# Devolvemos el self del constructor en $a0
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 0($sp) #restauramos el frame pointer
+	addiu $sp $sp 4 #limpiamos la pila del return address
 
 	jr $ra #salimos del metodo
 
@@ -513,9 +529,13 @@ main:
 
 	jalr $t0 # Llamar al método out_int
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	li $a0, 4 #reservamos 4 bytes en memoria para la VTABLE
 
@@ -565,21 +585,19 @@ main:
 
 	jalr $t0 # Llamar al método out_str
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	lw $ra 0($fp) #cargamos el return address
 
 	addiu $sp $sp 0 #limpiamos la pila de las variables locales
 
-	addiu $sp $sp 8 #limpiamos la pila del return address
-
-	# Devolvemos el self del constructor en $a0
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 0($sp) #restauramos el frame pointer
+	addiu $sp $sp 4 #limpiamos la pila del return address
 
 	jr $ra #salimos del metodo
 
@@ -641,9 +659,13 @@ main:
 
 	jalr $t0 # Llamar al método out_str
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	li $a0, 4 #reservamos 4 bytes en memoria para la VTABLE
 
@@ -679,9 +701,13 @@ main:
 
 	jalr $t0 # Llamar al método out_int
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	li $a0, 4 #reservamos 4 bytes en memoria para la VTABLE
 
@@ -731,21 +757,19 @@ main:
 
 	jalr $t0 # Llamar al método out_str
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	lw $ra 0($fp) #cargamos el return address
 
 	addiu $sp $sp 0 #limpiamos la pila de las variables locales
 
-	addiu $sp $sp 8 #limpiamos la pila del return address
-
-	# Devolvemos el self del constructor en $a0
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 0($sp) #restauramos el frame pointer
+	addiu $sp $sp 4 #limpiamos la pila del return address
 
 	jr $ra #salimos del metodo
 
@@ -849,23 +873,27 @@ main:
 
 	sw $a0, 0($t0)
 
-	loopS_8_6:
+	#Empieza codigo para While
+
+	loopS_8_6: #label del loop
+
+	#Empieza codigo para expBin
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
 	lw $a0 ,8($t0) #Buscamos el atributo en la CIR
 
-	sw $a0, 0($sp) #Guarda el valor de la expresión izq en la pila
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
 
 	addi $sp, $sp, -4 #movemos el puntero de la pila
 
 	lw $a0 ,8($fp) #Buscamos el parametro en la pila
 
-	lw $t0, 4($sp) # cargamos el valor del lado izquierdo en el temporal
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
 
-	addi $sp, $sp, 4 #movemos el puntero de la pila
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
 
-	move $t1, $a0 #movemos el valor del lado derecho al temporal
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
 
 	lw $t0 4($t0) #Cargar el valor del int o bool izquierdo
 
@@ -881,23 +909,29 @@ main:
 
 	syscall 
 
-	move $a0 $v0 #La dirección del objeto Double queda en $a0
+	move $a0 $v0 #La dirección del objeto Bool queda en $a0
 
 	la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal
 
-	sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR
+	sw $t1, 0($a0) #guardamos la dirección de la vtableBool en la CIR
 
-	sw $t0, 4($a0) #guardar el valor del int
+	sw $t0, 4($a0) #guardar el valor del Bool en la CIR
 
-	lw $a0, 4($a0) # Carga el valor de la condicion
+	#Termina codigo para expBin
 
-	bne $a0, 1, doneWS_8_6
+	lw $a0, 4($a0) # Carga el valor de la condicion while
+
+	bne $a0, 1, doneWS_8_6 #En caso de que la condición no se cumpla, saltamos al done label.
+
+	#Empieza codigo para IF
+
+	#Empieza codigo para expBin
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
 	lw $a0 ,8($t0) #Buscamos el atributo en la CIR
 
-	sw $a0, 0($sp) #Guarda el valor de la expresión izq en la pila
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
 
 	addi $sp, $sp, -4 #movemos el puntero de la pila
 
@@ -917,11 +951,11 @@ main:
 
 	move $a0, $v0 # La dirección del objeto Int queda en $a0
 
-	lw $t0, 4($sp) # cargamos el valor del lado izquierdo en el temporal
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
 
-	addi $sp, $sp, 4 #movemos el puntero de la pila
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
 
-	move $t1, $a0 #movemos el valor del lado derecho al temporal
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
 
 	lw $t0 4($t0) #Cargar el valor del int o bool izquierdo
 
@@ -941,15 +975,17 @@ main:
 
 	syscall 
 
-	move $a0 $v0 #La dirección del objeto Double queda en $a0
+	move $a0 $v0 #La dirección del objeto Bool queda en $a0
 
 	la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal
 
-	sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR
+	sw $t1, 0($a0) #guardamos la dirección de la vtableBool en la CIR
 
-	sw $t0, 4($a0) #guardar el valor del int
+	sw $t0, 4($a0) #guardar el valor del Bool en la CIR
 
-	lw $a0, 4($a0) # Carga el valor de la condicion
+	#Termina codigo para expBin
+
+	lw $a0, 4($a0) # Carga el valor de la condicion if
 
 	bne $a0, 1, falseIS_9_3 # Si no se cumple la condición salta a la labelFalse
 
@@ -979,9 +1015,13 @@ main:
 
 	jalr $t0 # Llamar al método imprimo_numero
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
 
@@ -1009,19 +1049,27 @@ main:
 
 	jalr $t0 # Llamar al método imprimo_sucesion
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
 
-	j doneIS_9_3 #Salta al doneLabel
+	lw $fp 4($sp) # Restauramos el frame pointer
 
-	falseIS_9_3: #Escribe la labelFalse
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	j doneIS_9_3 #Salta al doneLabel, se termina el if
+
+	falseIS_9_3: #labelFalse de if
+
+	#Empieza codigo para IF
+
+	#Empieza codigo para expBin
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
 	lw $a0 ,8($t0) #Buscamos el atributo en la CIR
 
-	sw $a0, 0($sp) #Guarda el valor de la expresión izq en la pila
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
 
 	addi $sp, $sp, -4 #movemos el puntero de la pila
 
@@ -1041,11 +1089,11 @@ main:
 
 	move $a0, $v0 # La dirección del objeto Int queda en $a0
 
-	lw $t0, 4($sp) # cargamos el valor del lado izquierdo en el temporal
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
 
-	addi $sp, $sp, 4 #movemos el puntero de la pila
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
 
-	move $t1, $a0 #movemos el valor del lado derecho al temporal
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
 
 	lw $t0 4($t0) #Cargar el valor del int o bool izquierdo
 
@@ -1065,15 +1113,17 @@ main:
 
 	syscall 
 
-	move $a0 $v0 #La dirección del objeto Double queda en $a0
+	move $a0 $v0 #La dirección del objeto Bool queda en $a0
 
 	la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal
 
-	sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR
+	sw $t1, 0($a0) #guardamos la dirección de la vtableBool en la CIR
 
-	sw $t0, 4($a0) #guardar el valor del int
+	sw $t0, 4($a0) #guardar el valor del Bool en la CIR
 
-	lw $a0, 4($a0) # Carga el valor de la condicion
+	#Termina codigo para expBin
+
+	lw $a0, 4($a0) # Carga el valor de la condicion if
 
 	bne $a0, 1, falseIS_13_6 # Si no se cumple la condición salta a la labelFalse
 
@@ -1103,9 +1153,13 @@ main:
 
 	jalr $t0 # Llamar al método imprimo_numero
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
@@ -1115,11 +1169,13 @@ main:
 
 	addi $sp, $sp, -4
 
+	#Empieza codigo para expBin
+
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
 	lw $a0 ,4($t0) #Buscamos el atributo en la CIR
 
-	sw $a0, 0($sp) #Guarda el valor de la expresión izq en la pila
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
 
 	addi $sp, $sp, -4 #movemos el puntero de la pila
 
@@ -1127,11 +1183,11 @@ main:
 
 	lw $a0 ,8($t0) #Buscamos el atributo en la CIR
 
-	lw $t0, 4($sp) # cargamos el valor del lado izquierdo en el temporal
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
 
-	addi $sp, $sp, 4 #movemos el puntero de la pila
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
 
-	move $t1, $a0 #movemos el valor del lado derecho al temporal
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
 
 	lw $t0 4($t0) #Cargar el valor del int izquierdo
 
@@ -1145,13 +1201,15 @@ main:
 
 	syscall 
 
-	move $a0 $v0 #La dirección del objeto Double queda en $a0
+	move $a0 $v0 #La dirección del objeto Int queda en $a0
 
 	la $t1, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
 
-	sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR
+	sw $t1, 0($a0) #guardamos la dirección de la vtableInt en la CIR
 
 	sw $t0, 4($a0) #guardar el valor del int
+
+	#Termina codigo para expBin
 
 	lw $t0, 4($sp)
 
@@ -1185,13 +1243,17 @@ main:
 
 	jalr $t0 # Llamar al método imprimo_sucesion
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
 
-	j doneIS_13_6 #Salta al doneLabel
+	lw $fp 4($sp) # Restauramos el frame pointer
 
-	falseIS_13_6: #Escribe la labelFalse
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	j doneIS_13_6 #Salta al doneLabel, se termina el if
+
+	falseIS_13_6: #labelFalse de if
 
 	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
 
@@ -1219,9 +1281,13 @@ main:
 
 	jalr $t0 # Llamar al método imprimo_numero
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
@@ -1231,11 +1297,13 @@ main:
 
 	addi $sp, $sp, -4
 
+	#Empieza codigo para expBin
+
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
 	lw $a0 ,4($t0) #Buscamos el atributo en la CIR
 
-	sw $a0, 0($sp) #Guarda el valor de la expresión izq en la pila
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
 
 	addi $sp, $sp, -4 #movemos el puntero de la pila
 
@@ -1243,11 +1311,11 @@ main:
 
 	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
 
-	lw $t0, 4($sp) # cargamos el valor del lado izquierdo en el temporal
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
 
-	addi $sp, $sp, 4 #movemos el puntero de la pila
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
 
-	move $t1, $a0 #movemos el valor del lado derecho al temporal
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
 
 	lw $t0 4($t0) #Cargar el valor del int izquierdo
 
@@ -1261,13 +1329,15 @@ main:
 
 	syscall 
 
-	move $a0 $v0 #La dirección del objeto Double queda en $a0
+	move $a0 $v0 #La dirección del objeto Int queda en $a0
 
 	la $t1, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
 
-	sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR
+	sw $t1, 0($a0) #guardamos la dirección de la vtableInt en la CIR
 
 	sw $t0, 4($a0) #guardar el valor del int
+
+	#Termina codigo para expBin
 
 	lw $t0, 4($sp)
 
@@ -1283,11 +1353,13 @@ main:
 
 	addi $sp, $sp, -4
 
+	#Empieza codigo para expBin
+
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
 	lw $a0 ,4($t0) #Buscamos el atributo en la CIR
 
-	sw $a0, 0($sp) #Guarda el valor de la expresión izq en la pila
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
 
 	addi $sp, $sp, -4 #movemos el puntero de la pila
 
@@ -1295,11 +1367,11 @@ main:
 
 	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
 
-	lw $t0, 4($sp) # cargamos el valor del lado izquierdo en el temporal
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
 
-	addi $sp, $sp, 4 #movemos el puntero de la pila
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
 
-	move $t1, $a0 #movemos el valor del lado derecho al temporal
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
 
 	lw $t0 4($t0) #Cargar el valor del int izquierdo
 
@@ -1313,13 +1385,15 @@ main:
 
 	syscall 
 
-	move $a0 $v0 #La dirección del objeto Double queda en $a0
+	move $a0 $v0 #La dirección del objeto Int queda en $a0
 
 	la $t1, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
 
-	sw $t1, 0($a0) #guardamos la dirección de la vtableDouble en la CIR
+	sw $t1, 0($a0) #guardamos la dirección de la vtableInt en la CIR
 
 	sw $t0, 4($a0) #guardar el valor del int
+
+	#Termina codigo para expBin
 
 	lw $t0, 4($sp)
 
@@ -1353,13 +1427,17 @@ main:
 
 	jalr $t0 # Llamar al método imprimo_sucesion
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
 
-	doneIS_13_6: #Escribe la labelDone
+	lw $fp 4($sp) # Restauramos el frame pointer
 
-	doneIS_9_3: #Escribe la labelDone
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	doneIS_13_6: #labelDone del if
+
+	doneIS_9_3: #labelDone del if
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
@@ -1371,9 +1449,9 @@ main:
 
 	sw $t0, 4($a0) #guardar el valor del int
 
-	j loopS_8_6
+	j loopS_8_6 #Volvemos al loop
 
-	doneWS_8_6:
+	doneWS_8_6: #termina el loop
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
@@ -1383,13 +1461,7 @@ main:
 
 	addiu $sp $sp 0 #limpiamos la pila de las variables locales
 
-	addiu $sp $sp 8 #limpiamos la pila del return address
-
-	# Devolvemos el self del constructor en $a0
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 0($sp) #restauramos el frame pointer
+	addiu $sp $sp 4 #limpiamos la pila del return address
 
 	jr $ra #salimos del metodo
 
@@ -1515,8 +1587,7 @@ IO_out_str:
 
 	# Final de start
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_in_int:
@@ -1543,8 +1614,7 @@ IO_in_int:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 8
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 
@@ -1561,8 +1631,7 @@ IO_out_int:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_in_bool:

@@ -113,8 +113,7 @@ IO_out_str:
 
 	# Final de start
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_in_int:
@@ -141,8 +140,7 @@ IO_in_int:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 8
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 
@@ -159,8 +157,7 @@ IO_out_int:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_in_bool:

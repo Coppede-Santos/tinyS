@@ -193,14 +193,14 @@ public class TopVisitor extends NodeVisitor {
 
         codigo.agregarLinea("lw $ra 0($fp) #cargamos el return address");
         codigo.agregarLinea("addiu $sp $sp "+ z + " #limpiamos la pila de las variables locales");
-        codigo.agregarLinea("addiu $sp $sp 8 #limpiamos la pila del return address");
+        codigo.agregarLinea("addiu $sp $sp 4 #limpiamos la pila del return address");
 
         //if (Character.isUpperCase(lexemaMetodo.charAt(0))) {
-        codigo.agregarLinea("# Devolvemos el self del constructor en $a0");
-        codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el self");
+        //codigo.agregarLinea("# Devolvemos el self del constructor en $a0");
+        //codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el self");
         //}
 
-        codigo.agregarLinea("lw $fp 0($sp) #restauramos el frame pointer");
+        //codigo.agregarLinea("lw $fp 0($sp) #restauramos el frame pointer");
         codigo.agregarLinea("jr $ra #salimos del metodo");
 
 
