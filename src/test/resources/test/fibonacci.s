@@ -17,7 +17,7 @@ class Fibonacci{
     else{
         (imprimo_numero(i));
         suma=suma+j;
-        j=suma;
+        j=suma-j;
         (imprimo_sucesion(suma));
        }
     (++i);

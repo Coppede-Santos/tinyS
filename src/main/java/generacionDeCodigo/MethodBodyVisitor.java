@@ -41,13 +41,13 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         nf.getCondicion().accept(this); //Genera el codigo para la condición
         codigo.agregarLinea("lw $a0, 4($a0) # Carga el valor de la condicion"); //Cargamos el valor de la condicion en $a0 (Asumimos que es un Int)
-        codigo.agregarLinea("bne $ao, 1, " + falseLabel + "# Si no se cumple la condición salta a la labelFalse");
+        codigo.agregarLinea("bne $a0, 1, " + falseLabel + " # Si no se cumple la condición salta a la labelFalse");
         nf.getSentenciaIf().accept(this); //Genera el codigo para la sentencia dentro del if
 
 
-        codigo.agregarLinea("j" + doneLabel + " #Salta al doneLabel");
+        codigo.agregarLinea("j " + doneLabel + " #Salta al doneLabel");
 
-        codigo.agregarLinea(falseLabel + ": Escribe la labelFalse" );
+        codigo.agregarLinea(falseLabel + ": #Escribe la labelFalse" );
         if (nf.getSentenciaElse() != null) { //Si no tiene else lo deja vacio
             nf.getSentenciaElse().accept(this);  //Genera el codigo para la sentencia dentro del else
         }
@@ -1051,7 +1051,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarData("str_const_" + label + ": .asciiz \"" + nodoString.getValor() + "\"");
 
-        codigo.agregarLinea("la $t0, str_const_" + label + " # Guardamos el valor en la CIR en un temporal");
+        codigo.agregarLinea("la $a0, str_const_" + label + " # Guardamos el valor en la CIR en un temporal");
         codigo.agregarLinea("jal save_str #Guardamos el valor en la CIR");
 
 
@@ -1114,7 +1114,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 codigo.agregarLinea("sw $a0, " + offsetAtributo + "($t0) # Inicializar el atributo " + atributo.getLexema());
             }
 
-            codigo.agregarLinea("lw $t0, 0($t0) # Guardar en t0 la vtable del objeto");
+            //codigo.agregarLinea("lw $t0, 0($t0) # Guardar en t0 la vtable del objeto");
 
         }
 
@@ -1125,16 +1125,16 @@ public class MethodBodyVisitor extends NodeVisitor {
             codigo.agregarLinea("sw $a0 "+ offSetParametro+"($sp) # Guardar el argumento en la pila");
         }
 
-        if (nodoLlamadaMetodo.getEsEncadenado()) {
-            codigo.agregarLinea("lw $t0 4($sp) # Cargar el objeto del encadenado previo desde la pila");
-            codigo.agregarLinea("lw $t0, 0($t0) # Cargar la vtable del objeto");
-        }
+        codigo.agregarLinea("lw $t0 4($sp) # Cargar el objeto self desde la pila");
+        codigo.agregarLinea("lw $t0, 0($t0) # Cargar la vtable del objeto");
 
         int offSetMetodo = entradaClase.getMetodo(nodoLlamadaMetodo.getLexema()).getPosicionMetodo(); //Obtemenos el offset del metodo
         codigo.agregarLinea("lw $t0, " + (offSetMetodo * 4) + "($t0) # Calcular la dirección del método en la vtable");
+
+
         codigo.agregarLinea("jalr $t0 # Llamar al método " + nodoLlamadaMetodo.getLexema());
 
-        if (nodoLlamadaMetodo.getEsEncadenado()){
+        if (!Character.isUpperCase(lexemaMetodo.charAt(0))){
             codigo.agregarLinea("lw $fp 4($sp) # Restauramos el frame pointer");
             codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el self");
         }
@@ -1217,7 +1217,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
             claseReferenciada = st.buscarClase(nodoVar.getClaseEncadenadoPrev()); //Buscamos la clase a la cual pertenece el objeto como atributo
             EntradaAtributo atributo = claseReferenciada.buscarAtributo(nodoVar.getLexema()); //Buscamos el atributo en la clase referenciadas
-            offset = (atributo.getPosicionAtributo() * (-4)) - 4; //Calculamos ell offset dentro de la CIR del objeto del encadenado previo
+            offset = (atributo.getPosicionAtributo() * (4)); //Calculamos ell offset dentro de la CIR del objeto del encadenado previo
 
             codigo.agregarLinea("lw $a0 ," + offset + "($a0) #Buscamos el atributo en la CIR del encadenado previo");
 
@@ -1285,7 +1285,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
             claseReferenciada = st.buscarClase(nodoVar.getClaseEncadenadoPrev()); //Buscamos la clase a la cual pertenece el objeto como atributo
             EntradaAtributo atributo = claseReferenciada.buscarAtributo(nodoVar.getLexema()); //Buscamos el atributo en la clase referenciadas
-            offset = (atributo.getPosicionAtributo() * (-4)) - 4; //Calculamos ell offset dentro de la CIR del objeto del encadenado previo
+            offset = (atributo.getPosicionAtributo() * (4)); //Calculamos ell offset dentro de la CIR del objeto del encadenado previo
 
             //codigo.agregarLinea("lw $a0 ," + offset + "($a0) #Buscamos el atributo en la CIR del encadenado previo");
             codigo.agregarLinea("addiu $a0 $a0 , " + offset + " #Devolvemos la direccion del atributo en la CIR del encadenado previo");
@@ -1326,9 +1326,9 @@ public class MethodBodyVisitor extends NodeVisitor {
 
     }
 
-    public void generarCodigo(NodoExp nodoExp){
-        nodoExp.accept(this);
-    }
+//    public void generarCodigo(NodoExp nodoExp){
+//        nodoExp.accept(this);
+//    }
 
     public void generarCodigo(NodoExpUn nodoExpUn) {
 
@@ -1366,6 +1366,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 codigo.agregarLinea("li $t1, 1");
                 codigo.agregarLinea("xor $t0, $t1 #invertir el valor del bool");
                 codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del bool");
+                break;
 
             case PLUS_PLUS:
                 if (doubleOperacion) {
@@ -1384,6 +1385,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
 
                 }
+                break;
             case MINUS_MINUS:
 
                 if(doubleOperacion){
@@ -1402,13 +1404,18 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
 
                 }
+                break;
             case LEFT_PAREN:
-                codigo.agregarLinea("lwc1 $fs, 4($a0) #cargar el valor del objeto");
-                codigo.agregarLinea("cvt.s.w fd, fs #convertir a single precision");
-                codigo.agregarLinea("sw $fd, 4($a0) #guardar el valor del objeto en la CIR");
+                codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar el valor del objeto");
+                codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar el valor del objeto");
+
+                codigo.agregarLinea("cvt.s.w $f2, $f0 #convertir a single precision");
+
+                codigo.agregarLinea("swc1 $f2, 4($a0) #guardar el valor del objeto en la CIR");
 
                 codigo.agregarLinea("la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal");
                 codigo.agregarLinea("sw $t0, 0($a0) #modificamos la dirección de la vtableDouble en la CIR");
+                break;
 
         }
     }

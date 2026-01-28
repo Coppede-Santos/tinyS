@@ -97,7 +97,7 @@ IO_out_str:
 	addiu $sp $sp -4
 
 	# Cuerpo de length
-	lw $t0 4($fp) # Cargo el objeto
+	lw $t0 8($fp) # Cargo el objeto
 	addiu $t0 $t0 4
 	li $t1 -1 # Guardo un contador
 
@@ -152,7 +152,8 @@ IO_out_int:
 	addiu $sp $sp -4
 
 	# 1. Recupero el int y lo imprimo
-	lw $a0 4($a0)
+	lw $a0 8($fp)
+	lw $a0 4($a0) # Obtengo el valor del CIR
 	li $v0 1
 	syscall
 
@@ -217,7 +218,8 @@ IO_out_bool:
 	addiu $sp $sp -4
 
 	# 1. Recupero el bool
-	lw $a0 4($a0)
+	lw $a0 8($fp)
+	lw $a0 4($a0) # Obtengo el valor del CIR
 	move $t0 $zero
 	addiu $t0 $t0 1
 
@@ -277,7 +279,7 @@ IO_out_double:
 	sw $ra 0($sp)
 	addiu $sp $sp -4
 
-	sw $a0 4($fp)
+	sw $a0 8($fp)
 
 	# 1. Recupero el double y lo imprimo
 	lwc1 $f12 4($a0)
@@ -296,7 +298,7 @@ IO_out_array_int:
 	sw $ra 0($sp)
 	addiu $sp $sp -4
 
-	lw $t1 4($fp)
+	lw $t1 8($fp)
 
 	# 1. Recupero la longitud del arreglo
 	lw $t0 4($t1)
