@@ -89,6 +89,18 @@ public class TestTinyS {
         testTinyS("factorial", true);
     }
 
+    @Test
+    @DisplayName("Test arraysCorrecto.s")
+    void testArraysCorrecto() throws IOException, ErrorTiny {
+        testTinyS("arraysCorrecto", true);
+    }
+
+    // Test para expresiones.s
+    @Test
+    @DisplayName("Test expresiones.s")
+    void testExpresiones() throws IOException, ErrorTiny {
+        testTinyS("expresiones", true);
+    }
 
 
 

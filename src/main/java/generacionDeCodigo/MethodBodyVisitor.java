@@ -987,7 +987,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                 codigo.agregarLinea("lw $t0, 4($a0) #cargar el valor del bool");
 
                 codigo.agregarLinea("li $t1, 1");
-                codigo.agregarLinea("xor $t0, $t1 #invertir el valor del bool");
+                codigo.agregarLinea("xor $t0, $t0, $t1 #invertir el valor del bool");
                 codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del bool");
                 break;
 
@@ -1074,10 +1074,10 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("lw $t0, 4($a0) #Cargar el tamaño del array");
 
         codigo.agregarLinea("slti $t2, $t0, 0 #Saber si el indice es negativo");
-        codigo.agregarLinea("beq $t2, $zero, error_constructorArray #Si es menor que cero salimos del metodo");
+        codigo.agregarLinea("bne $t2, $zero, NegativeArraySizeException #Si es menor que cero salimos del metodo");
 
 
-        codigo.agregarLinea("mult $t1, $t0, 4 #Calcular el tamaño en bytes del array");
+        codigo.agregarLinea("mul $t1, $t0, 4 #Calcular el tamaño en bytes del array");
         codigo.agregarLinea("addi $t1, $t1, 8 #Se suma al tamaño del array el espacio para guadar el tamaño y la vtable");
 
         codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
