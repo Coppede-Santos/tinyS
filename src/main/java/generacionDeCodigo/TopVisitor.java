@@ -54,11 +54,12 @@ public class TopVisitor extends NodeVisitor {
         NodoClass nodoClase = ast.getClass(clase.getLexema());
         NodoBloque bloqueConstructor = nodoClase.getMetodo(constructor.getLexema());
 
+        st.setMetodoActual(constructor);
         constructor.accept(this, bloqueConstructor);
 
         NodoBloque bloqueMetodo;
 
-        if (!esClasePrimitiva(st.getClassActual())) {
+        if (!esClasePrimitiva(clase)) {
             for (EntradaMetodo metodo : clase.getMetodos().values()) {
                 st.setMetodoActual(metodo);
                 bloqueMetodo = nodoClase.getMetodo(metodo.getLexema());
