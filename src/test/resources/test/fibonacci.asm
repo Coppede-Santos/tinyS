@@ -1551,17 +1551,15 @@ IO_in_str:
 		addi $t1 $t1 1
 		bne $t2 $zero loop_IO_in_str_2
 
-	addiu $sp $sp 1024
+	addiu $sp $sp 1024 # Desalojo espacio reservado para lectura
+	# --- Fin del codigo del metodo ---
 
 	# --------------------------------------
 
 
 	# Recuperar el valor del return address
 	lw $ra 4($sp)
-
-	# Actualizamos el valor el fp para que apunte al fp del llamador,
-	addiu $sp $sp 8 # el valor a aumentar depende del tamano del registro de activacion
-	lw $fp 0($sp)
+	addiu $sp $sp 4 # desalojamos el enlace dinamico
 
 	jr $ra
 
@@ -1679,8 +1677,7 @@ IO_in_bool:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 8
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_out_bool:
@@ -1712,8 +1709,7 @@ IO_out_bool:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_in_double:
@@ -1741,8 +1737,7 @@ IO_in_double:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 8
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_out_double:
@@ -1760,8 +1755,7 @@ IO_out_double:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_out_array_int:
@@ -1792,6 +1786,9 @@ IO_out_array_int:
 		sw $a0 0($sp) # Guardo en pila
 		addiu $sp $sp -4
 		jal IO_out_int # Imprimo elem
+		addiu $sp $sp 4
+		lw $fp 0($sp)
+		addiu $sp $sp 4
 
 		subiu $t0 $t0 1 # Obtenemos elem restantes
 
@@ -1810,8 +1807,7 @@ IO_out_array_int:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_out_array_str:
@@ -1860,6 +1856,9 @@ IO_out_array_str:
 		sw $a0 0($sp) # Guardo en pila
 		addiu $sp $sp -4
 		jal IO_out_str # Imprimo elem
+		addiu $sp $sp 4
+        lw $fp 0($sp)
+        addiu $sp $sp 4
 
 
 		lw $t0, -8($fp)
@@ -1881,8 +1880,7 @@ IO_out_array_str:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_out_array_bool:
@@ -1931,6 +1929,9 @@ IO_out_array_bool:
 		sw $a0 0($sp) # Guardo en pila
 		addiu $sp $sp -4
 		jal IO_out_bool # Imprimo elem
+		addiu $sp $sp 4
+        lw $fp 0($sp)
+        addiu $sp $sp 4
 
 
 		lw $t0, -8($fp)
@@ -1952,8 +1953,7 @@ IO_out_array_bool:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 
 IO_out_array_double:
@@ -2002,6 +2002,9 @@ IO_out_array_double:
 		sw $a0 0($sp) # Guardo en pila
 		addiu $sp $sp -4
 		jal IO_out_double # Imprimo elem
+		addiu $sp $sp 4
+        lw $fp 0($sp)
+        addiu $sp $sp 4
 
 
 		lw $t0, -8($fp)
@@ -2023,8 +2026,7 @@ IO_out_array_double:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra
 .data
 
