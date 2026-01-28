@@ -892,7 +892,7 @@ public class MethodBodyVisitor extends NodeVisitor {
             //El caso de que el objeto sea el resultado de un encadenado previo
             //El encadenado previo ya dejo la dirección de la CIR en $a0
 
-            codigo.agregarLinea("sw $a0 0($a0) # Guardar la dirección del encadenado previo en la pila");
+            codigo.agregarLinea("lw $a0 0($a0) # Cargamos el CIR del encadenado previo");
 
             claseReferenciada = st.buscarClase(nodoVar.getClaseEncadenadoPrev()); //Buscamos la clase a la cual pertenece el objeto como atributo
             EntradaAtributo atributo = claseReferenciada.buscarAtributo(nodoVar.getLexema()); //Buscamos el atributo en la clase referenciadas
@@ -938,10 +938,10 @@ public class MethodBodyVisitor extends NodeVisitor {
                 }
             }
         }
-        if (nodoVar.getEncadenado() != null){
-
-            nodoVar.getEncadenado().accept(this);
-        }
+//        if (nodoVar.getEncadenado() != null){
+//
+//            nodoVar.getEncadenado().accept(this);
+//        }
 
 
         NodoVar encadenado = (NodoVar) nodoVar.getEncadenado();
