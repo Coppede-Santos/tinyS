@@ -896,7 +896,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
             claseReferenciada = st.buscarClase(nodoVar.getClaseEncadenadoPrev()); //Buscamos la clase a la cual pertenece el objeto como atributo
             EntradaAtributo atributo = claseReferenciada.buscarAtributo(nodoVar.getLexema()); //Buscamos el atributo en la clase referenciadas
-            offset = (atributo.getPosicionAtributo() * (4)); //Calculamos ell offset dentro de la CIR del objeto del encadenado previo
+            offset = (atributo.getPosicionAtributo() * (4)); //Calculamos el offset dentro de la CIR del objeto del encadenado previo
 
             //codigo.agregarLinea("lw $a0 ," + offset + "($a0) #Buscamos el atributo en la CIR del encadenado previo");
             codigo.agregarLinea("addiu $a0 $a0 , " + offset + " #Devolvemos la direccion del atributo en la CIR del encadenado previo");
@@ -937,6 +937,10 @@ public class MethodBodyVisitor extends NodeVisitor {
                     }
                 }
             }
+        }
+        if (nodoVar.getEncadenado() != null){
+
+            nodoVar.getEncadenado().accept(this);
         }
 
 
