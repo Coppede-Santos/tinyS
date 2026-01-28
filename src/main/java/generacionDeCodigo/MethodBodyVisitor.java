@@ -781,7 +781,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         }
 
         int offSetParametro = 4;
-        for (int i = parametros.size()-1 ; i==0; i-=1) {
+        for (int i = parametros.size()-1 ; i>=0; i-=1) {
             parametros.get(i).accept(this); //Nos da la dirección de la CIR del argumento
             offSetParametro = offSetParametro + 4; //Calculamos el offset parametro
             codigo.agregarLinea("sw $a0 "+ offSetParametro+"($sp) # Guardar el argumento en la pila");
@@ -892,14 +892,14 @@ public class MethodBodyVisitor extends NodeVisitor {
             //El caso de que el objeto sea el resultado de un encadenado previo
             //El encadenado previo ya dejo la dirección de la CIR en $a0
 
+            codigo.agregarLinea("sw $a0 0($a0) # Guardar la dirección del encadenado previo en la pila");
+
             claseReferenciada = st.buscarClase(nodoVar.getClaseEncadenadoPrev()); //Buscamos la clase a la cual pertenece el objeto como atributo
             EntradaAtributo atributo = claseReferenciada.buscarAtributo(nodoVar.getLexema()); //Buscamos el atributo en la clase referenciadas
             offset = (atributo.getPosicionAtributo() * (4)); //Calculamos ell offset dentro de la CIR del objeto del encadenado previo
 
             //codigo.agregarLinea("lw $a0 ," + offset + "($a0) #Buscamos el atributo en la CIR del encadenado previo");
             codigo.agregarLinea("addiu $a0 $a0 , " + offset + " #Devolvemos la direccion del atributo en la CIR del encadenado previo");
-
-
 
         }else {
             //El caso de que el objeto sea accedido directamente (sin encadenado previo)
@@ -920,17 +920,30 @@ public class MethodBodyVisitor extends NodeVisitor {
                     //codigo.agregarLinea("lw $a0 ," + offset + "($fp) #Buscamos el parametro en la pila");
                     codigo.agregarLinea("addiu $a0 $fp , " + offset + " #Devolvemos la direccion del parametro en la pila");
                 } else {
-                    //El caso de que el objeto sea una variable de instancia
-                    EntradaClase clase = st.getClassActual();
-                    EntradaAtributo atributo = clase.buscarAtributo(nodoVar.getLexema());
+                    if (nodoVar.getLexema().equals("self")){
+                        //El caso de que el objeto sea self
+                        codigo.agregarLinea("addiu $a0 $fp , 4 #Devolvemos la direccion de self en la pila");
 
-                    codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
+                    } else {
+                        //El caso de que el objeto sea una variable de instancia
+                        EntradaClase clase = st.getClassActual();
+                        EntradaAtributo atributo = clase.buscarAtributo(nodoVar.getLexema());
 
-                    offset = atributo.getPosicionAtributo() * 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
-                    //codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
-                    codigo.agregarLinea("addiu $a0 $t0 " + offset + " #Devolvemos la direccion del atributo en la CIR");
+                        codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
+
+                        offset = atributo.getPosicionAtributo() * 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
+                        //codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
+                        codigo.agregarLinea("addiu $a0 $t0 " + offset + " #Devolvemos la direccion del atributo en la CIR");
+                    }
                 }
             }
+        }
+
+
+        NodoVar encadenado = (NodoVar) nodoVar.getEncadenado();
+
+        if (encadenado != null) {
+            encadenado.acceptLadoIzquerdo(this);
         }
 
     }
