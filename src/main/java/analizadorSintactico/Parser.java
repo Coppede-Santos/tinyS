@@ -16,12 +16,11 @@ import static analizadorLexico.TokenType.*;
 
 /**
  * Clase que implementa el analizador sintáctico para el lenguaje TinyS.
- *
+ * <p>
  * El analizador sintáctico (Parser) toma como entrada el flujo de tokens
  * producido por el analizador léxico (Scanner) y verifica si la secuencia
  * de tokens se ajusta a la gramática del lenguaje TinyS.
  */
-
 public class Parser {
 
     private Token currentToken;
@@ -37,7 +36,6 @@ public class Parser {
      *
      * @param escaner El escáner a utilizar.
      */
-
     public void setEscaner(Escaner escaner){
         this.escaner = escaner;
     }
@@ -50,6 +48,7 @@ public class Parser {
     public void setCurrentToken (Token currentToken) {
         this.currentToken = currentToken;
     }
+
     /**
      * Comprueba si el token actual coincide con el tipo de token esperado y avanza al siguiente token.
      *
@@ -57,12 +56,17 @@ public class Parser {
      * @throws IOException  Si ocurre un error de E/S durante la lectura del siguiente token.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     public void macheo(TokenType tokenType) throws IOException, ErrorTiny {
         if (currentToken.getType() == tokenType){
             currentToken = escaner.nextToken();
         }else{
-            throw new MacheoIncorrectoError(currentToken.getLine(),currentToken.getColumn(),tokenType.toString(), currentToken.getLexema());
+            // Si el token actual no coincide con el esperado,
+            // lanza un error de macheo incorrecto
+            throw new MacheoIncorrectoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    tokenType.toString(),
+                    currentToken.getLexema());
         }
     }
 
@@ -74,7 +78,6 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      * @throws IOException Si ocurre un error de E/S.
      */
-
     public boolean s() throws ErrorTiny, IOException {
         TokenType type = currentToken.getType();
         if (type == CLASS || type == IMPL || type == START){
@@ -82,7 +85,12 @@ public class Parser {
             macheo(EOF);
             return true;
         }
-        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definición de una clase o una implementación", currentToken. getLexema());
+        throw new TokenInesperadoError(
+                currentToken.getLine(),
+                currentToken.getColumn(),
+                "la definición de una clase o una implementación",
+                currentToken.getLexema()
+        );
     }
 
     /**
@@ -91,14 +99,18 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      * @throws IOException Si ocurre un error de E/S.
      */
-
     private void program() throws ErrorTiny, IOException {
         TokenType type = currentToken.getType();
         if (type == CLASS || type == IMPL || type == START){
             lista_definiciones();
             start();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definicion de una clase o implementación", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "la definicion de una clase o implementación",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -118,7 +130,12 @@ public class Parser {
             symbolTable.setStartMethod(metodoStart);
 
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un metodo start", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un metodo start",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -129,20 +146,22 @@ public class Parser {
      * @throws ErrorTiny Si se encuentra un error léxico.
      * @throws IOException Si ocurre un error de E/S.
      */
-
     private void lista_definiciones() throws ErrorTiny, IOException {
         TokenType type = currentToken.getType();
-        if (type == START){
-            return;
-        }else{
+        if (type != START){
             if (type == CLASS) {
                 class_lista_recursivo();
             }else{
-                    if (type == IMPL){
-                        impl_lista_recursivo();
-                    }else{
-                        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definición de una clase o una implementación", currentToken. getLexema());
-                    }
+                if (type == IMPL){
+                    impl_lista_recursivo();
+                }else{
+                    throw new TokenInesperadoError(
+                            currentToken.getLine(),
+                            currentToken.getColumn(),
+                            "la definición de una clase o una implementación",
+                            currentToken.getLexema()
+                    );
+                }
             }
         }
 
@@ -160,7 +179,11 @@ public class Parser {
             clas();
             lista_factorizacion();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definición de una clase", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "la definición de una clase",
+                    currentToken.getLexema());
         }
     }
 
@@ -170,13 +193,17 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void impl_lista_recursivo() throws IOException, ErrorTiny {
         if(currentToken.getType()==IMPL){
             impl();
             lista_factorizacion();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definición de una implementación", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "la definición de una implementación",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -186,7 +213,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void lista_factorizacion() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if(type == CLASS ){
@@ -195,10 +221,13 @@ public class Parser {
             if(type == IMPL){
                 impl_lista_recursivo();
             }else{
-                if(type == START){
-                    return;
-                }else{
-                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definición de una clase o una implementación", currentToken. getLexema());
+                if(type != START){
+                    throw new TokenInesperadoError(
+                            currentToken.getLine(),
+                            currentToken.getColumn(),
+                            "la definición de una clase o una implementación",
+                            currentToken.getLexema()
+                    );
                 }
             }
         }
@@ -210,7 +239,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void clas() throws IOException, ErrorTiny {
         if(currentToken.getType()==CLASS){
 
@@ -231,7 +259,11 @@ public class Parser {
             symbolTable.insertarClase(claseActual.getLexema(),claseActual);
 
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definición de una clase", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "la definición de una clase",
+                    currentToken.getLexema());
         }
     }
 
@@ -265,7 +297,12 @@ public class Parser {
 
                 return superClaseEntrada;
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un bloque o herencia", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un bloque o herencia",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -276,7 +313,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void atributo_class_recursivo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
 
@@ -284,10 +320,13 @@ public class Parser {
             atributo();
             atributo_class_recursivo();
         }else{
-            if(type == RIGHT_BRACE){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la asignacion de un tipo valido o un bloque", currentToken. getLexema());
+            if(type != RIGHT_BRACE){
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "la asignacion de un tipo valido o un bloque",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -298,7 +337,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void impl() throws IOException, ErrorTiny {
         if(currentToken.getType() == IMPL){
             macheo(IMPL);
@@ -316,7 +354,11 @@ public class Parser {
             miembro_impl_recursivo();
             macheo(RIGHT_BRACE);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"la definición de una implementación", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "la definición de una implementación",
+                    currentToken.getLexema());
         }
     }
 
@@ -326,17 +368,19 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void miembro_impl_recursivo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if(type == FN || type == ST || type == DOT){
             miembro();
             miembro_impl_recursivo();
         }else{
-            if(type == RIGHT_BRACE){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una firma para metodo o constructor, o cerrar implementación", currentToken. getLexema());
+            if(type != RIGHT_BRACE){
+                throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una firma para metodo o constructor, o cerrar implementación",
+                    currentToken.getLexema()
+                );
             }
         }
     }
@@ -365,7 +409,11 @@ public class Parser {
             return(superClase);
 
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una herencia", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una herencia",
+                    currentToken.getLexema());
         }
     }
 
@@ -375,7 +423,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void miembro() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if (type == FN|| type == ST){
@@ -387,7 +434,12 @@ public class Parser {
                 }
                 constructor();
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un metodo o constructor", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un metodo o constructor",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -398,7 +450,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void constructor() throws IOException, ErrorTiny {
         if (currentToken.getType()==DOT){
 
@@ -418,7 +469,11 @@ public class Parser {
             bloque_metodo();
             claseActual.setConstructor(constructor);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un constructor", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un constructor",
+                    currentToken.getLexema());
         }
     }
 
@@ -428,7 +483,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void atributo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         if(type == IDCLASS || type == STR || type == BOOL || type == INT || type == DOUBLE || type == ARRAY){
@@ -462,7 +516,11 @@ public class Parser {
                 }
                 macheo(SEMICOLON);
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un atributo", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un atributo",
+                        currentToken.getLexema());
             }
         }
     }
@@ -473,7 +531,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void metodo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
         EntradaMetodo metodoActual = new EntradaMetodo();
@@ -519,7 +576,12 @@ public class Parser {
 
                 bloque_metodo();
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un metodo", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un metodo",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -550,10 +612,13 @@ public class Parser {
             metodoActual.setTipoRetorno(symbolTable.buscarClase(tipoMetodo));
 
         }else{
-            if(type == IDOBJETS){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un tipo de metodo", currentToken. getLexema());
+            if(type != IDOBJETS){
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un tipo de metodo", 
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -564,12 +629,16 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void visibilidad() throws IOException, ErrorTiny {
         if (currentToken.getType() == PUB){
             macheo(PUB);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"tipo de visibilidad", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "tipo de visibilidad", 
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -579,12 +648,16 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void forma_metodo() throws IOException, ErrorTiny {
         if (currentToken.getType() == ST){
             macheo(ST);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una forma de metodo", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una forma de metodo", 
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -602,7 +675,12 @@ public class Parser {
             sentencia_bloque_recursivo();
             macheo(RIGHT_BRACE);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un bloque", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un bloque",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -616,14 +694,22 @@ public class Parser {
     private void decl_var_loc_bloque_recursivo() throws IOException, ErrorTiny {
         TokenType type = currentToken.getType();
 
-        if(type == IDCLASS  || type == STR || type == BOOL || type == INT || type == DOUBLE || type == ARRAY ){
+        if(type == IDCLASS  || type == STR || type == BOOL || type == INT
+                || type == DOUBLE || type == ARRAY ){
             decl_var_locales();
             decl_var_loc_bloque_recursivo();
         }else{
-            if(type == LEFT_BRACE || type == RIGHT_BRACE || type == SEMICOLON || type == LEFT_PAREN || type == IF || type == WHILE || type == RET || type == IDOBJETS || type == PUB || type == NEW || type == FN || type == ST || type == DOT || type == SELF){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una declaracion de variables locales o un bloque", currentToken. getLexema());
+            if(!(type == LEFT_BRACE || type == RIGHT_BRACE || type == SEMICOLON
+                    || type == LEFT_PAREN || type == IF || type == WHILE
+                    || type == RET || type == IDOBJETS || type == PUB
+                    || type == NEW || type == FN || type == ST
+                    || type == DOT || type == SELF)){
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una declaracion de variables locales o un bloque",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -635,7 +721,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-//corroborar id
     private void sentencia_bloque_recursivo() throws IOException, ErrorTiny {
       
         TokenType type = currentToken.getType();
@@ -643,10 +728,13 @@ public class Parser {
             sentencia();
             sentencia_bloque_recursivo();
         }else{
-            if(type == RIGHT_BRACE){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una sentencia o cierre de bloque", currentToken. getLexema());
+            if(type != RIGHT_BRACE){
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una sentencia o cierre de bloque",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -674,7 +762,12 @@ public class Parser {
 
             macheo(SEMICOLON);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una declaracion de variables locales", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una declaracion de variables locales",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -741,7 +834,12 @@ public class Parser {
             macheo(IDOBJETS);
             lista_declaraciones_variables_prima(tipo, subtipo, esPrivado);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un nombre de variable", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un nombre de variable",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -772,10 +870,12 @@ public class Parser {
             macheo(COMMA);
             lista_declaraciones_variables(tipo, subtipo, esPrivado);
         }else{
-            if(type == SEMICOLON){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"mas declaraciones de variables locales o un punto y coma", currentToken. getLexema());
+            if(type != SEMICOLON){
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "mas declaraciones de variables locales o un punto y coma",
+                        currentToken.getLexema());
             }
         }
     }
@@ -786,7 +886,12 @@ public class Parser {
             lista_argumentos_formales_factorizado();
             macheo(RIGHT_PAREN);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una lista de argumentos formales", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una lista de argumentos formales",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -796,16 +901,19 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void lista_argumentos_formales_factorizado() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type==IDCLASS || type==STR || type==BOOL || type==INT || type==DOUBLE || type==ARRAY){
+        if(type==IDCLASS || type==STR || type==BOOL
+                || type==INT || type==DOUBLE || type==ARRAY){
             lista_argumentos_formales();
         }else{
-            if(type == RIGHT_PAREN){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una lista de argumentos formales", currentToken. getLexema());
+            if(type != RIGHT_PAREN){
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una lista de argumentos formales",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -816,7 +924,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void lista_argumentos_formales() throws IOException, ErrorTiny{
 
         TokenType type = currentToken.getType();
@@ -824,7 +931,12 @@ public class Parser {
             argumento_formal();
             lista_argumentos_formales_prima();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"el tipo de un argumento formal", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "el tipo de un argumento formal",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -834,17 +946,19 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void lista_argumentos_formales_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type==COMMA){
             macheo(COMMA);
             lista_argumentos_formales();
         }else{
-            if(type==RIGHT_PAREN){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una lista de argumentos formales", currentToken. getLexema());
+            if(type != RIGHT_PAREN){
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una lista de argumentos formales",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -855,7 +969,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void argumento_formal() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         EntradaMetodo metodoActual = symbolTable.getMetodoActual();
@@ -887,7 +1000,12 @@ public class Parser {
             macheo(IDOBJETS);
 
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"el tipo de un argumento formal", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "el tipo de un argumento formal",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -908,7 +1026,12 @@ public class Parser {
                 macheo(VOID);
                 return null;
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un tipo de metodo", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un tipo de metodo",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -933,7 +1056,12 @@ public class Parser {
                     String subtipo = tipo_arreglo();
                     return subtipo;
                 }else{
-                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un tipo o clase", currentToken. getLexema());
+                    throw new TokenInesperadoError(
+                            currentToken.getLine(),
+                            currentToken.getColumn(),
+                            "un tipo o clase",
+                            currentToken.getLexema()
+                    );
                 }
             }
         }
@@ -973,18 +1101,23 @@ public class Parser {
             }
         }
     }
+
     /**
      * Implementa la regla de producción para 'tipo_referencia' de la gramática.
      *
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void tipo_referencia() throws IOException, ErrorTiny{
         if(currentToken.getType()==IDCLASS){
             macheo(IDCLASS);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un tipo de referencia", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un tipo de referencia",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -994,17 +1127,21 @@ public class Parser {
             String subtipo = tipo_primitivo();
             return subtipo;
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un tipo arreglo", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un tipo arreglo",
+                    currentToken.getLexema()
+            );
         }
     }
-// corroborar asignacion ID
+
     /**
      * Implementa la regla de producción para 'sentencia' de la gramática.
      *
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void sentencia() throws IOException, ErrorTiny{
 
         TokenType type = currentToken.getType();
@@ -1042,7 +1179,11 @@ public class Parser {
                                 if(type==SEMICOLON){
                                     macheo(SEMICOLON);
                                 }else{
-                                    throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una sentencia", currentToken. getLexema());
+                                    throw new TokenInesperadoError(
+                                            currentToken.getLine(),
+                                            currentToken.getColumn(),
+                                            "una sentencia",
+                                            currentToken.getLexema());
                                 }
                             }
                         }
@@ -1062,13 +1203,21 @@ public class Parser {
 
     private void ExpOr_factorizado() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if (type==IDCLASS || type==IDOBJETS || type==PLUS || type==MINUS || type==NOT || type==PLUS_PLUS || type==MINUS_MINUS || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == DOUBLE_LITERAL || type == STRING_LITERAL || type==SELF || type == NEW || type == LEFT_PAREN){
+        if (type==IDCLASS || type==IDOBJETS || type==PLUS || type==MINUS
+                || type==NOT || type==PLUS_PLUS || type==MINUS_MINUS
+                || type == NIL || type == TRUE || type == FALSE
+                || type == INTEGER_LITERAL || type == DOUBLE_LITERAL
+                || type == STRING_LITERAL || type==SELF || type == NEW
+                || type == LEFT_PAREN){
             expOr();
         }else{
-            if(type == SEMICOLON){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion o punto y coma", currentToken. getLexema());
+            if(type != SEMICOLON){
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una expresion o punto y coma",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1079,18 +1228,21 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void sentencia_else()throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == ELSE){
             macheo(ELSE);
             sentencia();
         }else{
-            if( type == RIGHT_BRACE || type == SEMICOLON || type == IDOBJETS || type== SELF || type == LEFT_PAREN
-                    || type == IF || type == WHILE || type == LEFT_BRACE || type == RET){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una sentencia else, una nueva sentencia o cerrar el bloque", currentToken. getLexema());
+            if(!(type == RIGHT_BRACE || type == SEMICOLON || type == IDOBJETS
+                    || type== SELF || type == LEFT_PAREN || type == IF
+                    || type == WHILE || type == LEFT_BRACE || type == RET)){
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una sentencia else, una nueva sentencia o cerrar el bloque",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1101,7 +1253,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void bloque() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if (type == LEFT_BRACE){
@@ -1109,7 +1260,12 @@ public class Parser {
             sentencia_bloque_recursivo();
             macheo(RIGHT_BRACE);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un bloque", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un bloque",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1119,7 +1275,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void asignacion() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDOBJETS ){
@@ -1132,7 +1287,12 @@ public class Parser {
                 macheo(EQUAL);
                 expOr();
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una asignacion", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una asignacion",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1144,16 +1304,19 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void accesoVar_simple() throws IOException, ErrorTiny{
 
         TokenType type = currentToken.getType();
         if(type == IDOBJETS){
             macheo(IDOBJETS);
             accesoVar_simple_prima();
-
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un acceso a variable",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1163,7 +1326,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void accesoVar_simple_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT || type == EQUAL){
@@ -1174,7 +1336,12 @@ public class Parser {
                 expOr();
                 macheo(RIGHT_BRACKET);
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un acceso a variable",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1192,10 +1359,13 @@ public class Parser {
             encadeado_simple();
             encadenado_simple_recursivo();
         }else{
-            if(type == EQUAL){
-                return;
-            }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable", currentToken. getLexema());
+            if(type != EQUAL){
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un acceso a variable",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1206,14 +1376,18 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void accesoSelf_simple() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == SELF){
             macheo(SELF);
             encadenado_simple_recursivo();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable self", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un acceso a variable self",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1223,13 +1397,17 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void encadeado_simple() throws IOException, ErrorTiny{
         if(currentToken.getType() == DOT){
             macheo(DOT);
             macheo(IDOBJETS);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un acceso a variable",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1239,7 +1417,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void sentencia_simple() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == LEFT_PAREN){
@@ -1247,7 +1424,12 @@ public class Parser {
             expOr();
             macheo(RIGHT_PAREN);
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una sentencia simple", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una sentencia simple",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1257,14 +1439,23 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void expOr() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
+        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS
+                || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS
+                || type == LEFT_PAREN || type == NIL || type == TRUE
+                || type == FALSE || type == INTEGER_LITERAL
+                || type == STRING_LITERAL || type == DOUBLE_LITERAL
+                || type == SELF || type == NEW){
             expAnd();
             expOrPrima();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una expresion",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1282,10 +1473,9 @@ public class Parser {
             expAnd();
             expOrPrima();
         }else {
-            if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET) {
-                return;
-            } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion o cerrar expresion", currentToken. getLexema());
+            if (!(type == SEMICOLON || type == COMMA
+                    || type == RIGHT_PAREN || type == RIGHT_BRACKET)) {
+                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion o cerrar expresion", currentToken.getLexema());
             }
         }
     }
@@ -1296,14 +1486,23 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void expAnd() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
+        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS
+                || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS
+                || type == LEFT_PAREN || type == NIL || type == TRUE
+                || type == FALSE || type == INTEGER_LITERAL
+                || type == STRING_LITERAL || type == DOUBLE_LITERAL
+                || type == SELF || type == NEW){
             expIgual();
             expAndPrima();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una expresion",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1313,18 +1512,20 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void expAndPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == AND) {
             macheo(AND);
             expIgual();
         }else {
-            if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR) {
-                return;
-            } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),
-                        "una expresion, una operacion o cerrar expresion", currentToken. getLexema());
+            if (!(type == SEMICOLON || type == COMMA || type == RIGHT_PAREN
+                    || type == RIGHT_BRACKET || type == OR)) {
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una expresion, una operacion o cerrar expresion",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1338,11 +1539,21 @@ public class Parser {
 
     private void expIgual() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
+        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS
+                || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS
+                || type == LEFT_PAREN || type == NIL || type == TRUE
+                || type == FALSE || type == INTEGER_LITERAL
+                || type == STRING_LITERAL || type == DOUBLE_LITERAL
+                || type == SELF || type == NEW){
             expCompuesta();
             expIgualPrima();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion, una operacion o cerrar expresion", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una expresion, una operacion o cerrar expresion",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1352,7 +1563,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void expIgualPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == EQUAL_EQUAL || type == NOT_EQUAL) {
@@ -1360,10 +1570,14 @@ public class Parser {
             expCompuesta();
             expIgualPrima();
         }else {
-            if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND) {
-                return;
-            } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion, una operacion o cerrar expresion", currentToken. getLexema());
+            if (!(type == SEMICOLON || type == COMMA || type == RIGHT_PAREN
+                    || type == RIGHT_BRACKET || type == OR || type == AND)) {
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una expresion, una operacion o cerrar expresion",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1374,14 +1588,22 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void expCompuesta() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
+        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS
+                || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS
+                || type == LEFT_PAREN || type == NIL || type == TRUE
+                || type == FALSE || type == INTEGER_LITERAL
+                || type == STRING_LITERAL || type == DOUBLE_LITERAL
+                || type == SELF || type == NEW){
             expAd();
             expCompuestaPrima();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una expresion",
+                    currentToken.getLexema());
         }
     }
 
@@ -1391,17 +1613,21 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void expCompuestaPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL) {
             opCompuesta();
             expAd();
         }else {
-            if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL) {
-                return;
-            } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion, una operacion o cerrar expresion", currentToken. getLexema());
+            if (!(type == SEMICOLON || type == COMMA || type == RIGHT_PAREN
+                    || type == RIGHT_BRACKET || type == OR || type == AND
+                    || type == NOT_EQUAL || type == EQUAL_EQUAL)) {
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una expresion, una operacion o cerrar expresion",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1415,11 +1641,20 @@ public class Parser {
 
     private void expAd() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
+        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS
+                || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS
+                || type == LEFT_PAREN || type == NIL || type == TRUE
+                || type == FALSE || type == INTEGER_LITERAL
+                || type == STRING_LITERAL || type == DOUBLE_LITERAL
+                || type == SELF || type == NEW){
             expMul();
             expAdPrima();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una expresion",
+                    currentToken.getLexema());
         }
     }
 
@@ -1429,7 +1664,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void expAdPrima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == PLUS || type == MINUS) {
@@ -1437,10 +1671,17 @@ public class Parser {
             expMul();
             expAdPrima();
         }else {
-            if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL) {
-                return;
-            } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion, una operacion o cerrar expresion", currentToken. getLexema());
+            if (!(type == SEMICOLON || type == COMMA || type == RIGHT_PAREN
+                    || type == RIGHT_BRACKET || type == OR || type == AND
+                    || type == NOT_EQUAL || type == EQUAL_EQUAL
+                    || type == GREATER || type == LESS || type == GREATER_EQUAL
+                    || type == LESS_EQUAL)) {
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una expresion, una operacion o cerrar expresion",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1451,14 +1692,23 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void expMul() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == LEFT_PAREN || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == SELF || type == NEW){
+        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS
+                || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS
+                || type == LEFT_PAREN || type == NIL || type == TRUE
+                || type == FALSE || type == INTEGER_LITERAL
+                || type == STRING_LITERAL || type == DOUBLE_LITERAL
+                || type == SELF || type == NEW){
             expUn();
             expMulPrima();
         }else{
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una expresion",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1476,10 +1726,17 @@ public class Parser {
             expUn();
             expMulPrima();
         }else {
-            if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS) {
-                return;
-            } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion, una operacion o cerrar expresion", currentToken. getLexema());
+            if (!(type == SEMICOLON || type == COMMA || type == RIGHT_PAREN
+                    || type == RIGHT_BRACKET || type == OR || type == AND
+                    || type == NOT_EQUAL || type == EQUAL_EQUAL
+                    || type == GREATER || type == LESS || type == GREATER_EQUAL
+                    || type == LESS_EQUAL || type == PLUS || type == MINUS)) {
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una expresion, una operacion o cerrar expresion",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1490,25 +1747,33 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void expUn() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if (type == LEFT_PAREN) {
             macheo(LEFT_PAREN);
             parentesis_factorizado();
         } else {
-            if (type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS) {
+            if (type == PLUS || type == MINUS || type == NOT
+                    || type == PLUS_PLUS || type == MINUS_MINUS) {
                 macheo(type);
                 expUn();
             } else {
-                if (type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL) {
+                if (type == NIL || type == TRUE || type == FALSE
+                        || type == INTEGER_LITERAL || type == STRING_LITERAL
+                        || type == DOUBLE_LITERAL) {
                     literal();
                 } else {
-                    if (type == IDCLASS || type == IDOBJETS || type == SELF || type == NEW) {
+                    if (type == IDCLASS || type == IDOBJETS || type == SELF
+                            || type == NEW) {
                         primario_sin_parentesis();
                         encadenado_factorizado();
                     }else{
-                        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion o una operación", currentToken. getLexema());
+                        throw new TokenInesperadoError(
+                                currentToken.getLine(),
+                                currentToken.getColumn(),
+                                "una expresion o una operación",
+                                currentToken.getLexema()
+                        );
                     }
                 }
             }
@@ -1521,15 +1786,19 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void opIgual() throws IOException, ErrorTiny{
-        if (currentToken.getType() == EQUAL_EQUAL){
+        TokenType currentType = currentToken.getType();
+        if (currentType == EQUAL_EQUAL){
             macheo(EQUAL_EQUAL);
         }else {
-            if (currentToken.getType() == NOT_EQUAL) {
+            if (currentType == NOT_EQUAL) {
                 macheo(NOT_EQUAL);
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un operador de igualdad", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un operador de igualdad",
+                        currentToken.getLexema());
             }
         }
     }
@@ -1540,15 +1809,20 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void opAd() throws IOException, ErrorTiny{
-        if (currentToken.getType() == PLUS){
+        TokenType currentType = currentToken.getType();
+        if (currentType == PLUS){
             macheo(PLUS);
         }else {
-            if (currentToken.getType() == MINUS) {
+            if (currentType == MINUS) {
                 macheo(MINUS);
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un operador aditivo", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un operador aditivo",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1559,21 +1833,26 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void opCompuesta() throws IOException, ErrorTiny{
-        if (currentToken.getType() == GREATER){
+        TokenType type = currentToken.getType();
+        if (type == GREATER){
             macheo(GREATER);
         }else {
-            if (currentToken.getType() == GREATER_EQUAL) {
+            if (type == GREATER_EQUAL) {
                 macheo(GREATER_EQUAL);
             }else{
-                if (currentToken.getType() == LESS) {
+                if (type == LESS) {
                     macheo(LESS);
                 }else {
-                    if (currentToken.getType() == LESS_EQUAL) {
+                    if (type == LESS_EQUAL) {
                         macheo(LESS_EQUAL);
                     } else {
-                        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un operador relacional", currentToken. getLexema());
+                        throw new TokenInesperadoError(
+                                currentToken.getLine(),
+                                currentToken.getColumn(),
+                                "un operador relacional",
+                                currentToken.getLexema()
+                        );
                     }
                 }
             }
@@ -1590,19 +1869,25 @@ public class Parser {
      */
 
     private void opMul() throws IOException, ErrorTiny{
-        if (currentToken.getType() == MULT){
+        TokenType type = currentToken.getType();
+        if (type == MULT){
             macheo(MULT);
         }else {
-            if (currentToken.getType() == SLASH) {
+            if (type == SLASH) {
                 macheo(SLASH);
             }else{
-                if (currentToken.getType() == PERCENTAGE) {
+                if (type == PERCENTAGE) {
                     macheo(PERCENTAGE);
                 }else {
-                    if (currentToken.getType() == DIV) {
+                    if (type == DIV) {
                         macheo(DIV);
                     } else {
-                        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un operador multiplicativo", currentToken. getLexema());
+                        throw new TokenInesperadoError(
+                                currentToken.getLine(),
+                                currentToken.getColumn(),
+                                "un operador multiplicativo",
+                                currentToken.getLexema()
+                        );
                     }
                 }
             }
@@ -1618,12 +1903,22 @@ public class Parser {
             macheo(RIGHT_PAREN);
             expUn();
         }else{
-            if(type==IDCLASS || type==IDOBJETS || type==PLUS || type==MINUS || type==NOT || type==PLUS_PLUS || type==MINUS_MINUS || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == DOUBLE_LITERAL || type == STRING_LITERAL || type==SELF || type == NEW || type == LEFT_PAREN){
+            if(type==IDCLASS || type==IDOBJETS || type==PLUS || type==MINUS
+                    || type==NOT || type==PLUS_PLUS || type==MINUS_MINUS
+                    || type == NIL || type == TRUE || type == FALSE
+                    || type == INTEGER_LITERAL || type == DOUBLE_LITERAL
+                    || type == STRING_LITERAL || type==SELF || type == NEW
+                    || type == LEFT_PAREN){
                 expOr();
                 macheo(RIGHT_PAREN);
                 encadenado_factorizado();
             }else{
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion o un tipo entero", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una expresion o un tipo entero",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1634,16 +1929,25 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void encadenado_factorizado() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT) {
             encadenado();
         }else {
-            if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == OR || type == AND || type == NOT_EQUAL || type == EQUAL_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == RIGHT_BRACKET || type == MULT || type == SLASH || type == PERCENTAGE || type == DIV) {
-                return;
-            } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo, una operación o cerrar una expresión", currentToken. getLexema());
+            if (!(type == SEMICOLON || type == COMMA || type == RIGHT_PAREN
+                    || type == OR || type == AND || type == NOT_EQUAL
+                    || type == EQUAL_EQUAL || type == GREATER || type == LESS
+                    || type == GREATER_EQUAL || type == LESS_EQUAL
+                    || type == PLUS || type == MINUS || type == RIGHT_BRACKET
+                    || type == MULT || type == SLASH || type == PERCENTAGE
+                    || type == DIV)) {
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un acceso a variable o llamada a metodo, " +
+                                "una operación o cerrar una expresión",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1654,52 +1958,36 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void literal() throws IOException, ErrorTiny{
-        if (currentToken.getType() == NIL){
+        TokenType type = currentToken.getType();
+        if (type == NIL){
             macheo(NIL);
         }else {
-            if (currentToken.getType() == TRUE) {
+            if (type == TRUE) {
                 macheo(TRUE);
             }else{
-                if (currentToken.getType() == FALSE) {
+                if (type == FALSE) {
                     macheo(FALSE);
                 }else {
-                    if (currentToken.getType() == INTEGER_LITERAL) {
+                    if (type == INTEGER_LITERAL) {
                         macheo(INTEGER_LITERAL);
                     } else {
-                        if (currentToken.getType() == STRING_LITERAL) {
+                        if (type == STRING_LITERAL) {
                             macheo(STRING_LITERAL);
                         } else {
-                            if (currentToken.getType() == DOUBLE_LITERAL) {
+                            if (type == DOUBLE_LITERAL) {
                                 macheo(DOUBLE_LITERAL);
                             } else {
-                                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un literal", currentToken. getLexema());
+                                throw new TokenInesperadoError(
+                                        currentToken.getLine(),
+                                        currentToken.getColumn(),
+                                        "un literal",
+                                        currentToken.getLexema()
+                                );
                             }
                         }
                     }
                 }
-            }
-        }
-    }
-
-    /**
-     * Implementa la regla de producción para 'primario' de la gramática.
-     *
-     * @throws IOException Si ocurre un error de E/S.
-     * @throws ErrorTiny Si se encuentra un error léxico.
-     */
-
-    private void primario() throws IOException, ErrorTiny{
-        TokenType type = currentToken.getType();
-        if(type == LEFT_PAREN){
-            expresionParentizada();
-        }else{
-            if(type==SELF || type==NEW || type==IDCLASS || type==IDOBJETS) {
-                primario_sin_parentesis();
-            }else{
-                    throw new TokenInesperadoError(currentToken.getLine(), currentToken.getColumn(), "una expresión primaria (expresión entre paréntesis, acceso a variable, 'self', llamada a método o constructor)", currentToken.getLexema());
-
             }
         }
     }
@@ -1719,29 +2007,16 @@ public class Parser {
                     if(type==NEW){
                         llamada_conclasor();
                     }else{
-                        throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresión primaria (expresión acceso a variable, 'self', llamada a método o constructor)", currentToken. getLexema());
+                        throw new TokenInesperadoError(
+                                currentToken.getLine(),
+                                currentToken.getColumn(),
+                                "una expresión primaria " +
+                                        "(expresión acceso a variable, 'self', " +
+                                        "llamada a método o constructor)",
+                                currentToken.getLexema());
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Implementa la regla de producción para 'expresionParentizada' de la gramática.
-     *
-     * @throws IOException Si ocurre un error de E/S.
-     * @throws ErrorTiny Si se encuentra un error léxico.
-     */
-
-    private void expresionParentizada() throws IOException, ErrorTiny{
-        TokenType type = currentToken.getType();
-        if(type == LEFT_PAREN ) {
-            macheo(LEFT_PAREN);
-            expOr();
-            macheo(RIGHT_PAREN);
-            encadenado_factorizado();
-        }else {
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una expresion parentizada", currentToken. getLexema());
         }
     }
 
@@ -1751,14 +2026,18 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void accesoSelf() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == SELF ) {
             macheo(SELF);
             encadenado_factorizado();
         }else {
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a self", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un acceso a self",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1768,10 +2047,15 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void accesoVar_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type == DOT || type == SEMICOLON || type == COMMA  || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR || type == AND || type == EQUAL_EQUAL || type == NOT_EQUAL || type == GREATER || type == LESS || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == MULT || type == SLASH || type == DIV || type == PERCENTAGE){
+        if(type == DOT || type == SEMICOLON || type == COMMA
+                || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR
+                || type == AND || type == EQUAL_EQUAL || type == NOT_EQUAL
+                || type == GREATER || type == LESS || type == GREATER_EQUAL
+                || type == LESS_EQUAL || type == PLUS || type == MINUS
+                || type == MULT || type == SLASH || type == DIV
+                || type == PERCENTAGE){
             encadenado_factorizado();
         }else{
             if (type == LEFT_BRACKET){
@@ -1780,7 +2064,12 @@ public class Parser {
                 macheo(RIGHT_BRACKET);
                 encadenado_factorizado();
             }else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un acceso a variable",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1791,14 +2080,18 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void llamada_metodo() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == LEFT_PAREN ) {
             argumentos_actuales();
             encadenado_factorizado();
         }else {
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una llamada a metodo", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una llamada a metodo",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1818,7 +2111,11 @@ public class Parser {
             llamada_metodo();
             encadenado_factorizado();
         }else {
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una llamada a metodo estatico", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una llamada a metodo estatico",
+                    currentToken.getLexema());
         }
     }
 
@@ -1828,14 +2125,18 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void llamada_conclasor() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == NEW ) {
             macheo(NEW);
             llamada_conclasor_prima();
         }else {
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una llamada a constructor", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una llamada a constructor",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1845,7 +2146,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void llamada_conclasor_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDCLASS){
@@ -1859,7 +2159,12 @@ public class Parser {
                 expOr();
                 macheo(RIGHT_BRACKET);
             }else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una llamada a constructor", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una llamada a constructor",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1870,7 +2175,6 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void argumentos_actuales() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == LEFT_PAREN) {
@@ -1878,7 +2182,12 @@ public class Parser {
             lista_expresiones_factorizado();
             macheo(RIGHT_PAREN);
         }else {
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una lista de argumentos", currentToken.getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una lista de argumentos",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1888,25 +2197,27 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void lista_expresiones_factorizado() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == LEFT_PAREN || type == SELF || type == NEW) {
+        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS
+                || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS
+                || type == NIL || type == TRUE || type == FALSE
+                || type == INTEGER_LITERAL || type == STRING_LITERAL
+                || type == DOUBLE_LITERAL || type == LEFT_PAREN
+                || type == SELF || type == NEW) {
             lista_expresiones();
         }else {
-            if (type == RIGHT_PAREN) {
-                return;
-            } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una lista de argumentos", currentToken. getLexema());
+            if (type != RIGHT_PAREN) {
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una lista de argumentos",
+                        currentToken.getLexema()
+                );
             }
         }
     }
-    /**
-     * Implementa la regla de producción para 'lista_expresiones' de la gramática.
-     *
-     * @throws IOException Si ocurre un error de E/S.
-     * @throws ErrorTiny Si se encuentra un error léxico.
-     */
+
 
     /**
      * Implementa la regla de producción para 'lista_expresiones' de la gramática.
@@ -1914,14 +2225,23 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void lista_expresiones() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS || type == NIL || type == TRUE || type == FALSE || type == INTEGER_LITERAL || type == STRING_LITERAL || type == DOUBLE_LITERAL || type == LEFT_PAREN || type == SELF || type == NEW) {
+        if(type == IDCLASS || type == IDOBJETS || type == PLUS || type == MINUS
+                || type == NOT || type == PLUS_PLUS || type == MINUS_MINUS
+                || type == NIL || type == TRUE || type == FALSE
+                || type == INTEGER_LITERAL || type == STRING_LITERAL
+                || type == DOUBLE_LITERAL || type == LEFT_PAREN || type == SELF
+                || type == NEW) {
             expOr();
             lista_expresiones_prima();
         }else {
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una lista de expresiones", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "una lista de expresiones",
+                    currentToken.getLexema()
+            );
         }
     }
 
@@ -1931,17 +2251,19 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void lista_expresiones_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == COMMA) {
             macheo(COMMA);
             lista_expresiones();
         }else {
-            if (type == RIGHT_PAREN) {
-                return;
-            } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"una lista de expresiones", currentToken. getLexema());
+            if (type != RIGHT_PAREN) {
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "una lista de expresiones",
+                        currentToken.getLexema()
+                );
             }
         }
     }
@@ -1952,17 +2274,20 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void encadenado() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == DOT) {
             macheo(DOT);
             encadenado_prima();
         }else {
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un acceso a variable o llamada a metodo",
+                    currentToken.getLexema()
+            );
         }
     }
-
 
     /**
      * Implementa la regla de producción para 'encadenado_prima' de la gramática.
@@ -1970,17 +2295,19 @@ public class Parser {
      * @throws IOException Si ocurre un error de E/S.
      * @throws ErrorTiny Si se encuentra un error léxico.
      */
-
     private void encadenado_prima() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
         if(type == IDOBJETS) {
             macheo(IDOBJETS);
             id_factor();
         }else {
-            throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo", currentToken. getLexema());
+            throw new TokenInesperadoError(
+                    currentToken.getLine(),
+                    currentToken.getColumn(),
+                    "un acceso a variable o llamada a metodo",
+                    currentToken.getLexema());
         }
     }
-
 
     /**
      * Implementa la regla de producción para 'id_factor' de la gramática.
@@ -1991,13 +2318,26 @@ public class Parser {
 
     private void id_factor() throws IOException, ErrorTiny{
         TokenType type = currentToken.getType();
-        if(type == DOT || type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == LEFT_BRACKET || type == RIGHT_BRACKET || type == OR || type == AND || type == EQUAL_EQUAL || type == NOT_EQUAL || type == LESS || type == GREATER || type == GREATER_EQUAL || type == LESS_EQUAL || type == PLUS || type == MINUS || type == MULT || type == SLASH || type == PERCENTAGE || type == DIV ) {
+        if(type == DOT || type == SEMICOLON || type == COMMA
+                || type == RIGHT_PAREN || type == LEFT_BRACKET
+                || type == RIGHT_BRACKET || type == OR || type == AND
+                || type == EQUAL_EQUAL || type == NOT_EQUAL || type == LESS
+                || type == GREATER || type == GREATER_EQUAL
+                || type == LESS_EQUAL || type == PLUS || type == MINUS
+                || type == MULT || type == SLASH || type == PERCENTAGE
+                || type == DIV ) {
             accesoVar_prima();
         }else {
             if (type == LEFT_PAREN) {
                 llamada_metodo();
             } else {
-                throw new TokenInesperadoError(currentToken.getLine(),currentToken.getColumn(),"un acceso a variable o llamada a metodo, una operación o cerrar una expresión", currentToken. getLexema());
+                throw new TokenInesperadoError(
+                        currentToken.getLine(),
+                        currentToken.getColumn(),
+                        "un acceso a variable o llamada a metodo, " +
+                                "una operación o cerrar una expresión",
+                        currentToken.getLexema()
+                );
             }
         }
     }
