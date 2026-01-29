@@ -102,6 +102,60 @@ public class TestTinyS {
         testTinyS("expresiones", true);
     }
 
+    @Test
+    @DisplayName("Test stresArray.s")
+    void testStresArray() throws IOException, ErrorTiny {
+        testTinyS("stresArray", true);
+    }
+
+    @Test
+    @DisplayName("Test condicionales.s")
+    void testcondicionales() throws IOException, ErrorTiny {
+        testTinyS("condicionales", true);
+    }
+
+    @Test
+    @DisplayName("Test contador.s")
+    void testcontador() throws IOException, ErrorTiny {
+        testTinyS("contador", true);
+    }
+
+    @Test
+    @DisplayName("Test ifAnidado.s")
+    void testifAnidado() throws IOException, ErrorTiny {
+        testTinyS("ifAnidado", true);
+    }
+
+    @Test
+    @DisplayName("Test banco.s")
+    void testBanco() throws IOException, ErrorTiny {
+        testTinyS("banco", true);
+    }
+
+    @Test
+    @DisplayName("Test nilTest.s")
+    void testNilTest() throws IOException, ErrorTiny {
+        testTinyS("nilTest", true);
+    }
+
+    @Test
+    @DisplayName("Test atributoPrivado.s")
+    void testAtributoPrivado() throws IOException, ErrorTiny {
+        testTinyS("atributoPrivado", true);
+    }
+
+    @Test
+    @DisplayName("Test atributoPub.s")
+    void testAtributoPub() throws IOException, ErrorTiny {
+        testTinyS("atributoPub", true);
+    }
+
+    @Test
+    @DisplayName("Test metodoEstatico.s")
+    void testMetodoEstatico() throws IOException, ErrorTiny {
+        testTinyS("metodoEstatico", true);
+    }
+
 
 
 }

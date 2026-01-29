@@ -289,10 +289,10 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                         // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
                         codigo.agregarLinea("c.eq.d $f0, $f2 #comparamos si el double es igual al lado derecho");
-                        codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                        codigo.agregarLinea("li $t1 0 #si son iguales saltamos a la label true");
                         String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
                         codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
-                        codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                        codigo.agregarLinea("li $t1 1 #si no son iguales cargamos este valor para restar");
                         codigo.agregarLinea(label + ":");
                         codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
                         codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
@@ -334,10 +334,10 @@ public class MethodBodyVisitor extends NodeVisitor {
                         // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
 
                         codigo.agregarLinea("c.eq.d $f0, $f2 #comparamos si el double es igual al lado derecho");
-                        codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                        codigo.agregarLinea("li $t1 0 #si son iguales saltamos a la label true");
                         String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
                         codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
-                        codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                        codigo.agregarLinea("li $t1 1 #si no son iguales cargamos este valor para restar");
                         codigo.agregarLinea(label + ":");
                         codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
                         codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
@@ -370,12 +370,12 @@ public class MethodBodyVisitor extends NodeVisitor {
                     // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
 
                     codigo.agregarLinea("c.lt.d $f0, $f2 #comparamos si el double de la izquierda es menor al lado derecho");
-                    codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                    codigo.agregarLinea("li $t1 0 #si es menor saltamos a la label true");
                     String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
                     codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
-                    codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                    codigo.agregarLinea("li $t1 1 #si no son iguales cargamos este valor para restar");
                     codigo.agregarLinea(label + ":");
-                    codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
+                    codigo.agregarLinea("li $t0, 1 #Si es menor no se cargo el valor anterior");
                     codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
 
 
@@ -400,10 +400,10 @@ public class MethodBodyVisitor extends NodeVisitor {
                     // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
 
                     codigo.agregarLinea("c.le.d $f0, $f2 #comparamos si el double de la izquierda es menor o igual al lado derecho");
-                    codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                    codigo.agregarLinea("li $t1 0 #si son iguales saltamos a la label true");
                     String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
                     codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
-                    codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                    codigo.agregarLinea("li $t1 1 #si no son iguales cargamos este valor para restar");
                     codigo.agregarLinea(label + ":");
                     codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
                     codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
@@ -429,10 +429,10 @@ public class MethodBodyVisitor extends NodeVisitor {
                     // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
 
                     codigo.agregarLinea("c.le.d $f0, $f2 #comparamos si el double de la izquierda es menor o igual al lado derecho");
-                    codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                    codigo.agregarLinea("li $t1 0 #si son iguales saltamos a la label true");
                     String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
                     codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
-                    codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                    codigo.agregarLinea("li $t1 1 #si no son iguales cargamos este valor para restar");
                     codigo.agregarLinea(label + ":");
                     codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
                     codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
@@ -462,10 +462,10 @@ public class MethodBodyVisitor extends NodeVisitor {
                     // Una vez que tenemos ambos valores en $f0 y $f1, multiplicamos los dos
 
                     codigo.agregarLinea("c.lt.d $f0, $f2 #comparamos si el double de la izquierda es menor al lado derecho");
-                    codigo.agregarLinea("li $t1 1 #si son iguales saltamos a la label true");
+                    codigo.agregarLinea("li $t1 0 #si son iguales saltamos a la label true");
                     String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
                     codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
-                    codigo.agregarLinea("li $t1 0 #si no son iguales cargamos este valor para restar");
+                    codigo.agregarLinea("li $t1 1 #si no son iguales cargamos este valor para restar");
                     codigo.agregarLinea(label + ":");
                     codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
                     codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
@@ -977,7 +977,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("mul.d $f0, $f0, $f2 #multiplicar por -1");
                     codigo.agregarLinea("swc1 $f0, 4($a0) #guardar el valor del double");
                     codigo.agregarLinea("swc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
-                    break;
+
 
                 }else{
 
@@ -987,6 +987,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("sw $t1, 4($a0) #guardar el valor del int");
 
                  }
+                break;
 
             case NOT:
                 codigo.agregarLinea("lw $t0, 4($a0) #cargar el valor del bool");
