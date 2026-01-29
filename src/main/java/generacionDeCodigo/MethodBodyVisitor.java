@@ -873,6 +873,11 @@ public class MethodBodyVisitor extends NodeVisitor {
         }
 
 
+        if (nodoVar.getClass() == NodoArrayAcceso.class){
+            NodoArrayAcceso nodoArrayAcceso = (NodoArrayAcceso) nodoVar;
+            generarCodigoAccesoArray(nodoArrayAcceso);
+        }
+
         if (nodoVar.getEncadenado() != null){
             nodoVar.getEncadenado().accept(this);
         }
@@ -938,10 +943,10 @@ public class MethodBodyVisitor extends NodeVisitor {
                 }
             }
         }
-//        if (nodoVar.getEncadenado() != null){
-//
-//            nodoVar.getEncadenado().accept(this);
-//        }
+        if (nodoVar.getClass() == NodoArrayAcceso.class){
+            NodoArrayAcceso nodoArrayAcceso = (NodoArrayAcceso) nodoVar;
+            generarCodigoIzquierdaAccesoArray(nodoArrayAcceso);
+        }
 
 
         NodoVar encadenado = (NodoVar) nodoVar.getEncadenado();
@@ -1044,7 +1049,9 @@ public class MethodBodyVisitor extends NodeVisitor {
     }
 
 
-    public void generarCodigo(NodoArrayAcceso nodoArrayAcceso){
+    public void generarCodigoAccesoArray(NodoArrayAcceso nodoArrayAcceso){
+
+        //generarCodigo(nodoArrayAcceso);
 
         codigo.agregarLinea("sw $a0, 0($sp) #guardar el objeto en la pila");
         codigo.agregarLinea("addiu $sp $sp -4 #movemos el puntero de la pila");
@@ -1057,11 +1064,37 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("lw $t2, 4($a0) #Cargar el indice del array");
 
         codigo.agregarLinea("slt $t3, $t1, $t2 #Saber si el indice es mayor al tamaño del array");
-        codigo.agregarLinea("beq $t3, $zero, ArrayIndexOutOfBoundsException #Si es mayor salimos del metodo");
+        codigo.agregarLinea("beq $t3, 1, ArrayIndexOutOfBoundsException #Si es mayor salimos del metodo");
 
         codigo.agregarLinea("mul $t2, $t2, 4 #Convertir el indice del array a bytes");
+        codigo.agregarLinea("add $t2 $t2 8 #Agregamos el offset de Vtable y tamaño");
         codigo.agregarLinea("add $t0, $t0, $t2 #Obtenemos el valor del elemento del array");
         codigo.agregarLinea("lw $a0, 0($t0) #Cargar el valor del elemento del array");
+        codigo.agregarLinea("addiu $sp $sp 4 #movemos el puntero de la pila");
+    }
+
+    public void generarCodigoIzquierdaAccesoArray(NodoArrayAcceso nodoArrayAcceso){
+
+
+
+        codigo.agregarLinea("lw $a0, 0($a0) #Cargar el array");
+        codigo.agregarLinea("sw $a0, 0($sp) #guardar el objeto en la pila");
+        codigo.agregarLinea("addiu $sp $sp -4 #movemos el puntero de la pila");
+
+        nodoArrayAcceso.getIndice().accept(this);
+
+        codigo.agregarLinea("lw $t0, 4($sp) #Cargar el array");
+        codigo.agregarLinea("lw $t1, 4($t0) #Cargar el tamaño del array");
+
+        codigo.agregarLinea("lw $t2, 4($a0) #Cargar el indice del array");
+
+        codigo.agregarLinea("slt $t3, $t1, $t2 #Saber si el indice es mayor al tamaño del array");
+        codigo.agregarLinea("beq $t3, 1, ArrayIndexOutOfBoundsException #Si es mayor salimos del metodo");
+
+        codigo.agregarLinea("mul $t2, $t2, 4 #Convertir el indice del array a bytes");
+        codigo.agregarLinea("add $t2 $t2 8  #Agregamos el offset de Vtable y tamaño");
+        codigo.agregarLinea("add $a0, $t0, $t2 #Obtenemos la direccion del elemento del array");
+
         codigo.agregarLinea("addiu $sp $sp 4 #movemos el puntero de la pila");
     }
 
@@ -1082,7 +1115,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
 
-        codigo.agregarLinea("move $a0, $t0  # Espacio para el array");
+        codigo.agregarLinea("move $a0, $t1  # Espacio para el array");
         codigo.agregarLinea("syscall ");
 
         codigo.agregarLinea("la $t1, VTABLE_Array # Cargar la dirección de la vtable de Array en un temporal");
@@ -1119,7 +1152,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         }
 
 
-        codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Array queda en $a0");
+        codigo.agregarLinea("move $t2, $v0 # La dirección del objeto Array queda en $t2");
 
         String labelLoop = genLabel(st.getMetodoActual()) + genLabel(nodoArray) + "_loop";
         codigo.agregarLinea(labelLoop + ":" );
@@ -1135,7 +1168,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("bnez $t0 "+ labelLoop+" #Si el tamaño del array es distinto de cero, saltar la inicialización");
 
 
-        codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Array queda en $a0");
+        codigo.agregarLinea("move $a0, $t2 # La dirección del objeto Array queda en $a0");
 
     }
 

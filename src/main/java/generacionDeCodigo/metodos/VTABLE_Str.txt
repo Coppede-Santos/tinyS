@@ -1,9 +1,12 @@
 .data
     VTABLE_Str:
+        .word str
     	.word length
     	.word concat
 
 .text
+
+str:
 
 length:
 	# Comienzo de start

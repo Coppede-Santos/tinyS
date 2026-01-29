@@ -1,9 +1,11 @@
 .data
 
 VTABLE_Array:
+    .word array
 	.word array_length
 
 .text
+array:
 array_length:
 	move $fp $sp
 	sw $ra 0($sp)
@@ -28,6 +30,5 @@ array_length:
 
 	# --
 	lw $ra 4($sp)
-	addiu $sp $sp 12
-	lw $fp 0($sp)
+	addiu $sp $sp 4
 	jr $ra

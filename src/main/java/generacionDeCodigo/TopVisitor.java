@@ -20,6 +20,8 @@ public class TopVisitor extends NodeVisitor {
         codigo.agregarLinea("sw $fp 0($sp)");
         codigo.agregarLinea("addiu $sp $sp -4");
         codigo.agregarLinea("jal " + getLabel(st.getStartMethod()));
+        codigo.agregarLinea("lw $fp 0($sp)");
+        codigo.agregarLinea("addiu $sp $sp 4");
         codigo.agregarLinea("b exit");
 
         EntradaMetodo entradaStart = st.getStartMethod();

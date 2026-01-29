@@ -303,16 +303,23 @@ IO_out_array_int:
 
 	# 3. Si dim > 0, iteramos por cada CIR
 
+
+    addiu $t1 $t1 4 # Aumento index
+
 	IO_out_array_int_loop:
 		sw $fp 0($sp)
 		addiu $sp $sp -4
 
-		addiu $t1 $t1 4 # Aumento index
-		lw $a0 4($t1) # Obtengo sig. pos
+
+        addiu $t1 $t1 4 # Aumento index
+		lw $a0 0($t1) # Obtengo sig. pos
 		sw $a0 0($sp) # Guardo en pila
-		addiu $sp $sp -4
+		addiu $sp $sp -8
 		jal IO_out_int # Imprimo elem
-		addiu $sp $sp 4
+
+
+
+		addiu $sp $sp 8
 		lw $fp 0($sp)
 		addiu $sp $sp 4
 
@@ -437,30 +444,27 @@ IO_out_array_bool:
 	addiu $sp $sp -4
 
 	# 3. Si dim > 0, iteramos por cada CIR
+	addiu $t1 $t1 4 # Aumento index
 
 	IO_out_array_bool_loop:
 		sw $fp 0($sp)
 		addiu $sp $sp -4
 
-		lw $t1, -4($fp) # Recupero index
-		lw $t0, -8($fp) # Recupero contador
 
-		addiu $t1 $t1 4 # Aumento index
+        addiu $t1 $t1 4 # Aumento index
+		lw $a0 0($t1) # Obtengo sig. pos
+		sw $a0 0($sp) # Guardo en pila
+		addiu $sp $sp -8
+		jal IO_out_bool # Imprimo elem
+
+
+
+		addiu $sp $sp 8
+		lw $fp 0($sp)
+		addiu $sp $sp 4
+
 		subiu $t0 $t0 1 # Obtenemos elem restantes
 
-		sw $t1, -4($fp) # Guardo index
-		sw $t0, -8($fp) # Guardo contador
-
-		lw $a0 4($t1) # Obtengo sig. pos
-		sw $a0 0($sp) # Guardo en pila
-		addiu $sp $sp -4
-		jal IO_out_bool # Imprimo elem
-		addiu $sp $sp 4
-        lw $fp 0($sp)
-        addiu $sp $sp 4
-
-
-		lw $t0, -8($fp)
 		beq $t0 $zero IO_out_array_bool_exit # Si ya no hay elem siguientes, salgo
 
 		la $a0 comma

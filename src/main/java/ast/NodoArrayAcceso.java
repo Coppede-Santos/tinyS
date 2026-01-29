@@ -130,4 +130,8 @@ public class NodoArrayAcceso extends NodoVar{
     public void accept(MethodBodyVisitor methodBodyVisitor) {
         methodBodyVisitor.generarCodigo(this);
     }
+
+    //public void acceptLadoIzquerdo(MethodBodyVisitor methodBodyVisitor) {
+    //    methodBodyVisitor.generarCodigoLadoIzquierdo(this);
+    //}
 }

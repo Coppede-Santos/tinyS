@@ -21,5 +21,8 @@ start {
     myArray[0] = 4;
     myArray[1] = 16;
     myArray[2] = 64;
+    (IO.out_str("Array contents:\n"));
+    (IO.out_array_int(myArray));
     (A.printArray(myArray));
+
 }
