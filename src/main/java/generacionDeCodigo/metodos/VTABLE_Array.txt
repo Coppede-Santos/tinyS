@@ -1,0 +1,34 @@
+.data
+
+VTABLE_Array:
+    .word array
+	.word array_length
+
+.text
+array:
+array_length:
+	move $fp $sp
+	sw $ra 0($sp)
+	addiu $sp $sp -4
+
+	# 1. Recupero CIR Array
+	lw $t0, 4($fp)
+
+	# 2. Recupero longitud del array
+	lw $t0, 4($t0)
+
+	# 3. Creo nuevo CIR Int
+	li $v0, 9
+	li $a0, 8
+	syscall
+
+	lw $t1, VTABLE_Int
+	sw $t1, 0($v0)
+	sw $t0, 4($v0)
+
+	move $a0, $v0
+
+	# --
+	lw $ra 4($sp)
+	addiu $sp $sp 4
+	jr $ra

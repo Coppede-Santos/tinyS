@@ -3,11 +3,13 @@ package ast;
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaClase;
 import analizadorSemantico.EntradaMetodo;
-import analizadorSemantico.EntradaVariables;
+import analizadorSemantico.EntradaVariable;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.AsignacionInvalidaError;
 import ast.Errores.TipoInvalidoError;
 import ast.Errores.VariableNoDeclaradaError;
+import generacionDeCodigo.MethodBodyVisitor;
+
 import java.util.Objects;
 import static ast.AstJsonBuilder.*;
 
@@ -28,7 +30,16 @@ public class NodoAsignacion extends NodoSentencia{
         this.derecha = derecha;
     }
 
-    /** Método para realizar el chequeo de sentencias en el nodo de asignación
+
+    public NodoVar getIzquierda() {
+        return izquierda;
+    }
+
+    public NodoExp getDerecha() {
+        return derecha;
+    }
+
+    /** Método para realizar el chequeo de sentencias en el nodo de asignación 
      * @param entradaMetodo EntradaMetodo que representa el método actual
      * @param st SymbolTable que representa la tabla de símbolos
      * @param profundidad Profundidad actual en el árbol AST
@@ -59,7 +70,13 @@ public class NodoAsignacion extends NodoSentencia{
         );
         salida += tabs(profundidad + 1) + "}\n";
 
-        EntradaClase derechaClase = st.buscarClase(derecha.tipo);
+
+        // Verificamos que el tipo de la derecha sea compatible con el tipo de la izquierda
+        // Si derecha es nil es compatible con todos
+        if (!derecha.getTipo().equals("nil")) {
+
+            //Buscamos el tipo de la derecha
+            EntradaClase derechaClase = st.buscarClase(derecha.tipo);
 
         if ((!derechaClase.buscarAncestro(st,izquierda.tipo))
                 && derecha.getTipo().isEmpty()) {
@@ -68,34 +85,41 @@ public class NodoAsignacion extends NodoSentencia{
             );
         }
 
-        if (derecha.getClass() == NodoConstructorArray.class) {
-            EntradaVariables variableIzquierda = entradaMetodo.
-                    buscarVariableLocal(izquierda.lexema);
+            // Si la derecha es un array, verificamos que el subtipo coincida con el de la variable izquierda
+            if (derecha.getClass() == NodoConstructorArray.class) {
 
-            if (variableIzquierda == null) {
-                variableIzquierda = entradaMetodo.
-                        buscarParametro(izquierda.lexema);
-            }
+                //Buscamos si izquierda es una variable local o parametro
+                EntradaVariable variableIzquierda = entradaMetodo.buscarVariableLocal(izquierda.lexema);
+                if (variableIzquierda == null) {
+                    variableIzquierda = entradaMetodo.buscarParametro(izquierda.lexema);
+                }
 
-            if (variableIzquierda == null) {
-                variableIzquierda = st.getClassActual().
-                        buscarAtributo(izquierda.lexema);
-            }
+                //Si no es una variable tiene que ser un atributo
+                if (variableIzquierda == null) {
+                    variableIzquierda = st.getClassActual().buscarAtributo(izquierda.lexema);
+                }
 
-            if (variableIzquierda == null) {
-                throw new VariableNoDeclaradaError(posicion, izquierda.lexema);
-            }
+                //Si no es una variable ni atributo es error
+                if (variableIzquierda == null) {
+                    throw new VariableNoDeclaradaError(posicion, izquierda.lexema);
+                }
 
-            String subtipoIzq = variableIzquierda.getSubtipo();
 
-            if (!Objects.equals(subtipoIzq,
-                    ((NodoConstructorArray) derecha).subtipo)) {
-                throw new TipoInvalidoError(
-                        posicion, izquierda.lexema, subtipoIzq
-                );
+                //Vemos el subtipo de la variable izquierda
+                String subtipoIzq = variableIzquierda.getSubtipo();
+
+                //Si no coincide es error
+                if (!Objects.equals(subtipoIzq, ((NodoConstructorArray) derecha).subtipo)) {
+                    throw new TipoInvalidoError(posicion, izquierda.lexema, subtipoIzq);
+                }
             }
         }
 
         return salida;
+    }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

@@ -6,6 +6,7 @@ import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import ast.Errores.AtributoNoDeclaradoError;
 import ast.Errores.VariableNoDeclaradaError;
 import ast.Errores.VisibilidadError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.*;
 
@@ -13,6 +14,8 @@ import static ast.AstJsonBuilder.*;
 public class NodoVar extends NodoOperando {
     String lexema;
     Boolean esEstatico = false;
+    Boolean esEncadenado = false;
+    String claseEncadenadoPrev = ""; //Clase que contiene la variable como atributo, clase que llama al metodo o "" en caso de no tener encadenado previo
 
     /** Constructor de la clase NodoVar */
     public NodoVar(String lexema, int linea, int columna) {
@@ -24,6 +27,23 @@ public class NodoVar extends NodoOperando {
     public void setEsEstatico(Boolean esEstatico) {
         this.esEstatico = esEstatico;
 
+    }
+
+    public Boolean getEsEstatico() {
+        return esEstatico;
+    }
+
+    public String getClaseEncadenadoPrev() {
+        return claseEncadenadoPrev;
+    }
+
+
+    public boolean getEsEncadenado() {
+        return esEncadenado;
+    }
+
+    public String getLexema() {
+        return lexema;
     }
 
     /** Método para realizar el chequeo de sentencias
@@ -41,6 +61,7 @@ public class NodoVar extends NodoOperando {
             int profundidad)
             throws ErrorTiny
     {
+        //No hay encadenamiento previo, se deja el valor false por defecto de esEncadenado
         String salida = "";
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo")
@@ -50,7 +71,7 @@ public class NodoVar extends NodoOperando {
 
         EntradaClase claseReferenciada;
 
-        EntradaVariables variable = entradaMetodo.buscarVariableLocal(lexema);
+        EntradaVariable variable = entradaMetodo.buscarVariableLocal(lexema);
         if (variable == null) {
             variable = entradaMetodo.buscarParametro(lexema);
         }
@@ -63,7 +84,7 @@ public class NodoVar extends NodoOperando {
                     throw new VisibilidadError(posicion,lexema);
                 }
 
-                EntradaAtributos atributo = (EntradaAtributos) variable;
+                EntradaAtributo atributo = (EntradaAtributo) variable;
                 if (atributo != null && atributo.esPrivado()
                         && !st.getClassActual().getLexema().equals(
                                 atributo.getClasePropietaria())
@@ -130,6 +151,16 @@ public class NodoVar extends NodoOperando {
         return salida;
     }
 
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
+    }
+
+    public void acceptLadoIzquerdo(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigoAccesoVariable(this);
+    }
+
+
     /** Método para realizar el chequeo de sentencias con encadenado
      *
      * @param entradaMetodo Entrada del método actual en la tabla de símbolos
@@ -146,6 +177,10 @@ public class NodoVar extends NodoOperando {
             String tipoEncadenadoPrev,
             int profundidad) throws ErrorTiny
     {
+        //Hay un encadenado previo
+        esEncadenado = true;
+        claseEncadenadoPrev = tipoEncadenadoPrev;
+
         String salida = "";
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo")
@@ -161,7 +196,7 @@ public class NodoVar extends NodoOperando {
             );
         }
 
-        EntradaAtributos atributo = entradaClase.buscarAtributo(lexema);
+        EntradaAtributo atributo = entradaClase.buscarAtributo(lexema);
         if (atributo == null) {
             throw new AtributoNoDeclaradoError(posicion,lexema);
         }

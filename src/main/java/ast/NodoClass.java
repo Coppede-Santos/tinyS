@@ -30,6 +30,10 @@ public class NodoClass {
         metodos.put(lexema,bloque);
     }
 
+    public NodoBloque getMetodo(String lexema){
+        return metodos.get(lexema);
+    }
+
     /** Método para realizar el chequeo de sentencias en la clase
      *
      * @param st Tabla de símbolos

@@ -875,7 +875,7 @@ public class Parser {
                 );
             }
 
-            EntradaVariables variableLocal = new EntradaVariables(
+            EntradaVariable variableLocal = new EntradaVariable(
                     currentToken.getLexema(),
                     currentToken.getLine(),
                     currentToken.getColumn(),
@@ -920,7 +920,7 @@ public class Parser {
                 );
             }
 
-            EntradaAtributos atributo = new EntradaAtributos(
+            EntradaAtributo atributo = new EntradaAtributo(
                     currentToken.getLexema(),
                     currentToken.getLine(),
                     currentToken.getColumn(),
@@ -1271,27 +1271,35 @@ public class Parser {
         TokenType type = currentToken.getType();
         if(type == IF){
 
+            int linea = currentToken.getLine();
+            int columna = currentToken.getColumn();
             macheo(IF);
             macheo(LEFT_PAREN);
             NodoExp nodoExp =  expOr();
             macheo(RIGHT_PAREN);
             NodoSentencia nodoIf =  sentencia();
             NodoSentencia nodoElse = sentencia_else();
-            return new NodoIf(nodoExp, nodoIf, nodoElse, currentToken.getLine(), currentToken.getColumn());
+            return new NodoIf(nodoExp, nodoIf, nodoElse, linea, columna);
         }else{
             if(type==WHILE){
+                int linea = currentToken.getLine();
+                int columna = currentToken.getColumn();
+
                 macheo(WHILE);
                 macheo(LEFT_PAREN);
                 NodoExp nodoExp =  expOr();
                 macheo(RIGHT_PAREN);
                 NodoSentencia nodoSentencia = sentencia();
-                return new NodoWhile(nodoExp,nodoSentencia, currentToken.getLine(), currentToken.getColumn());
+                return new NodoWhile(nodoExp,nodoSentencia, linea, columna);
             }else{
                 if(type==RET){
+                    int linea = currentToken.getLine();
+                    int columna = currentToken.getColumn();
+
                     macheo(RET);
                     NodoExp nodoExp = ExpOr_factorizado();
                     macheo(SEMICOLON);
-                    return new NodoRet(nodoExp, currentToken.getLine(), currentToken.getColumn());
+                    return new NodoRet(nodoExp, linea, columna);
                 }else{
                     if(type==IDOBJETS || type==SELF){
                         NodoAsignacion nodoAsignacion= asignacion();
@@ -1470,7 +1478,7 @@ public class Parser {
         }else{
             if(type == LEFT_BRACKET){
                 macheo(LEFT_BRACKET);
-                NodoArray arreglo = new NodoArray(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
+                NodoArrayAcceso arreglo = new NodoArrayAcceso(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
                 arreglo.setIndice(expOr());
                 macheo(RIGHT_BRACKET);
                 return arreglo;
@@ -2210,7 +2218,7 @@ public class Parser {
         }else{
             if (type == LEFT_BRACKET){
                 macheo(LEFT_BRACKET);
-                NodoArray nodoArray = new NodoArray(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
+                NodoArrayAcceso nodoArray = new NodoArrayAcceso(token.getLexema(), currentToken.getLine(), currentToken.getColumn());
                 nodoArray.setIndice(expOr());
                 macheo(RIGHT_BRACKET);
                 nodoArray.setEncadenado(encadenado_factorizado());

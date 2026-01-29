@@ -208,4 +208,12 @@ public class TestEtapa4 {
         testSemanticFile("retTipoInvalido", false);
     }
 
+
+    @Test
+    @DisplayName("Test del programa asignacionNill.s")
+    public void testAsignacionNill() throws IOException, ErrorTiny {
+        testSemanticFile("asignacionNill", true);
+    }
+
+
 }

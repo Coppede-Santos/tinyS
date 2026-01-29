@@ -7,6 +7,7 @@ import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.EncadenadoInvalido;
 import ast.Errores.ExpresionInvalidaError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.Objects;
 
@@ -20,6 +21,10 @@ public class NodoExpBin extends NodoExpUn{
     public NodoExpBin(NodoExp ladoIzquierdo, NodoExp ladoDerecho, TokenType operador, int linea, int columna){
         super(ladoDerecho,operador, linea, columna);
         this.ladoIzquierdo = ladoIzquierdo;
+    }
+
+    public NodoExp getLadoIzquierdo() {
+        return ladoIzquierdo;
     }
 
     /** Método para realizar el chequeo de sentencias
@@ -167,22 +172,17 @@ public class NodoExpBin extends NodoExpUn{
         if(operador == TokenType.EQUAL_EQUAL
                 || operador == TokenType.NOT_EQUAL){
             if (!Objects.equals(tipoDer, tipoIz)){
-                if(!((Objects.equals(tipoDer, "Int")
-                        && Objects.equals(tipoIz, "Double"))
-                        || (Objects.equals(tipoDer, "Double")
-                        && Objects.equals(tipoIz, "Int")))){
-                    throw new ExpresionInvalidaError (
-                            posicion, String.valueOf(operador)
-                    );
+                if(!((Objects.equals(tipoDer, "Int") && Objects.equals(tipoIz, "Double"))
+                        || (Objects.equals(tipoDer, "Double") && Objects.equals(tipoIz, "Int")))){
+                    if (! Objects.equals(tipoDer, "nil")){
+                        throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
+                    }
                 }
             }
 
-            if(!Objects.equals(tipoDer, "Str")
-                    && !Objects.equals(tipoDer, "Int")
-                    && !Objects.equals(tipoDer, "Double")
-                    && !Objects.equals(tipoDer, "Bool")){
-                throw new ExpresionInvalidaError (posicion,
-                        String.valueOf(operador));
+            if(!Objects.equals(tipoDer, "Str") && !Objects.equals(tipoDer, "Int")
+                    && !Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Bool") && !Objects.equals(tipoDer, "nil")){
+                throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             }
             tipo = "Bool";
         }
@@ -220,6 +220,11 @@ public class NodoExpBin extends NodoExpUn{
      */
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
         throw new EncadenadoInvalido(posicion, tipoEncadenadoPrev);
+    }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 
 }

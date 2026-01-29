@@ -4,6 +4,7 @@ import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Posicion;
 import analizadorSemantico.SymbolTable;
+import generacionDeCodigo.MethodBodyVisitor;
 
 /** Clase abstracta que representa un nodo de sentencia en el AST */
 public abstract class NodoSentencia {
@@ -29,4 +30,6 @@ public abstract class NodoSentencia {
             int profundidad)
     throws  ErrorTiny;
 
+
+    public abstract void accept(MethodBodyVisitor methodBodyVisitor);
 }

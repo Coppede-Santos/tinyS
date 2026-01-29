@@ -3,6 +3,7 @@ package ast;
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
+import generacionDeCodigo.MethodBodyVisitor;
 
 /** Clase que representa un nodo de expresión en el AST */
 public abstract class NodoExp extends NodoSentencia {
@@ -21,6 +22,11 @@ public abstract class NodoExp extends NodoSentencia {
         super(linea, columna);
     }
 
+//    @Override
+//    public void accept(MethodBodyVisitor methodBodyVisitor) {
+//        methodBodyVisitor.generarCodigo(this);
+//    }
+
     /** Método para establecer el encadenado */
     public void setEncadenado(NodoExp encadenado) {
         this.encadenado = encadenado;
@@ -34,6 +40,10 @@ public abstract class NodoExp extends NodoSentencia {
     /** Método para obtener el tipo */
     public String getTipo() {
         return tipo;
+    }
+
+    public NodoExp getEncadenado() {
+        return encadenado;
     }
 
     /** Método abstracto para realizar el chequeo de sentencias con encadenado

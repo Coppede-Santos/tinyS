@@ -86,6 +86,14 @@ public class SymbolTable
         this.startMethod = startMethod;
     }
 
+    public boolean isStartMethod() {
+        return startMethod != null;
+    }
+
+    public HashMap<String, EntradaClase> getClases() {
+        return clases;
+    }
+
     /** Inicializar los tipos primitivos en la tabla de símbolos.
      * Crea las entradas para las clases Object, Int, Bool, Str, Double, Array e IO.
      */

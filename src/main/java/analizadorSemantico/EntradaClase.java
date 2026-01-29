@@ -1,12 +1,13 @@
 package analizadorSemantico;
 
 import analizadorSemantico.Errores.*;
+import generacionDeCodigo.TopVisitor;
 
 import java.util.HashMap;
 
 public class EntradaClase extends Entrada {
     String superClase;
-    HashMap<String, EntradaAtributos> atributos = new HashMap<>();
+    HashMap<String, EntradaAtributo> atributos = new HashMap<>();
     HashMap<String, EntradaMetodo> metodos = new HashMap<>();
     EntradaMetodo constructor;
     boolean estaConsolidada = false;
@@ -55,22 +56,20 @@ public class EntradaClase extends Entrada {
     /** Busca un atributo en la clase
      *
      * @param nombreAtributo Nombre del atributo a buscar
-     * @return EntradaAtributos del atributo buscado, o null si no existe
+     * @return EntradaAtributo del atributo buscado, o null si no existe
      */
-    public EntradaAtributos buscarAtributo(String nombreAtributo) {
+    public EntradaAtributo buscarAtributo(String nombreAtributo) {
         return atributos.get(nombreAtributo);
     }
 
-    /** Inserta un atributo en la clase
-     *
-     * @param nombreAtributo Nombre del atributo a insertar
-     * @param entradaAtributo EntradaAtributos del atributo a insertar
-     */
-    public void insertarAtributo(String nombreAtributo,
-                                 EntradaAtributos entradaAtributo) {
-        if (!atributos.containsKey(nombreAtributo)) {
-            atributos.put(nombreAtributo, entradaAtributo);
-        }
+    public boolean insertarAtributo(String nombreAtributo, EntradaAtributo entradaAtributo) {
+        if (atributos.containsKey(nombreAtributo))
+            return false;
+        atributos.put(nombreAtributo, entradaAtributo);
+        return true;
+    }
+    public HashMap<String, EntradaMetodo> getMetodos() {
+        return metodos;
     }
 
     /** Busca un metodo en la clase
@@ -99,6 +98,9 @@ public class EntradaClase extends Entrada {
      * @return EntradaMetodo del metodo obtenido
      */
     public EntradaMetodo getMetodo(String lexema) {
+        if (lexema.equals(this.getLexema())) {
+            return constructor;
+        }
         return metodos.get(lexema);
     }
 
@@ -188,7 +190,7 @@ public class EntradaClase extends Entrada {
             throws ErrorSemantico{
         if (superClase != null) {
             for (String nombreAtributo : superClase.atributos.keySet()) {
-                EntradaAtributos atributo = this.buscarAtributo(nombreAtributo);
+                EntradaAtributo atributo = this.buscarAtributo(nombreAtributo);
                 if ( atributo != null){
                     throw new RedefinirAtributoError(
                             atributo.getLinea(),
@@ -197,9 +199,7 @@ public class EntradaClase extends Entrada {
                             this.getLexema()
                     );
                 }
-                EntradaAtributos atributoSuperClase = superClase.atributos.get(
-                        nombreAtributo
-                );
+                EntradaAtributo atributoSuperClase = superClase.atributos.get(nombreAtributo);
                 this.atributos.put(nombreAtributo, atributoSuperClase);
             }
         }
@@ -215,21 +215,19 @@ public class EntradaClase extends Entrada {
     public String consolidarClase(SymbolTable st,
                                   boolean claseFinal)
             throws ErrorSemantico {
+
+        if (!lexema.equals("Object") && !lexema.equals("IO") 
+            && !lexema.equals("Int") && !lexema.equals("Bool") 
+            && !lexema.equals("Str") && !lexema.equals("Double")) {
+            if (!tieneConstructor()) {
+                throw new ClaseSinConstructorError(this.getLinea(), this.getColumna(), this.getLexema());
+            }
+        }
+
         String salida = "";
         EntradaClase entradaSuperClase = st.buscarClase(superClase);
-
-        // Si la clase no es Base o Predefinida, y no tiene constructor,
-        // entonces se tira un error
-        if (!lexema.equals("Object") && !lexema.equals("IO")
-                && !lexema.equals("Int") && !lexema.equals("Bool")
-                && !lexema.equals("Str") && !lexema.equals("Double")
-                && !tieneConstructor()) {
-                throw new ClaseSinConstructorError(
-                        this.getLinea(),
-                        this.getColumna(),
-                        this.getLexema()
-                );
-        }
+        int cantidadMetodosSuperclase = 0;
+        int cantidadAtributosSuperclase = 0;
 
         //Chequea que la clase no se encuentre en la linea de ancestros de su super clase
         if (superClase != null) {
@@ -250,24 +248,32 @@ public class EntradaClase extends Entrada {
                 salida += entradaSuperClase.consolidarClase(st,false);
                 entradaSuperClase.estaConsolidada = true;
             }
+            cantidadMetodosSuperclase = entradaSuperClase.metodos.size();
+            cantidadAtributosSuperclase = entradaSuperClase.atributos.size();
         }
 
         agregarMetodosDeSuperClase(entradaSuperClase);
         agregarAtributosDeSuperClase(entradaSuperClase);
+
+        int posicionAtributoActual = cantidadAtributosSuperclase + 1;
 
         salida += "\t\t{\n" + consolidar(3) +
                 "\t\t\t\"superClase\": " +
                 ((superClase != null) ? ("\"" + superClase + "\"") : "null")
                 + ",\n" +
                 "\t\t\t\"atributos\": [\n";
-
-        for (EntradaAtributos atributo : atributos.values()) {
+        for (EntradaAtributo atributo : atributos.values()) {
             salida += "\t\t\t\t{\n" + atributo.consolidarAtributo(5);
 
             if (atributo != atributos.values().toArray()[atributos.size() - 1]) {
                 salida += "\n\t\t\t\t},\n";
             } else {
                 salida += "\n\t\t\t\t}\n";
+            }
+
+            if(atributo.getPosicionAtributo() == 0) {
+                atributo.setPosicionAtributo(posicionAtributoActual);
+                posicionAtributoActual++;
             }
         }
 
@@ -278,12 +284,18 @@ public class EntradaClase extends Entrada {
                     "\t\t\t],\n";
         }
 
+        int posicionMetodoActual = cantidadMetodosSuperclase + 1;
+
         salida += "\t\t\t\"metodos\": [\n";
         for (EntradaMetodo metodo : metodos.values()) {
             if (metodo != metodos.values().toArray()[metodos.size() - 1]) {
                 salida += metodo.consolidarMetodo(4, false);
             } else {
                 salida += metodo.consolidarMetodo(4, true);
+            }
+            if(metodo.getPosicionMetodo() == 0) {
+                metodo.setPosicionMetodo(posicionMetodoActual);
+                posicionMetodoActual++;
             }
         }
         salida += "\t\t\t]\n";
@@ -294,6 +306,41 @@ public class EntradaClase extends Entrada {
             salida += "\t\t},\n";
         }
 
+        this.estaConsolidada = true;
+
         return salida;
+    }
+
+    /**
+     * Verifica si una clase es primitiva.
+     * @return true si es primitiva, false en caso contrario
+     */
+    public boolean esClasePrimitiva() {
+        return lexema.equals("Int") ||
+                lexema.equals("Double") ||
+                lexema.equals("Bool") ||
+                lexema.equals("Str") ||
+                lexema.equals("IO") ||
+                lexema.equals("Object") ||
+                lexema.equals("Array")
+                ;
+    }
+
+    public int getTamanioObjeto() {
+        // 4 bytes por la vtable
+        int tamanio = 4;
+        // 4 bytes por cada atributo
+        tamanio += atributos.size() * 4;
+        return tamanio;
+    }
+
+    public HashMap<String, EntradaAtributo> getAtributos() {
+        return atributos;
+    }
+
+
+
+    public void accept(TopVisitor topVisitor) {
+        topVisitor.generarCodigo(this);
     }
 }

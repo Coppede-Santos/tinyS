@@ -7,6 +7,7 @@ import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.EncadenadoInvalido;
 import ast.Errores.ExpresionInvalidaError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.Objects;
 
@@ -25,6 +26,13 @@ public class NodoExpUn extends NodoExp{
         this.operador = type;
     }
 
+    public TokenType getOperador() {
+        return operador;
+    }
+
+    public NodoExp getLadoDerecho() {
+        return ladoDerecho;
+    }
     /** Método para realizar el chequeo de sentencias
      *
      * @param entradaMetodo Entrada del método actual en la tabla de símbolos
@@ -89,6 +97,11 @@ public class NodoExpUn extends NodoExp{
         salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(tipo) + "\n";
 
         return salida;
+    }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 
     /** Método para realizar el chequeo de sentencias con encadenado

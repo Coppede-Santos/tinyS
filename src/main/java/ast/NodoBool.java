@@ -4,6 +4,7 @@ import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.EncadenadoInvalido;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.Objects;
 
@@ -20,6 +21,10 @@ public class NodoBool extends NodoOperando{
     public NodoBool(Boolean valor, int linea, int columna) {
         super("Bool", linea, columna);
         this.valor = valor;
+    }
+
+    public boolean getValor() {
+        return valor;
     }
 
     /** Método para realizar el chequeo de sentencias con encadenado
@@ -75,5 +80,10 @@ public class NodoBool extends NodoOperando{
         }
 
         return salida;
+    }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

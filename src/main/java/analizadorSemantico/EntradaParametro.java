@@ -1,7 +1,7 @@
 package analizadorSemantico;
 
 /** Clase que representa una entrada de parámetro en la tabla de símbolos */
-public class EntradaParametro extends EntradaVariables{
+public class EntradaParametro extends EntradaVariable {
 
     int posicionParametro;
 

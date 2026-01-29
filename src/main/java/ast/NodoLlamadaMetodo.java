@@ -10,6 +10,7 @@ import ast.Errores.MetodoNoDeclaradoError;
 import ast.Errores.ParametroTipoError;
 import ast.Errores.ParametrosCantidadError;
 import ast.Errores.EstaticoMetodoError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.LinkedList;
 
@@ -31,6 +32,10 @@ public class NodoLlamadaMetodo extends NodoVar{
 
     }
 
+    public LinkedList<NodoExp> getParametros() {
+        return parametros;
+    }
+
     /** Método para realizar el chequeo de sentencias
      *
      * @param entradaMetodo Entrada del método actual en la tabla de símbolos
@@ -41,6 +46,8 @@ public class NodoLlamadaMetodo extends NodoVar{
      */
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
+        //No hay un encadenado previo, se deja el valor false por defecto
+
         String salida = "";
         boolean esConstructor = false;
         EntradaClase claseActual;
@@ -53,12 +60,22 @@ public class NodoLlamadaMetodo extends NodoVar{
                 + valorJson(lexema) + ",\n";
 
         if (st.buscarClase(lexema) != null) {
+            // Es un constructor
             esConstructor = true;
             claseActual = st.buscarClase(lexema);
             metodoReferenciado  = claseActual.getConstructor();
+
+
+            //Seteamos para la gc
+            claseEncadenadoPrev = claseActual.getLexema();
         } else {
+            // Es un metodo
             claseActual = st.getClassActual();
             metodoReferenciado = claseActual.buscarMetodo(lexema);
+
+            //Seteamos para la gc
+            claseEncadenadoPrev = claseActual.getLexema();
+
         }
 
         if (metodoReferenciado == null) {
@@ -166,6 +183,12 @@ public class NodoLlamadaMetodo extends NodoVar{
      */
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
+        //Se llama debido a que hay un encadenado previo
+        //Seteamos para la gc
+        esEncadenado = true;
+        claseEncadenadoPrev = tipoEncadenadoPrev;
+
+
         String salida = "";
 
         salida += tabs(profundidad + 1) + claveJson("tipoNodo")
@@ -174,6 +197,9 @@ public class NodoLlamadaMetodo extends NodoVar{
                 + valorJson(lexema) + ",\n";
 
         EntradaClase claseActual = st.buscarClase(tipoEncadenadoPrev);
+
+
+
         EntradaMetodo metodoReferenciado = claseActual.buscarMetodo(lexema);
         EntradaParametro parametroReferenciado;
 
@@ -270,5 +296,9 @@ public class NodoLlamadaMetodo extends NodoVar{
         }
 
         return salida;
+    }
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

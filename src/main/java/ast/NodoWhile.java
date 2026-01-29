@@ -5,6 +5,7 @@ import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.TipoInvalidoError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.*;
 
@@ -18,6 +19,14 @@ public class NodoWhile extends NodoSentencia {
         super(linea, columna);
         this.condicion = condicion;
         this.sentencia = sentencia;
+    }
+
+    public NodoSentencia getSentencia() {
+        return sentencia;
+    }
+
+    public NodoExp getCondicion() {
+        return condicion;
     }
 
     /** Método para realizar el chequeo de sentencias en el nodo 'while'
@@ -61,5 +70,10 @@ public class NodoWhile extends NodoSentencia {
         );
 
         return salida;
+    }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

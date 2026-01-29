@@ -3,6 +3,7 @@ package ast;
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import java.util.LinkedList;
 
@@ -20,6 +21,10 @@ public class NodoBloque extends NodoSentencia{
     /** Método para insertar una sentencia en el bloque */
     public void insertarSentencia(NodoSentencia nodoSentencia){
         sentencias.add(nodoSentencia);
+    }
+
+    public LinkedList<NodoSentencia> getSentencias() {
+        return sentencias;
     }
 
     /** Método para realizar el chequeo de sentencias en el bloque
@@ -66,5 +71,10 @@ public class NodoBloque extends NodoSentencia{
         salida += tabs(profundidad) + "],\n";
 
         return salida;
+    }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }

@@ -4,6 +4,7 @@ import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.EncadenadoInvalido;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.claveJson;
 import static ast.AstJsonBuilder.tabs;
@@ -17,6 +18,10 @@ public class NodoInt extends NodoNum{
     public NodoInt(int valor, int linea, int columna){
         super("Int", linea, columna);
         this.valor = valor;
+    }
+
+    public int getValor() {
+        return valor;
     }
 
     /** Método para realizar el chequeo de sentencias con encadenado
@@ -62,5 +67,11 @@ public class NodoInt extends NodoNum{
 
         return salida;
     }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
+    }
+
 
 }

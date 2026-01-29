@@ -4,6 +4,7 @@ import ErrorManage.ErrorTiny;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.EncadenadoInvalido;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.*;
 
@@ -17,12 +18,16 @@ public class NodoString extends NodoOperando{
         this.valor = valor;
     }
 
+    public String getValor() {
+        return valor;
+    }
+
     /** Método para realizar el chequeo de sentencias con encadenado
      *
      * @param entradaMetodo Entrada del método actual en la tabla de símbolos
      * @param st Tabla de símbolos
      * @param tipoEncadenadoPrev Tipo del encadenado previo
-     * @param profundidad Profundidad actual en el árbol
+     * @param profundidad Profundidad actual en el árbol 
      * @return String con el resultado del chequeo en formato JSON
      * @throws ErrorTiny Si ocurre un error durante el chequeo
      */
@@ -84,4 +89,9 @@ public class NodoString extends NodoOperando{
         }
         return salida;
     }
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
+    }
+
 }

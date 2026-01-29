@@ -29,6 +29,10 @@ public class AST {
         return clases.get(lex);
     }
 
+    public NodoBloque getStart() {
+        return start;
+    }
+
     /** Setter del bloque start del AST
      */
     public void setStart(NodoBloque start) {

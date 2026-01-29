@@ -10,13 +10,13 @@ public class EntradaMetodo extends Entrada{
     EntradaClase subtipoRetorno = null;
     boolean esEstatico = false;
     HashMap <String, EntradaParametro> parametros = new HashMap<>();
-    HashMap <String, EntradaVariables> variablesLocales = new HashMap<>();
+    HashMap <String, EntradaVariable> variablesLocales = new HashMap<>();
+    int posicionMetodo;
 
     /** Constructor por defecto
      *
      */
     public EntradaMetodo(){}
-
     /** Constructor de la clase EntradaMetodo
      *
      * @param nombre Nombre del método
@@ -38,6 +38,10 @@ public class EntradaMetodo extends Entrada{
         super(nombre);
         this.esEstatico = esEstatico;
         this.tipoRetorno = tipoRetorno;
+    }
+
+    public int getCantidadVariablesLocales() {
+        return variablesLocales.size();
     }
 
     /** Método para buscar un parámetro en el método
@@ -80,7 +84,7 @@ public class EntradaMetodo extends Entrada{
      * @param nombreVariableLocal Nombre de la variable local a buscar
      * @return EntradaVariables de la variable local buscada, o null si no existe
      */
-    public EntradaVariables buscarVariableLocal(String nombreVariableLocal) {
+    public EntradaVariable buscarVariableLocal(String nombreVariableLocal) {
         return variablesLocales.get(nombreVariableLocal);
     }
 
@@ -89,7 +93,7 @@ public class EntradaMetodo extends Entrada{
      * @param nombreVariableLocal Nombre de la variable local a insertar
      * @param entradaVariableLocal EntradaVariables de la variable local a insertar
      */
-    public void insertarVariableLocal(String nombreVariableLocal, EntradaVariables entradaVariableLocal) {
+    public void insertarVariableLocal(String nombreVariableLocal, EntradaVariable entradaVariableLocal) {
         if (!variablesLocales.containsKey(nombreVariableLocal)) {
             variablesLocales.put(nombreVariableLocal, entradaVariableLocal);
         }
@@ -124,11 +128,19 @@ public class EntradaMetodo extends Entrada{
         this.esEstatico = esEstatico;
     }
 
+    public int getPosicionMetodo() {
+        return posicionMetodo;
+    }
+
+    public void setPosicionMetodo(int posicionMetodo) {
+        this.posicionMetodo = posicionMetodo;
+    }
+
     /** Método para comparar la firma de dos métodos
      *
      * @param metodo Método a comparar
      * @return true si las firmas son iguales, false en caso contrario
-     */
+     */    
     public Boolean compararFirma(EntradaMetodo metodo) {
         if (tipoRetorno != metodo.tipoRetorno) {
             return false;
@@ -176,6 +188,8 @@ public class EntradaMetodo extends Entrada{
 
         salida = tabs + "{\n";
 
+        int posicionActualVariable = 1;
+
         salida += consolidar(profundidad+1) +
                 tabs + "\t\"tipoRetorno\": " +
                 ((tipoRetorno != null) ?
@@ -188,7 +202,7 @@ public class EntradaMetodo extends Entrada{
                 tabs + "\t\"esEstatico\": " + esEstatico + ",\n" +
                 tabs + "\t\"variablesLocales\": [\n";
 
-        for (EntradaVariables variable : variablesLocales.values()) {
+        for (EntradaVariable variable : variablesLocales.values()) {
             salida += tabs + "\t\t{\n" +
                     variable.consolidarVariable(5) + "\n";
 
@@ -200,6 +214,9 @@ public class EntradaMetodo extends Entrada{
             } else {
                 salida += tabs + "\t\t}\n";
             }
+
+            variable.setPosicionVariable(posicionActualVariable);
+            posicionActualVariable++;
 
         }
         salida += tabs + "\t],\n"+
@@ -226,5 +243,13 @@ public class EntradaMetodo extends Entrada{
         }
 
         return salida;
+    }
+
+    public void accept(TopVisitor topVisitor, NodoBloque bloque) {
+        topVisitor.generarCodigo(this, bloque);
+    }
+
+    public HashMap<String, EntradaVariable> getVariablesLocales() {
+        return variablesLocales;
     }
 }

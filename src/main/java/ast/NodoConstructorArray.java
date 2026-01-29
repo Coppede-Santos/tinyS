@@ -5,6 +5,7 @@ import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.EncadenadoInvalido;
 import ast.Errores.TipoInvalidoError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.*;
 
@@ -25,13 +26,18 @@ public class NodoConstructorArray extends NodoOperando{
         this.dimension = nodoExp;
     }
 
+
+    public NodoExp getDimension(){
+        return dimension;
+    }
+
     /** Método para realizar el chequeo de sentencias
      *
      * @param entradaMetodo Entrada del método actual en la tabla de símbolos
      * @param st Tabla de símbolos
      * @param profundidad Profundidad actual en el árbol
      * @return String con el resultado del chequeo en formato JSON
-     * @throws ErrorTiny Si ocurre un error durante el chequeo
+     * @throws ErrorTiny Si ocurre un error durante el chequeo 
      */
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
@@ -78,6 +84,12 @@ public class NodoConstructorArray extends NodoOperando{
 
         return salida;
     }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
+    }
+
 
     /** Método para realizar el chequeo de sentencias con encadenado
      *

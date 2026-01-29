@@ -6,6 +6,7 @@ import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.TipoInvalidoError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.*;
 
@@ -19,6 +20,10 @@ public class NodoRet extends NodoSentencia{
         this.exp = exp;
     }
 
+    public NodoExp getExp() {
+        return exp;
+    }    
+    
     /** Método para realizar el chequeo de sentencias en el nodo 'return'
      *
      * @param entradaMetodo Entrada del método actual en la tabla de símbolos
@@ -77,4 +82,10 @@ public class NodoRet extends NodoSentencia{
 
         return salida;
     }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
+    }
+
 }

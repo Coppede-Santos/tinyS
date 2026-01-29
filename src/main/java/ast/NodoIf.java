@@ -5,6 +5,7 @@ import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.ExpresionInvalidaError;
 import ast.Errores.TipoInvalidoError;
+import generacionDeCodigo.MethodBodyVisitor;
 
 import static ast.AstJsonBuilder.*;
 
@@ -20,6 +21,18 @@ public class NodoIf extends NodoSentencia{
         this.condicion = condicion;
         this.sentenciaIf = sentenciaIf;
         this.sentenciaElse = sentenciaElse;
+    }
+
+    public NodoExp getCondicion() {
+        return condicion;
+    }
+
+    public NodoSentencia getSentenciaElse() {
+        return sentenciaElse;
+    }
+
+    public NodoSentencia getSentenciaIf() {
+        return sentenciaIf;
     }
 
     /** Método para realizar el chequeo de sentencias en el nodo 'if'
@@ -79,5 +92,10 @@ public class NodoIf extends NodoSentencia{
         }
 
         return salida;
+    }
+
+    @Override
+    public void accept(MethodBodyVisitor methodBodyVisitor) {
+        methodBodyVisitor.generarCodigo(this);
     }
 }
