@@ -1,0 +1,4 @@
+ERROR: SEMANTICO - SENTENCIAS
+ 
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: | 
+|LINEA 24 | COLUMNA 26 | El tipo del indice es invalido: Str|

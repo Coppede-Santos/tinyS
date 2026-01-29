@@ -1,0 +1,455 @@
+{
+  "clases": [
+    {
+      "nombre": "VerificadorPrimo",
+      "metodos": [
+        {
+          "nombre": "VerificadorPrimo",
+          "sentencias":
+          [
+            {
+              "tipoNodo": "NodoAsignacion",
+              "izquierda": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "numero",
+                "tipo": "Int",
+                "posicion": {
+                  "linea": "23",
+                  "columna": "7"
+                }
+              },
+              "derecha": {
+                "tipoNodo": "NodoInt",
+                "valor": "0",
+                "tipo": "Int",
+                "posicion": {
+                  "linea": "23",
+                  "columna": "12"
+                }
+              }
+            },
+            {
+              "tipoNodo": "NodoAsignacion",
+              "izquierda": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "esPrimo",
+                "tipo": "Bool",
+                "posicion": {
+                  "linea": "24",
+                  "columna": "8"
+                }
+              },
+              "derecha": {
+                "tipoNodo": "NodoBool",
+                "valor": true,
+                "tipo": "Bool",
+                "posicion": {
+                  "linea": "24",
+                  "columna": "16"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "nombre": "mensaje_primo",
+          "sentencias":
+          [
+            {
+              "tipoNodo": "NodoVariable",
+              "lexema": "IO",
+              "esEstatico": "true",
+              "tipo": "IO",
+              "posicion": {
+                "linea": "28",
+                "columna": "4"
+              },
+              "encadenado":
+              {
+                "tipoNodo": "NodoLlamadaEncadenado",
+                "lexema": "out_str",
+                "parametros": [
+                  {
+                    "tipoNodo": "NodoString",
+                    "valor": "Es primo\n",
+                    "tipo": "String",
+                    "posicion": {
+                      "linea": "28",
+                      "columna": "26"
+                    }
+                  }
+                ],
+                "tipo": "nil",
+                "esEstatico": "true",
+                "posicion": {
+                  "linea": "28",
+                  "columna": "12"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "nombre": "verificar",
+          "sentencias":
+          [
+            {
+              "tipoNodo": "NodoAsignacion",
+              "izquierda": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "esPrimo",
+                "tipo": "Bool",
+                "posicion": {
+                  "linea": "8",
+                  "columna": "8"
+                }
+              },
+              "derecha": {
+                "tipoNodo": "NodoBool",
+                "valor": true,
+                "tipo": "Bool",
+                "posicion": {
+                  "linea": "8",
+                  "columna": "16"
+                }
+              }
+            },
+            {
+              "tipoNodo": "NodoAsignacion",
+              "izquierda": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "numero",
+                "tipo": "Int",
+                "posicion": {
+                  "linea": "9",
+                  "columna": "7"
+                }
+              },
+              "derecha": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "n",
+                "tipo": "Int",
+                "posicion": {
+                  "linea": "9",
+                  "columna": "11"
+                }
+              }
+            },
+            {
+              "tipoNodo": "NodoAsignacion",
+              "izquierda": {
+                "tipoNodo": "NodoVariable",
+                "lexema": "d",
+                "tipo": "Int",
+                "posicion": {
+                  "linea": "10",
+                  "columna": "2"
+                }
+              },
+              "derecha": {
+                "tipoNodo": "NodoInt",
+                "valor": "2",
+                "tipo": "Int",
+                "posicion": {
+                  "linea": "10",
+                  "columna": "7"
+                }
+              }
+            },
+            {
+              "tipoNodo": "NodoWhile",
+              "condicion": {
+                "tipoNodo": "NodoExpBin",
+                "ladoIzquierdo": {
+                  "tipoNodo": "NodoVariable",
+                  "lexema": "d",
+                  "tipo": "Int",
+                  "posicion": {
+                    "linea": "11",
+                    "columna": "9"
+                  }
+                },
+                "operador": "LESS",
+                "ladoDerecho": {
+                  "tipoNodo": "NodoVariable",
+                  "lexema": "numero",
+                  "tipo": "Int",
+                  "posicion": {
+                    "linea": "11",
+                    "columna": "18"
+                  }
+                },
+                "tipo": "Bool"
+              },
+              "sentencia":
+              [
+                {
+                  "tipoNodo": "NodoIf",
+                  "condicion": {
+                    "tipoNodo": "NodoExpBin",
+                    "ladoIzquierdo": {
+                      "tipoNodo": "NodoExpBin",
+                      "ladoIzquierdo": {
+                        "tipoNodo": "NodoVariable",
+                        "lexema": "numero",
+                        "tipo": "Int",
+                        "posicion": {
+                          "linea": "12",
+                          "columna": "12"
+                        }
+                      },
+                      "operador": "PERCENTAGE",
+                      "ladoDerecho": {
+                        "tipoNodo": "NodoVariable",
+                        "lexema": "d",
+                        "tipo": "Int",
+                        "posicion": {
+                          "linea": "12",
+                          "columna": "16"
+                        }
+                      },
+                      "tipo": "Int"
+                    },
+                    "operador": "EQUAL_EQUAL",
+                    "ladoDerecho": {
+                      "tipoNodo": "NodoInt",
+                      "valor": "0",
+                      "tipo": "Int",
+                      "posicion": {
+                        "linea": "12",
+                        "columna": "22"
+                      }
+                    },
+                    "tipo": "Bool"
+                  },
+                  "sentenciaIf": 											[
+                    {
+                      "tipoNodo": "NodoAsignacion",
+                      "izquierda": {
+                        "tipoNodo": "NodoVariable",
+                        "lexema": "esPrimo",
+                        "tipo": "Bool",
+                        "posicion": {
+                          "linea": "13",
+                          "columna": "12"
+                        }
+                      },
+                      "derecha": {
+                        "tipoNodo": "NodoBool",
+                        "valor": false,
+                        "tipo": "Bool",
+                        "posicion": {
+                          "linea": "13",
+                          "columna": "21"
+                        }
+                      }
+                    },
+                    {
+                      "tipoNodo": "NodoLlamadaEncadenado",
+                      "lexema": "mensaje_no_primo",
+                      "parametros": [
+                      ],
+                      "tipo": "nil",
+                      "esEstatico": "false",
+                      "posicion": {
+                        "linea": "14",
+                        "columna": "23"
+                      }
+                    },
+                    {
+                      "tipoNodo": "NodoRet",
+                      "expresion": {
+                        "tipoNodo": "NodoBool",
+                        "valor": false,
+                        "tipo": "Bool",
+                        "posicion": {
+                          "linea": "15",
+                          "columna": "15"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "tipoNodo": "NodoExpUn",
+                  "operador": "PLUS_PLUS",
+                  "ladoDerecho": {
+                    "tipoNodo": "NodoVariable",
+                    "lexema": "d",
+                    "tipo": "Int",
+                    "posicion": {
+                      "linea": "17",
+                      "columna": "7"
+                    }
+                  },
+                  "tipo": "Int"
+                }
+              ]
+            },
+            {
+              "tipoNodo": "NodoLlamadaEncadenado",
+              "lexema": "mensaje_primo",
+              "parametros": [
+              ],
+              "tipo": "nil",
+              "esEstatico": "false",
+              "posicion": {
+                "linea": "19",
+                "columna": "16"
+              }
+            },
+            {
+              "tipoNodo": "NodoRet",
+              "expresion": {
+                "tipoNodo": "NodoBool",
+                "valor": true,
+                "tipo": "Bool",
+                "posicion": {
+                  "linea": "20",
+                  "columna": "10"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "nombre": "mensaje_no_primo",
+          "sentencias":
+          [
+            {
+              "tipoNodo": "NodoVariable",
+              "lexema": "IO",
+              "esEstatico": "true",
+              "tipo": "IO",
+              "posicion": {
+                "linea": "31",
+                "columna": "4"
+              },
+              "encadenado":
+              {
+                "tipoNodo": "NodoLlamadaEncadenado",
+                "lexema": "out_str",
+                "parametros": [
+                  {
+                    "tipoNodo": "NodoString",
+                    "valor": "No es primo\n",
+                    "tipo": "String",
+                    "posicion": {
+                      "linea": "31",
+                      "columna": "29"
+                    }
+                  }
+                ],
+                "tipo": "nil",
+                "esEstatico": "true",
+                "posicion": {
+                  "linea": "31",
+                  "columna": "12"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "bloqueStart": {
+    "posicion": {
+      "linea": 34,
+      "columna": 5
+    },
+    "sentencias":
+    [
+      {
+        "tipoNodo": "NodoAsignacion",
+        "izquierda": {
+          "tipoNodo": "NodoVariable",
+          "lexema": "vp",
+          "tipo": "VerificadorPrimo",
+          "posicion": {
+            "linea": "37",
+            "columna": "3"
+          }
+        },
+        "derecha": {
+          "tipoNodo": "NodoLlamadaEncadenado",
+          "lexema": "VerificadorPrimo",
+          "parametros": [
+          ],
+          "tipo": "VerificadorPrimo",
+          "esEstatico": "false",
+          "posicion": {
+            "linea": "37",
+            "columna": "26"
+          }
+        }
+      },
+      {
+        "tipoNodo": "NodoAsignacion",
+        "izquierda": {
+          "tipoNodo": "NodoVariable",
+          "lexema": "entrada",
+          "tipo": "Int",
+          "posicion": {
+            "linea": "38",
+            "columna": "8"
+          }
+        },
+        "derecha": {
+          "tipoNodo": "NodoVariable",
+          "lexema": "IO",
+          "esEstatico": "true",
+          "tipo": "IO",
+          "posicion": {
+            "linea": "38",
+            "columna": "13"
+          },
+          "encadenado":
+          {
+            "tipoNodo": "NodoLlamadaEncadenado",
+            "lexema": "in_int",
+            "parametros": [
+            ],
+            "tipo": "Int",
+            "esEstatico": "true",
+            "posicion": {
+              "linea": "38",
+              "columna": "20"
+            }
+          }
+        }
+      },
+      {
+        "tipoNodo": "NodoVariable",
+        "lexema": "vp",
+        "tipo": "VerificadorPrimo",
+        "posicion": {
+          "linea": "39",
+          "columna": "4"
+        },
+        "encadenado":
+        {
+          "tipoNodo": "NodoLlamadaEncadenado",
+          "lexema": "verificar",
+          "parametros": [
+            {
+              "tipoNodo": "NodoVariable",
+              "lexema": "entrada",
+              "tipo": "Int",
+              "posicion": {
+                "linea": "39",
+                "columna": "22"
+              }
+            }
+          ],
+          "tipo": "Bool",
+          "esEstatico": "false",
+          "posicion": {
+            "linea": "39",
+            "columna": "15"
+          }
+        }
+      }
+    ]
+  }
+}

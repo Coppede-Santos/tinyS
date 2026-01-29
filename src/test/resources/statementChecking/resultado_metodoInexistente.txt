@@ -1,0 +1,4 @@
+ERROR: SEMANTICO - SENTENCIAS
+
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
+|LINEA 20 | COLUMNA 46 | El metodo no ha sido declarado: getDouble|

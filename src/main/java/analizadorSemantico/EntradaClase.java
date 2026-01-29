@@ -93,6 +93,15 @@ public class EntradaClase extends Entrada {
         }
     }
 
+    /** Obtiene un metodo de la clase
+     *
+     * @param lexema Nombre del metodo a obtener
+     * @return EntradaMetodo del metodo obtenido
+     */
+    public EntradaMetodo getMetodo(String lexema) {
+        return metodos.get(lexema);
+    }
+
     /** Obtiene el nombre de la superclase
      *
      * @return Nombre de la superclase
@@ -107,6 +116,10 @@ public class EntradaClase extends Entrada {
      */
     public boolean tieneConstructor() {
         return (constructor != null);
+    }
+
+    public EntradaMetodo getConstructor() {
+        return constructor;
     }
 
     /** Establece el constructor de la clase

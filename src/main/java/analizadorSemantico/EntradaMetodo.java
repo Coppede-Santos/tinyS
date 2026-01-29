@@ -49,6 +49,21 @@ public class EntradaMetodo extends Entrada{
         return parametros.get(nombreParametro);
     }
 
+
+    /** Método para buscar un parámetro por su posición en el método
+     *
+     * @param posicionParametro Posición del parámetro a buscar
+     * @return EntradaParametro del parámetro buscado, o null si no existe
+     */
+    public EntradaParametro buscarParametroPorPosicion(int posicionParametro) {
+        for (EntradaParametro parametro : parametros.values()) {
+            if (parametro.posicionParametro == posicionParametro) {
+                return parametro;
+            }
+        }
+        return null;
+    }
+
     /** Método para insertar un parámetro en el método
      *
      * @param nombreParametro Nombre del parámetro a insertar
@@ -97,7 +112,7 @@ public class EntradaMetodo extends Entrada{
         this.subtipoRetorno = subtipoRetorno;
     }
 
-    public boolean isEsEstatico() {
+    public boolean esEstatico() {
         return esEstatico;
     }
 
