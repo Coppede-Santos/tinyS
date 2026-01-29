@@ -89,19 +89,3 @@ public abstract class Entrada {
         return salida;
     }
 }
-
-/** Clase que representa la posición de una entrada en el código fuente */
-class Posicion {
-    int linea;
-    int columna;
-
-    /** Constructor de la clase Posicion
-     *
-     * @param linea Línea donde se encuentra la entrada
-     * @param columna Columna donde se encuentra la entrada
-     */
-    public Posicion(int linea, int columna) {
-        this.linea = linea;
-        this.columna = columna;
-    }
-}

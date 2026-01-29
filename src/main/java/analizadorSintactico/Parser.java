@@ -1351,6 +1351,7 @@ public class Parser {
                 );
             }
         }
+        return null;
     }
 
     /**
@@ -2131,27 +2132,6 @@ public class Parser {
                         }
                     }
                 }
-            }
-        }
-    }
-
-    /**
-     * Implementa la regla de producción para 'primario' de la gramática.
-     *
-     * @throws IOException Si ocurre un error de E/S.
-     * @throws ErrorTiny Si se encuentra un error léxico.
-     */
-
-    private void primario() throws IOException, ErrorTiny{
-        TokenType type = currentToken.getType();
-        if(type == LEFT_PAREN){
-            expresionParentizada();
-        }else{
-            if(type==SELF || type==NEW || type==IDCLASS || type==IDOBJETS) {
-                primario_sin_parentesis();
-            }else{
-                    throw new TokenInesperadoError(currentToken.getLine(), currentToken.getColumn(), "una expresión primaria (expresión entre paréntesis, acceso a variable, 'self', llamada a método o constructor)", currentToken.getLexema());
-
             }
         }
     }
