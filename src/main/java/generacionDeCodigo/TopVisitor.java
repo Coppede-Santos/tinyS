@@ -8,13 +8,24 @@ import ast.NodoSentencia;
 
 import java.util.Objects;
 
+/**
+ * Clase encargada de generar el codigo para el main, las vtables, las definiciones de metodos y las variables locales.
+ */
 public class TopVisitor extends NodeVisitor {
 
+    /**
+     * Constructor de la clase
+     * @param st tabla de simbolos
+     * @param ast Arbol semantico abstracto
+     */
     public TopVisitor(SymbolTable st, AST ast) {
         this.st = st;
         this.ast = ast;
     }
 
+    /**
+     * Genera el codigo para el main, las vtables, las definiciones de metodos y las variables locales.
+     */
     public void generarCodigo(){
         codigo.agregarLinea("main:");
         codigo.agregarLinea("sw $fp 0($sp)");
@@ -42,6 +53,10 @@ public class TopVisitor extends NodeVisitor {
 
     }
 
+    /**
+     * Genera el codigo para las vtables de las clases.
+     * @param clase clase para la cual se generaran las vtables
+     */
     public void generarCodigo(EntradaClase clase){
 
         EntradaMetodo constructor = clase.getConstructor();
@@ -71,6 +86,10 @@ public class TopVisitor extends NodeVisitor {
 
     }
 
+    /**
+     * Genera el codigo para inicializar las variables locales.
+     * @param variable variable para la cual se generara el codigo
+     */
     public void generarCodigo(EntradaVariable variable){
         // Cargamos el valor por defecto de la variable en $a0
 
@@ -161,6 +180,11 @@ public class TopVisitor extends NodeVisitor {
 
     }
 
+    /**
+     * Genera el codigo para la definicion de un metodo.
+     * @param entradaMetodo entrada del metodo
+     * @param nodoBloque sentencias del metodo
+     */
     public void generarCodigo(EntradaMetodo entradaMetodo, NodoBloque nodoBloque){
 
         int z = entradaMetodo.getCantidadVariablesLocales() * 4;
@@ -198,23 +222,28 @@ public class TopVisitor extends NodeVisitor {
         codigo.agregarLinea("addiu $sp $sp "+ z + " #limpiamos la pila de las variables locales");
         codigo.agregarLinea("addiu $sp $sp 4 #limpiamos la pila del return address");
 
-        //if (Character.isUpperCase(lexemaMetodo.charAt(0))) {
-        //codigo.agregarLinea("# Devolvemos el self del constructor en $a0");
-        //codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el self");
-        //}
 
-        //codigo.agregarLinea("lw $fp 0($sp) #restauramos el frame pointer");
         codigo.agregarLinea("jr $ra #salimos del metodo");
 
 
     }
 
 
+    /**
+     * Genera el label para un metodo.
+     * @param metodo metodo para el cual se generara el label
+     * @return label generado
+     */
     public String getLabel(EntradaMetodo metodo) {
         String label = "m_" + metodo.getLexema() + "_" +metodo.getLinea() + "_" + metodo.getColumna();
         return label;
     }
 
+    /**
+     * Verifica si una clase es primitiva.
+     * @param clase clase a verificar
+     * @return true si es primitiva, false en caso contrario
+     */
     public boolean esClasePrimitiva(EntradaClase clase) {
         return clase.getLexema().equals("Int") ||
                clase.getLexema().equals("Double") ||
@@ -226,6 +255,9 @@ public class TopVisitor extends NodeVisitor {
                 ;
     }
 
+    /**
+     * Devuelve el codigo generado.
+     */
     public CodeGen getCodigo() {
         return codigo;
     }

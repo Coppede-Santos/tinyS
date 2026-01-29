@@ -4,28 +4,23 @@ import analizadorSemantico.SymbolTable;
 import ast.AST;
 import ast.NodoSentencia;
 
-import java.util.LinkedList;
 
-public class NodeVisitor {
+/**
+ * Clase abstracta para los visitantes de los nodos del AST.
+ */
+public abstract class NodeVisitor {
+    /**
+     * Generador de codigo
+     */
     CodeGen codigo = new CodeGen();
+    /**
+     * Tabla de simbolos
+     */
     SymbolTable st;
+    /**
+     * Arbol semantico abstracto
+     */
     AST ast;
-
-    public NodeVisitor(){
-    }
-
-    public void generarCodigo(){
-    }
-
-
-
-//    public visitChildren(NodoSentencia n) {
-//        for node : n.getChildren() {
-//            node.codeGenerator(this);
-//
-//        }
-//    }
-
 
 
 }

@@ -3,19 +3,43 @@ package generacionDeCodigo;
 import java.io.*;
 import java.util.LinkedList;
 
+
+/**
+ * Clase encargada de generar el codigo final en MIPS
+ */
 public class CodeGen {
+    /**
+     * Listas para almacenar el codigo por debajo de .data
+     */
     LinkedList<String> data = new LinkedList<>();
+
+
+    /**
+     * Lista para almacenar el codigo por debajo de .text
+     */
     LinkedList<String> codigo = new LinkedList<>();
 
+
+    /**
+     * Agrega una linea al codigo final
+     * @param linea linea a agregar
+     */
     public void agregarLinea(String linea) {
         codigo.add(linea);
     }
 
+    /**
+     * Agrega una linea al data final
+     * @param data linea a agregar
+     */
     public void agregarData(String data) {
         this.data.add(data);
     }
 
 
+    /**
+     * Una vez finalizado la etapa de generación de codigo se escribe el archivo final.
+     */
     public String consolidar(){
         StringBuilder salida = new StringBuilder();
 

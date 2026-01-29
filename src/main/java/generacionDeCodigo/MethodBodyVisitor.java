@@ -29,7 +29,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
     /**
-     * Generador de codigo para nodoBloque, va a recorrer cada una de las sentencias de nodo bloque para generar el codigo.
+     * Genera codigo para nodoBloque, va a recorrer cada una de las sentencias de nodo bloque para generar el codigo.
      *
      * @param nodoBloque el nodo bloque, con una LinkedList de nodoSentencia
      */
@@ -41,12 +41,8 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
     /**
-     * Generador de codigo para nodoWhile.
-     * Se inserta la label del loop, luego se genera el codigo del nodoExpresión que representa la condición del while.
-     * La CIR del Bool de la condición queda en $a0, obtenemos su valor.
-     * Si es verdadero, hacemos las sentencias del loop, en caso contrario saltamos a la doneLabel.
-     *
-     * @param nodoWhile nodo Loop a generar.
+     * Genera codigo para nodoWhile, genera el codigo para el loop
+     * @param nodoWhile el nodo while
      */
     public void generarCodigo(NodoWhile nodoWhile) {
         codigo.agregarLinea("#Empieza codigo para While");
@@ -63,7 +59,7 @@ public class MethodBodyVisitor extends NodeVisitor {
     }
 
     /**
-     * Generacon de codigo para el nodoIf
+     * Genera codigo para el nodoIf
      * Generamos el codigo para la Expresion de condicion y $a0 apunta a la CIR del resultado
      * cargamos su valor
      * Si se cumple seguimos a la siguiente linea, en caso contrario saltamos a la labelFalse
@@ -92,11 +88,155 @@ public class MethodBodyVisitor extends NodeVisitor {
     }
 
 
+
     /**
-     * Se genera el codigo para una expresion binaria
-     *
+     * Genera codigo para una asignación
+     * @param nodoAsignacion nodo que contiene la asignación
+     */
+    public void generarCodigo(NodoAsignacion nodoAsignacion) {
+
+        // LADO IZQUIERDO: dirección de la variable → $a0
+        nodoAsignacion.getIzquierda().acceptLadoIzquerdo(this);
+
+        // push dirección
+        codigo.agregarLinea("sw $a0, 0($sp)");
+        codigo.agregarLinea("addi $sp, $sp, -4");
+
+        // LADO DERECHO: dirección (CIR del objeto) → $a0
+        nodoAsignacion.getDerecha().accept(this);
+
+        // pop dirección
+        codigo.agregarLinea("lw $t0, 4($sp)");
+        codigo.agregarLinea("addi $sp, $sp, 4");
+
+        // *asignación real*
+        codigo.agregarLinea("sw $a0, 0($t0)");
+    }
+
+    /**
+     * Genera codigo para un retorno de un metodo.
+     * @param nodoRet nodo que contiene el tipo de retorno del metodo
+     */
+    public void generarCodigo(NodoRet nodoRet) {
+
+        NodoExp expRet = nodoRet.getExp();
+
+        if (expRet != null) {
+            expRet.accept(this); // La dirección de la CIR del valor de retorno queda en $a0
+        } else {
+            codigo.agregarLinea("li $a0, 0 # Valor de retorno nulo");
+        }
+
+    }
+
+
+    /**
+     * Genera codigo para una expresion unaria.
+     * @param nodoExpUn Nodo que contiene la expresion unaria
+     */
+    public void generarCodigo(NodoExpUn nodoExpUn) {
+
+        nodoExpUn.getLadoDerecho().accept(this);
+
+        boolean doubleOperacion = nodoExpUn.getLadoDerecho().getTipo().equals("Double");
+
+        switch (nodoExpUn.getOperador()) {
+            case MINUS:
+                if (doubleOperacion) {
+
+                    codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar la primera mitad del valor del double");
+                    codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
+                    codigo.agregarLinea("ldc1 $f2, db_one #cargar el valor de 1.0");
+                    codigo.agregarLinea("ldc1 $f4, db_one #cargar el valor de 1.0");
+                    codigo.agregarLinea("sub.d $f2, $f2, $f4 #1.0 - 1.0 = 0.0 ");
+                    codigo.agregarLinea("sub.d $f2, $f2, $f4 #0.0 - 1.0 = -1.0 ");
+                    codigo.agregarLinea("mul.d $f0, $f0, $f2 #multiplicar por -1");
+                    codigo.agregarLinea("swc1 $f0, 4($a0) #guardar el valor del double");
+                    codigo.agregarLinea("swc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
+
+
+                }else{
+
+                    codigo.agregarLinea("li $t0, -1");
+                    codigo.agregarLinea("lw $t1, 4($a0) #cargar el valor del int");
+                    codigo.agregarLinea("mul $t1, $t1, $t0 #multiplicar por -1");
+                    codigo.agregarLinea("sw $t1, 4($a0) #guardar el valor del int");
+
+                }
+                break;
+
+            case NOT:
+                codigo.agregarLinea("lw $t0, 4($a0) #cargar el valor del bool");
+
+                codigo.agregarLinea("li $t1, 1");
+                codigo.agregarLinea("xor $t0, $t0, $t1 #invertir el valor del bool");
+                codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del bool");
+                break;
+
+            case PLUS_PLUS:
+                if (doubleOperacion) {
+
+                    codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar el valor del double");
+                    codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar el valor del double en la pila");
+                    codigo.agregarLinea("ldc1 $f2, db_one");
+                    codigo.agregarLinea("add.d $f0, $f0, $f1 #decrementar el valor del double");
+                    codigo.agregarLinea("swc1 $f0, 4($a0) #guardar el valor del double");
+                    codigo.agregarLinea("swc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
+
+                }else {
+
+                    codigo.agregarLinea("lw $t0, 4($a0) #cargar el valor del int");
+                    codigo.agregarLinea("addi $t0, $t0, 1 #incrementar el valor del int");
+                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+
+                }
+                break;
+            case MINUS_MINUS:
+
+                if(doubleOperacion){
+
+                    codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar el valor del double");
+                    codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar el valor del double en la pila");
+                    codigo.agregarLinea("ldc1 $f2, db_one");
+                    codigo.agregarLinea("sub.d $f0, $f0, $f1 #decrementar el valor del double");
+                    codigo.agregarLinea("swc1 $f0, 4($a0) #guardar el valor del double");
+                    codigo.agregarLinea("swc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
+
+                }else {
+
+                    codigo.agregarLinea("lw $t0, 4($a0) #cargar el valor del int");
+                    codigo.agregarLinea("addi $t0, $t0, -1 #decrementar el valor del int");
+                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
+
+                }
+                break;
+            case LEFT_PAREN:
+                codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar el valor del objeto");
+                codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar el valor del objeto");
+
+                codigo.agregarLinea("cvt.s.w $f2, $f0 #convertir a single precision");
+
+                codigo.agregarLinea("swc1 $f2, 4($a0) #guardar el valor del objeto en la CIR");
+
+                codigo.agregarLinea("la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal");
+                codigo.agregarLinea("sw $t0, 0($a0) #modificamos la dirección de la vtableDouble en la CIR");
+                break;
+
+        }
+
+        if(nodoExpUn.getEncadenado()!= null){
+            nodoExpUn.getEncadenado().accept(this);
+        }
+    }
+
+
+    /**
+     * Genera el codigo para una expresion binaria.
+     * @param nodoExpBin Nodo que contiene la expresion binaria
      */
     public void generarCodigo(NodoExpBin nodoExpBin) {
+
+        codigo.agregarLinea("#Empieza la expresion binaria");
 
         String tipoIzq = nodoExpBin.getLadoIzquierdo().getTipo();
         String tipoDer = nodoExpBin.getLadoDerecho().getTipo();
@@ -342,7 +482,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                         codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
                         codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
 
-                        codigo.agregarLinea("xor $t0, $t0, 1 #Si ambas son iguales, seteamos el valor a 0, sino a 1");
+                        codigo.agregarLinea("xor $t0, $t0, 1 #Invertimos el valor anterior para obtener el valor final");
 
 
                     } else {
@@ -373,10 +513,10 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("li $t1 0 #si es menor saltamos a la label true");
                     String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
                     codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
-                    codigo.agregarLinea("li $t1 1 #si no son iguales cargamos este valor para restar");
+                    codigo.agregarLinea("li $t1 1 #si no es menor cargamos este valor para restar");
                     codigo.agregarLinea(label + ":");
                     codigo.agregarLinea("li $t0, 1 #Si es menor no se cargo el valor anterior");
-                    codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
+                    codigo.agregarLinea("sub $t0, $t0, $t1 #Si es menor seteamos el valor a 1, sino a 0");
 
 
                 } else {
@@ -402,11 +542,11 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("c.le.d $f0, $f2 #comparamos si el double de la izquierda es menor o igual al lado derecho");
                     codigo.agregarLinea("li $t1 0 #si son iguales saltamos a la label true");
                     String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
-                    codigo.agregarLinea("bc1t " + label + "#si son iguales saltamos a la label true");
+                    codigo.agregarLinea("bc1t " + label + "#si no es menor o igual saltamos a la label true");
                     codigo.agregarLinea("li $t1 1 #si no son iguales cargamos este valor para restar");
                     codigo.agregarLinea(label + ":");
                     codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
-                    codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
+                    codigo.agregarLinea("sub $t0, $t0, $t1 #Si es menor o igual seteamos el valor a 1, sino a 0");
 
                 } else {
                     //El caso de que ambos sean int:
@@ -437,7 +577,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
                     codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
 
-                    codigo.agregarLinea("xor $t0, $t0, 1 #negamos lo anterior");
+                    codigo.agregarLinea("xor $t0, $t0, 1 #negamos lo anterior y obtenemos mayor");
 
 
                 } else {
@@ -470,7 +610,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("li $t0, 1 #Si son iguales no se cargo el valor anterior");
                     codigo.agregarLinea("sub $t0, $t0, $t1 #Si son iguales seteamos el valor a 1, sino a 0");
 
-                    codigo.agregarLinea("xor $t0, $t0, 1 #negamos lo anterior");
+                    codigo.agregarLinea("xor $t0, $t0, 1 #negamos lo anterior y obtenemos mayor o igual");
 
 
                 } else {
@@ -511,11 +651,14 @@ public class MethodBodyVisitor extends NodeVisitor {
         }
 
         codigo.agregarLinea("#Termina codigo para expBin");
+        if (nodoExpBin.getEncadenado() != null){
+            nodoExpBin.getEncadenado().accept(this);
+        }
 
     }
 
     /**
-     * Generamos una CIR para Bool y guardamos el valor que se encuentra en t0
+     * Genera una CIR para Bool y guarda el valor que se encuentra en t0
      */
     private void expBinResultadoBool() {
         codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
@@ -529,7 +672,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
     /**
-     * Generamos una CIR para Int y guardamos el valor que se encuentra en t0
+     * Genera una CIR para Int y guardamos el valor que se encuentra en t0
      */
     private void expBinResultadoInt(){
         codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
@@ -546,7 +689,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
     /**
-     * Generamos codigo para comprobar si dos string son iguales
+     * Genera codigo para comprobar si dos string son iguales
      */
     private void expBinString() {
 
@@ -565,7 +708,7 @@ public class MethodBodyVisitor extends NodeVisitor {
     }
 
     /**
-     * Generamos una CIR para Double y guardamos el valor que se encuentra en f0
+     * Genera una CIR para Double y guardamos el valor que se encuentra en f0
      */
     private void expBinResultadoDouble() {
 
@@ -583,7 +726,7 @@ public class MethodBodyVisitor extends NodeVisitor {
     }
 
     /**
-     * Dejamos en f0 un double para lado izquierdo y en f2 un doble para lado derecho
+     * Genera codigo para cargar en f0 un double para lado izquierdo y en f2 un doble para lado derecho
      *
      * @param tipoIzq tipo de la expresion de lado izquierdo
      * @param tipoDer tipo de la expresion de lado derecho
@@ -612,7 +755,10 @@ public class MethodBodyVisitor extends NodeVisitor {
     }
 
 
-
+    /**
+     * Genera codigo para un literal double
+     * @param nodoDouble nodo que contiene el valor del double
+     */
     public void generarCodigo(NodoDouble nodoDouble){
 
 
@@ -628,33 +774,20 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
 
+        if (nodoDouble.getEncadenado() != null){
+            nodoDouble.getEncadenado().accept(this);
+        }
+
     }
 
 
 
 
-    public void generarCodigo(NodoAsignacion nodoAsignacion) {
 
-        // LADO IZQUIERDO: dirección de la variable → $a0
-        nodoAsignacion.getIzquierda().acceptLadoIzquerdo(this);
-
-        // push dirección
-        codigo.agregarLinea("sw $a0, 0($sp)");
-        codigo.agregarLinea("addi $sp, $sp, -4");
-
-        // LADO DERECHO: dirección (CIR del objeto) → $a0
-        nodoAsignacion.getDerecha().accept(this);
-
-        // pop dirección
-        codigo.agregarLinea("lw $t0, 4($sp)");
-        codigo.agregarLinea("addi $sp, $sp, 4");
-
-        // *asignación real*
-        codigo.agregarLinea("sw $a0, 0($t0)");
-    }
-
-
-
+    /**
+     * Genera codigo para un literal int
+     * @param nodoInt nodo que contiene el valor del int
+     */
     public void generarCodigo(NodoInt nodoInt){
 
         codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
@@ -669,8 +802,16 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
 
+        if (nodoInt.getEncadenado() != null){
+            nodoInt.getEncadenado().accept(this);
+        }
+
     }
 
+    /**
+     * Genera codigo para un literal bool
+     * @param nodoBool nodo que contiene el valor del bool
+     */
     public void generarCodigo(NodoBool nodoBool){
 
 
@@ -686,8 +827,16 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
 
+        if (nodoBool.getEncadenado() != null){
+            nodoBool.getEncadenado().accept(this);
+        }
+
     }
 
+    /**
+     * Genera codigo para un literal string
+     * @param nodoString nodo que contiene el valor del string
+     */
     public void generarCodigo(NodoString nodoString) {
 
         int longitudString = nodoString.getValor().length() + 1;
@@ -712,12 +861,20 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
 
+        if (nodoString.getEncadenado() != null){
+            nodoString.getEncadenado().accept(this);
+        }
+
     }
 
-
+    /**
+     * Genera codigo para una llamada de metodo
+     * @param nodoLlamadaMetodo
+     */
     public void generarCodigo(NodoLlamadaMetodo nodoLlamadaMetodo){
         // Si hay un encadenado previo -> $a0
         // Self = encadenado previo
+        codigo.agregarLinea("#Comienza codigo para llamada de metodo " + nodoLlamadaMetodo.getLexema());
 
         EntradaClase entradaClase = st.buscarClase(nodoLlamadaMetodo.getClaseEncadenadoPrev());
 
@@ -736,47 +893,21 @@ public class MethodBodyVisitor extends NodeVisitor {
         if (!esConstructor) {
             if (nodoLlamadaMetodo.getEsEncadenado()) {
                 //Si tiene un objeto como encadenado previo se va a encontrar en -> $a0, hay que guardarlo en la pila
-                codigo.agregarLinea("sw $a0, 0($sp) # Guardar el encadenado previo en la pila");
-                codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
+                codigo.agregarLinea("sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self");
+                codigo.agregarLinea("addiu $sp $sp -4 #movemos el puntero de la pila");
             }
             else {
                 //Si no tiene un encadenado previo, o no es un constructor, se asume que es un metodo llamado desde self
-                codigo.agregarLinea("lw $a0 4($fp) # Cargar el objeto (this) desde el frame pointer antrior");
-                codigo.agregarLinea("sw $a0, 0($sp) # Guardar el objeto de la llamada en la pila");
-                codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
+                codigo.agregarLinea("lw $a0 4($fp) #Cargar el objeto (this) desde el frame pointer antrior");
+                codigo.agregarLinea("sw $a0, 0($sp) #Guardar el objeto de la llamada en la pila como self");
+                codigo.agregarLinea("addiu $sp $sp -4 #movemos el puntero de la pila");
             }
         }
         else {
-            // Si es un constructor, se crea un nuevo CIR para el objeto
-
-
-
+            // Si es un constructor, se crea un nuevo CIR por defecto para el objeto
              generarCodigo(entradaClase);
-             codigo.agregarLinea("sw $a0, 0($sp) # Guardar el objeto de la llamada en la pila");
+             codigo.agregarLinea("sw $a0, 0($sp) # Guardar el objeto de la llamada en la pila como self");
              codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
-
-//            codigo.agregarLinea("li $v0 9");
-//            codigo.agregarLinea("li $a0 " + entradaClase.getTamanioObjeto() + " # Tamaño del objeto");
-//            codigo.agregarLinea("syscall");
-//
-//            codigo.agregarLinea("la $t0, VTABLE_" + entradaClase.getLexema() + " # Cargar la dirección de la vtable de la clase " + entradaClase.getLexema());
-//            codigo.agregarLinea("sw $t0, 0($v0) # Guardar la vtable en la CIR del nuevo objeto");
-//
-//            codigo.agregarLinea("sw $v0, 0($sp) # Guardar la dirección del nuevo objeto en la pila");
-//            codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
-//
-//            for (EntradaAtributo atributo : entradaClase.getAtributos().values()) {
-//
-//                generarCodigo(atributo);
-//
-//                // Recuperar la direccion de la clase
-//                codigo.agregarLinea("lw $t0, 4($sp) # Recuperar la dirección del nuevo objeto desde la pila");
-//
-//                int offsetAtributo = atributo.getPosicionAtributo() * 4; // Offset del atributo en la CIR
-//                codigo.agregarLinea("sw $a0, " + offsetAtributo + "($t0) # Inicializar el atributo " + atributo.getLexema());
-//            }
-
-            //codigo.agregarLinea("lw $t0, 0($t0) # Guardar en t0 la vtable del objeto");
 
         }
 
@@ -803,16 +934,22 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior");
 
 
+        //Continuamos con el codigo para el encadenamiento
         if (nodoLlamadaMetodo.getEncadenado() != null){
             nodoLlamadaMetodo.getEncadenado().accept(this);
         }
 
+        codigo.agregarLinea("#Termina codigo para llamada de metodo");
+
     }
 
 
-
-
+    /**
+     * Genera codigo para un acceso a un objeto
+     * @param nodoVar Nodo que contiene el nombre de la variable
+     */
     public void generarCodigo(NodoVar nodoVar){
+
 
 
         EntradaMetodo entradaMetodo = st.getMetodoActual(); //Obtenemos el metodo actual
@@ -862,7 +999,7 @@ public class MethodBodyVisitor extends NodeVisitor {
             }else{
                 //Es estatico
 
-                codigo.agregarLinea("li $a0, 4 #reservamos 4 bytes en memoria para la VTABLE");
+                codigo.agregarLinea("li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE");
                 codigo.agregarLinea("li $v0 9  # Solicitar espacio en memoria");
                 codigo.agregarLinea("syscall ");
 
@@ -872,17 +1009,25 @@ public class MethodBodyVisitor extends NodeVisitor {
             }
         }
 
-
+        //En caso de ser un NodoArratAcceso se procede a generar el codigo para acceder a la posicion indicacada.
         if (nodoVar.getClass() == NodoArrayAcceso.class){
             NodoArrayAcceso nodoArrayAcceso = (NodoArrayAcceso) nodoVar;
             generarCodigoAccesoArray(nodoArrayAcceso);
         }
 
+        //Se genera el codigo el encadenado.
         if (nodoVar.getEncadenado() != null){
             nodoVar.getEncadenado().accept(this);
         }
 
+
     }
+
+
+    /**
+     * Genera codigo para un acceso al espacio en memoria de una variable
+     * @param nodoVar Nodo que contiene el nombre de la variable
+     */
 
     public void generarCodigoAccesoVariable(NodoVar nodoVar){
 
@@ -956,100 +1101,12 @@ public class MethodBodyVisitor extends NodeVisitor {
         }
 
     }
-    
-
-    public void generarCodigo(NodoExpUn nodoExpUn) {
-
-        nodoExpUn.getLadoDerecho().accept(this);
-
-        boolean doubleOperacion = nodoExpUn.getLadoDerecho().getTipo().equals("Double");
-
-        switch (nodoExpUn.getOperador()) {
-            case MINUS:
-                if (doubleOperacion) {
-
-                    codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar la primera mitad del valor del double");
-                    codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
-                    codigo.agregarLinea("ldc1 $f2, db_one #cargar el valor de 1.0");
-                    codigo.agregarLinea("ldc1 $f4, db_one #cargar el valor de 1.0");
-                    codigo.agregarLinea("sub.d $f2, $f2, $f4 #1.0 - 1.0 = 0.0 ");
-                    codigo.agregarLinea("sub.d $f2, $f2, $f4 #0.0 - 1.0 = -1.0 ");
-                    codigo.agregarLinea("mul.d $f0, $f0, $f2 #multiplicar por -1");
-                    codigo.agregarLinea("swc1 $f0, 4($a0) #guardar el valor del double");
-                    codigo.agregarLinea("swc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
 
 
-                }else{
-
-                    codigo.agregarLinea("li $t0, -1");
-                    codigo.agregarLinea("lw $t1, 4($a0) #cargar el valor del int");
-                    codigo.agregarLinea("mul $t1, $t1, $t0 #multiplicar por -1");
-                    codigo.agregarLinea("sw $t1, 4($a0) #guardar el valor del int");
-
-                 }
-                break;
-
-            case NOT:
-                codigo.agregarLinea("lw $t0, 4($a0) #cargar el valor del bool");
-
-                codigo.agregarLinea("li $t1, 1");
-                codigo.agregarLinea("xor $t0, $t0, $t1 #invertir el valor del bool");
-                codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del bool");
-                break;
-
-            case PLUS_PLUS:
-                if (doubleOperacion) {
-
-                    codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar el valor del double");
-                    codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar el valor del double en la pila");
-                    codigo.agregarLinea("ldc1 $f2, db_one");
-                    codigo.agregarLinea("add.d $f0, $f0, $f1 #decrementar el valor del double");
-                    codigo.agregarLinea("swc1 $f0, 4($a0) #guardar el valor del double");
-                    codigo.agregarLinea("swc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
-
-                }else {
-
-                    codigo.agregarLinea("lw $t0, 4($a0) #cargar el valor del int");
-                    codigo.agregarLinea("addi $t0, $t0, 1 #incrementar el valor del int");
-                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
-
-                }
-                break;
-            case MINUS_MINUS:
-
-                if(doubleOperacion){
-
-                    codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar el valor del double");
-                    codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar el valor del double en la pila");
-                    codigo.agregarLinea("ldc1 $f2, db_one");
-                    codigo.agregarLinea("sub.d $f0, $f0, $f1 #decrementar el valor del double");
-                    codigo.agregarLinea("swc1 $f0, 4($a0) #guardar el valor del double");
-                    codigo.agregarLinea("swc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
-
-                }else {
-
-                    codigo.agregarLinea("lw $t0, 4($a0) #cargar el valor del int");
-                    codigo.agregarLinea("addi $t0, $t0, -1 #decrementar el valor del int");
-                    codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del int");
-
-                }
-                break;
-            case LEFT_PAREN:
-                codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar el valor del objeto");
-                codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar el valor del objeto");
-
-                codigo.agregarLinea("cvt.s.w $f2, $f0 #convertir a single precision");
-
-                codigo.agregarLinea("swc1 $f2, 4($a0) #guardar el valor del objeto en la CIR");
-
-                codigo.agregarLinea("la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal");
-                codigo.agregarLinea("sw $t0, 0($a0) #modificamos la dirección de la vtableDouble en la CIR");
-                break;
-
-        }
-    }
-
-
+    /**
+     * Genera codigo para un acceso a un atributo de array
+     * @param nodoArrayAcceso Nodo que contiene el nombre del atributo
+     */
     public void generarCodigoAccesoArray(NodoArrayAcceso nodoArrayAcceso){
 
         //generarCodigo(nodoArrayAcceso);
@@ -1074,6 +1131,10 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("addiu $sp $sp 4 #movemos el puntero de la pila");
     }
 
+    /**
+     * Genera codigo para un acceso a al espacio en memoria de un atributo de array
+     * @param nodoArrayAcceso
+     */
     public void generarCodigoIzquierdaAccesoArray(NodoArrayAcceso nodoArrayAcceso){
 
 
@@ -1100,6 +1161,10 @@ public class MethodBodyVisitor extends NodeVisitor {
     }
 
 
+    /**
+     * Genera codigo para el construcotor de un array
+     * @param nodoArray
+     */
     public void generarCodigo(NodoConstructorArray nodoArray) {
 
         nodoArray.getDimension().accept(this);
@@ -1129,23 +1194,18 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         if(Objects.equals(nodoArray.getTipo(), "int")){
             codigo.agregarLinea("la $t1, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal");
-            //codigo.agregarLinea("li $t2, 0 # Valor inicial del objeto int");
             codigo.agregarLinea("li $t3, 8 #Tamaño de la CIR de int");
         }else{
             if(Objects.equals(nodoArray.getTipo(), "Double")){
                 codigo.agregarLinea("la $t1, VTABLE_Int # Cargar la dirección de la vtable Double en un temporal");
-                //codigo.agregarLinea("ldc1 $f0, db_one # Valor inicial del objeto db");
-                //codigo.agregarLinea("sub.d $f0, $f0, $f0 #Seteamos el valor incial de una CIR double a 0.0");
                 codigo.agregarLinea("li $t3, 12 #Tamaño de la CIR de double");
             }else{
                 if(Objects.equals(nodoArray.getTipo(), "Bool")){
                     codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
-                    //codigo.agregarLinea("li $t2, 0 # Valor inicial del objeto bool");
                     codigo.agregarLinea("li $t3, 8 #Tamaño de la CIR de bool");
                 }else{
                     if (Objects.equals(nodoArray.getTipo(), "String")) {
-                        codigo.agregarLinea("la $t1, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal");
-                        //codigo.agregarLinea("li $t2, 0 # Valor inicial del objeto String");
+                        codigo.agregarLinea("la $t1, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal");;
                         codigo.agregarLinea("li $t3, 8 #Tamaño de la CIR de String");
                     }
                 }
@@ -1173,34 +1233,30 @@ public class MethodBodyVisitor extends NodeVisitor {
 
     }
 
-    public void generarCodigo(NodoRet nodoRet) {
 
-        NodoExp expRet = nodoRet.getExp();
-
-        if (expRet != null) {
-            expRet.accept(this); // La dirección de la CIR del valor de retorno queda en $a0
-        } else {
-            codigo.agregarLinea("li $a0, 0 # Valor de retorno nulo");
-        }
-
-    }
-
-
-
-
-
-    
-
+    /**
+     * Genera un label para un nodo sentencia
+     * @param ns nodo sentencia
+     * @return label
+     */
     public String genLabel(NodoSentencia ns){
 
         return "S_" + ns.posicion.getLinea() + "_" + ns.posicion.getColumna();
     }
+
+
+    /**
+     * Genera un label para un entradaMetodo
+     */
     public String genLabel(EntradaMetodo entradaMetodo){
         return "M_" + entradaMetodo.getLexema() + "_" + entradaMetodo.getLinea()+"_"+entradaMetodo.getColumna();
     }
 
-// Esto esta dudosooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 
+    /**
+     *
+     * @param variable
+     */
     public void generarCodigo(EntradaVariable variable){
         // Cargamos el valor por defecto de la variable en $a0
 
