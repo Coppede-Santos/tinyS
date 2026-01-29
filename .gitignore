@@ -37,3 +37,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Test ###
+/src/test/resources/output/**
+/src/test/resources/test/*.ast.json
+/src/test/resources/test/*.ts.json
+/src/test/resources/test/*.txt

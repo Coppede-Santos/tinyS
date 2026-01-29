@@ -1,7 +1,7 @@
-class A : Array Int {
+class A : B {
 }
 
-class B : Array Array {
+class B : Array Int {
 }
 
 start{
