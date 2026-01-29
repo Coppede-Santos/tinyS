@@ -15,10 +15,10 @@ import java.io.IOException;
 
 
 /**
- * La clase {@code Etapa2} realiza el análisis sintáctico y léxico de un archivo de entrada en lenguaje TinyS.
+ * La clase {@code Etapa4} realiza el análisis semántico de un archivo de entrada en lenguaje TinyS.
  * <p>
- * Esta clase coordina el uso del analizador léxico ({@link Escaner}) y el analizador sintáctico ({@link Parser})
- * para verificar la validez del código fuente TinyS proporcionado en un archivo de entrada.
+ * Esta clase arma el AST y realiza el chequeo de sentencias utilizando la
+ * tabla de símbolos generada durante el análisis sintáctico.
  * </p>
  */
 
@@ -26,7 +26,7 @@ public class Etapa4 {
 
 
     /**
-     * Metodo principal que ejecuta el análisis sintáctico y léxico, y chequeo de declaraciones del archivo de entrada.
+     * Metodo principal que ejecuta el análisis semántico de sentencias del archivo de entrada.
      *
      * @param args Un array de argumentos de línea de comandos.
      *             Se espera que el primer argumento sea la ruta al archivo de entrada TinyS (con extensión .s).
@@ -137,25 +137,7 @@ public class Etapa4 {
             System.err.println(resultadoAnalisis.trim());
         } else {
             System.out.println(resultadoAnalisis.trim());
-
         }
-    }
-
-    /**
-     * Función auxiliar para escribir un mensaje de error en el archivo de salida, reemplazando cualquier contenido previo.
-     *
-     * @param writer  El {@link BufferedWriter} utilizado para escribir en el archivo.
-     * @param archivo La ruta del archivo en el que se escribirá el mensaje de error.
-     * @param mensaje El mensaje de error que se escribirá en el archivo.
-     * @throws IOException Si ocurre un error de entrada/salida durante la escritura en el archivo.
-     */
-
-    private static void reemplazarConError(BufferedWriter writer, String archivo, String mensaje) throws IOException {
-        if (writer != null) writer.close();
-        try (BufferedWriter newWriter = new BufferedWriter(new FileWriter(archivo, false))) {
-            newWriter.write(mensaje);
-        }
-        System.err.println(mensaje.trim());
     }
 
 }

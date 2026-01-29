@@ -3,33 +3,50 @@ package ast;
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.*;
 import analizadorSemantico.Errores.ClaseNoDeclaradaError;
-import analizadorSemantico.Errores.ErrorSemantico;
 import ast.Errores.AtributoNoDeclaradoError;
 import ast.Errores.VariableNoDeclaradaError;
 import ast.Errores.VisibilidadError;
 
 import static ast.AstJsonBuilder.*;
 
+/** Clase que representa un nodo variable en el AST */
 public class NodoVar extends NodoOperando {
     String lexema;
     Boolean esEstatico = false;
 
+    /** Constructor de la clase NodoVar */
     public NodoVar(String lexema, int linea, int columna) {
         super(linea, columna);
         this.lexema = lexema;
     }
 
+    /** Método para establecer si la variable es estática */
     public void setEsEstatico(Boolean esEstatico) {
         this.esEstatico = esEstatico;
 
     }
 
+    /** Método para realizar el chequeo de sentencias
+     *
+     * @param entradaMetodo Entrada del método actual en la tabla de símbolos
+     * @param st Tabla de símbolos
+     * @param profundidad Profundidad actual en el árbol
+     * @return String con el resultado del chequeo en formato JSON
+     * @throws ErrorTiny Si ocurre un error durante el chequeo
+     * */
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
+    public String chequeoDeSentencias(
+            EntradaMetodo entradaMetodo,
+            SymbolTable st,
+            int profundidad)
+            throws ErrorTiny
+    {
         String salida = "";
 
-        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoVariable") + ",\n";
-        salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo")
+                + valorJson("NodoVariable") + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("lexema")
+                + valorJson(lexema) + ",\n";
 
         EntradaClase claseReferenciada;
 
@@ -48,7 +65,10 @@ public class NodoVar extends NodoOperando {
 
                 EntradaAtributos atributo = (EntradaAtributos) variable;
                 if (atributo != null && atributo.esPrivado()
-                        && !st.getClassActual().getLexema().equals(atributo.getClasePropietaria())) {
+                        && !st.getClassActual().getLexema().equals(
+                                atributo.getClasePropietaria())
+                        )
+                {
                     throw new VisibilidadError(posicion,lexema);
                 }
             }
@@ -59,14 +79,19 @@ public class NodoVar extends NodoOperando {
                 if (esEstatico) {
                     EntradaClase claseActual = st.buscarClase(lexema);
                     if (claseActual == null) {
-                        throw new ClaseNoDeclaradaError(posicion.getLinea(), posicion.getColumna(), lexema);
+                        throw new ClaseNoDeclaradaError(
+                                posicion.getLinea(),
+                                posicion.getColumna(),
+                                lexema
+                        );
                     }
                     this.tipo = claseActual.getLexema();
 
-                    salida += tabs(profundidad + 1) + claveJson("esEstatico") + valorJson("true") + ",\n";
+                    salida += tabs(profundidad + 1) +
+                            claveJson("esEstatico") +
+                            valorJson("true") + ",\n";
 
                 } else {
-                    // ------------------------------------------------------------------------------------------------------------------------------------
                     throw new VariableNoDeclaradaError(posicion,lexema);
                 }
             } else {
@@ -76,14 +101,19 @@ public class NodoVar extends NodoOperando {
             this.tipo = variable.getTipo();
         }
 
-        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + ",\n";
-        salida += tabs(profundidad + 1) + claveJson("posicion") + "{\n";
-        salida += tabs(profundidad + 2) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
-        salida += tabs(profundidad + 2) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
+        salida += tabs(profundidad + 1) + claveJson("tipo") +
+                valorJson(this.tipo) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("posicion") +
+                "{\n";
+        salida += tabs(profundidad + 2) + claveJson("linea") +
+                valorJson(String.valueOf(posicion.getLinea())) + ",\n";
+        salida += tabs(profundidad + 2) + claveJson("columna") +
+                valorJson(String.valueOf(posicion.getColumna())) + "\n";
         salida += tabs(profundidad + 1) + "}";
 
         if (encadenado != null) {
-            salida += ",\n" + tabs(profundidad + 1) + claveJson("encadenado") + "\n";
+            salida += ",\n" + tabs(profundidad + 1) +
+                    claveJson("encadenado") + "\n";
             salida += tabs(profundidad + 2) + "{\n";
             salida += this.encadenado.chequeoDeSentencias(
                     entradaMetodo,
@@ -100,16 +130,35 @@ public class NodoVar extends NodoOperando {
         return salida;
     }
 
+    /** Método para realizar el chequeo de sentencias con encadenado
+     *
+     * @param entradaMetodo Entrada del método actual en la tabla de símbolos
+     * @param st Tabla de símbolos
+     * @param tipoEncadenadoPrev Tipo del encadenado previo
+     * @param profundidad Profundidad actual en el árbol
+     * @return String con el resultado del chequeo en formato JSON
+     * @throws ErrorTiny Si ocurre un error durante el chequeo
+     * */
     @Override
-    public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
+    public String chequeoDeSentencias(
+            EntradaMetodo entradaMetodo,
+            SymbolTable st,
+            String tipoEncadenadoPrev,
+            int profundidad) throws ErrorTiny
+    {
         String salida = "";
 
-        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoVariable") + ",\n";
-        salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo")
+                + valorJson("NodoVariable") + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("lexema")
+                + valorJson(lexema) + ",\n";
 
         EntradaClase entradaClase = st.buscarClase(tipoEncadenadoPrev);
         if (entradaClase == null) {
-            throw new ClaseNoDeclaradaError(posicion.getLinea(), posicion.getColumna(), tipoEncadenadoPrev);
+            throw new ClaseNoDeclaradaError(
+                    posicion.getLinea(), posicion.getColumna(),
+                    tipoEncadenadoPrev
+            );
         }
 
         EntradaAtributos atributo = entradaClase.buscarAtributo(lexema);
@@ -119,22 +168,28 @@ public class NodoVar extends NodoOperando {
 
         if (atributo.esPrivado()
                 && (!st.getClassActual().getLexema().equals(tipoEncadenadoPrev)
-                || !atributo.getClasePropietaria().equals(tipoEncadenadoPrev))) {
+                || !atributo.getClasePropietaria().equals(tipoEncadenadoPrev)))
+        {
             throw new VisibilidadError(posicion,lexema);
         }
 
         this.tipo = atributo.getTipo();
 
-        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + ",\n";
-        salida += tabs(profundidad + 1) + claveJson("posicion") + "{\n";
-        salida += tabs(profundidad + 2) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
-        salida += tabs(profundidad + 2) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
+        salida += tabs(profundidad + 1) + claveJson("tipo")
+                + valorJson(this.tipo) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("posicion")
+                + "{\n";
+        salida += tabs(profundidad + 2) + claveJson("linea")
+                + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
+        salida += tabs(profundidad + 2) + claveJson("columna")
+                + valorJson(String.valueOf(posicion.getColumna())) + "\n";
         salida += tabs(profundidad + 1) + "}";
 
 
         if (encadenado != null) {
             salida += ",\n";
-            salida += tabs(profundidad + 1) + claveJson("encadenado") + "\n";
+            salida += tabs(profundidad + 1)
+                    + claveJson("encadenado") + "\n";
             salida += tabs(profundidad + 2) + "{\n";
             salida += this.encadenado.chequeoDeSentencias(
                     entradaMetodo,

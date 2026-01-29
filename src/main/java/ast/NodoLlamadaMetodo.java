@@ -5,7 +5,6 @@ import analizadorSemantico.EntradaClase;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.EntradaParametro;
 import analizadorSemantico.Errores.ClaseNoDeclaradaError;
-import analizadorSemantico.Errores.ErrorSemantico;
 import analizadorSemantico.SymbolTable;
 import ast.Errores.MetodoNoDeclaradoError;
 import ast.Errores.ParametroTipoError;
@@ -16,21 +15,30 @@ import java.util.LinkedList;
 
 import static ast.AstJsonBuilder.*;
 
+/** Clase que representa un nodo de llamada a método en el AST */
 public class NodoLlamadaMetodo extends NodoVar{
 
     LinkedList<NodoExp> parametros = new LinkedList<>();
 
+    /** Constructor de la clase NodoLlamadaMetodo */
     public NodoLlamadaMetodo(String lex, int linea, int columna){
         super(lex, linea, columna);
     }
 
-    // getCompany().getAddress().getStreet().getNumber();
-
+    /** Método para agregar un parámetro a la llamada al método */
     public void agregarParametro(NodoExp nodoExp){
         parametros.add(nodoExp);
 
     }
 
+    /** Método para realizar el chequeo de sentencias
+     *
+     * @param entradaMetodo Entrada del método actual en la tabla de símbolos
+     * @param st Tabla de símbolos
+     * @param profundidad Profundidad actual en el árbol
+     * @return String con el resultado del chequeo en formato JSON
+     * @throws ErrorTiny Si ocurre un error durante el chequeo
+     */
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
@@ -39,8 +47,10 @@ public class NodoLlamadaMetodo extends NodoVar{
         EntradaMetodo metodoReferenciado;
         EntradaParametro parametroReferenciado;
 
-        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoLlamadaEncadenado") + ",\n";
-        salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo")
+                + valorJson("NodoLlamadaEncadenado") + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("lexema")
+                + valorJson(lexema) + ",\n";
 
         if (st.buscarClase(lexema) != null) {
             esConstructor = true;
@@ -59,41 +69,45 @@ public class NodoLlamadaMetodo extends NodoVar{
             throw new ParametrosCantidadError(posicion,lexema);
         }
 
-        salida += tabs(profundidad + 1) + claveJson("parametros") + "[\n";
+        salida += tabs(profundidad + 1) + claveJson("parametros")
+                + "[\n";
+
         for (int i = 0; i < parametros.size(); i++) {
 
             NodoExp parametroActual = parametros.get(i);
 
             salida += tabs(profundidad + 2) + "{\n";
-            salida += parametroActual.chequeoDeSentencias(entradaMetodo, st, profundidad + 2);
+            salida += parametroActual.chequeoDeSentencias(entradaMetodo, st,
+                    profundidad + 2
+            );
+
             if (i != parametros.size() - 1) {
                 salida += tabs(profundidad + 2) + "},\n";
             } else {
                 salida += tabs(profundidad + 2) + "}\n";
             }
 
-            parametroReferenciado = metodoReferenciado.buscarParametroPorPosicion(i);
+            parametroReferenciado = metodoReferenciado.
+                    buscarParametroPorPosicion(i);
 
             if (parametroReferenciado == null) {
                 throw new ParametrosCantidadError(posicion,lexema);
             }
 
-            EntradaClase entradaTipoParametroAcutal = st.buscarClase(parametroActual.tipo);
+            EntradaClase entradaTipoParametroAcutal = st.
+                    buscarClase(parametroActual.tipo);
 
             if (entradaTipoParametroAcutal == null){
-                throw new ClaseNoDeclaradaError(parametroActual.posicion.getColumna(),parametroActual.posicion.getLinea(), parametroActual.tipo);
+                throw new ClaseNoDeclaradaError(
+                        parametroActual.posicion.getColumna(),
+                        parametroActual.posicion.getLinea(),
+                        parametroActual.tipo
+                );
             }
 
             if (!entradaTipoParametroAcutal.buscarAncestro(st,parametroReferenciado.getTipo())) {
                 throw new ParametroTipoError(posicion,entradaTipoParametroAcutal.getLexema());
             }
-
-
-//            if (!Objects.equals(parametroActual.tipo, parametroReferenciado.getTipo().getLexema())) {
-//                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-//                        "el tipo del parametro " + (i+1) + " no coincide con el tipo esperado en el metodo " + lexema, "");
-//            }
-//
 
         }
         salida += tabs(profundidad + 1) + "],\n";
@@ -110,16 +124,22 @@ public class NodoLlamadaMetodo extends NodoVar{
             this.tipo = tipoRetorno.getLexema();
         }
 
-        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + ",\n";
-        salida += tabs(profundidad + 1) + claveJson("esEstatico") + valorJson(String.valueOf(false)) + ",\n";
-        salida += tabs(profundidad + 1) + claveJson("posicion") + "{\n";
-        salida += tabs(profundidad + 2) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
-        salida += tabs(profundidad + 2) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
+        salida += tabs(profundidad + 1) + claveJson("tipo")
+                + valorJson(this.tipo) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("esEstatico")
+                + valorJson(String.valueOf(false)) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("posicion")
+                + "{\n";
+        salida += tabs(profundidad + 2) + claveJson("linea")
+                + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
+        salida += tabs(profundidad + 2) + claveJson("columna")
+                + valorJson(String.valueOf(posicion.getColumna())) + "\n";
         salida += tabs(profundidad + 1) + "}";
 
         if (encadenado != null){
             salida += ",\n";
-            salida += tabs(profundidad + 1) + claveJson("encadenado") + "\n";
+            salida += tabs(profundidad + 1)
+                    + claveJson("encadenado") + "\n";
             salida += this.encadenado.chequeoDeSentencias(
                     entradaMetodo,
                     st,
@@ -135,12 +155,23 @@ public class NodoLlamadaMetodo extends NodoVar{
         return salida;
     }
 
+    /** Método para realizar el chequeo de sentencias con encadenado
+     *
+     * @param entradaMetodo Entrada del método actual en la tabla de símbolos
+     * @param st Tabla de símbolos
+     * @param tipoEncadenadoPrev Tipo del encadenado previo
+     * @param profundidad Profundidad actual en el árbol
+     * @return String con el resultado del chequeo en formato JSON
+     * @throws ErrorTiny Si ocurre un error durante el chequeo
+     */
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, String tipoEncadenadoPrev, int profundidad) throws ErrorTiny {
         String salida = "";
 
-        salida += tabs(profundidad + 1) + claveJson("tipoNodo") + valorJson("NodoLlamadaEncadenado") + ",\n";
-        salida += tabs(profundidad + 1) + claveJson("lexema") + valorJson(lexema) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("tipoNodo")
+                + valorJson("NodoLlamadaEncadenado") + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("lexema")
+                + valorJson(lexema) + ",\n";
 
         EntradaClase claseActual = st.buscarClase(tipoEncadenadoPrev);
         EntradaMetodo metodoReferenciado = claseActual.buscarMetodo(lexema);
@@ -174,27 +205,31 @@ public class NodoLlamadaMetodo extends NodoVar{
                 salida += tabs(profundidad + 2) + "}\n";
             }
 
-            parametroReferenciado = metodoReferenciado.buscarParametroPorPosicion(i);
+            parametroReferenciado = metodoReferenciado.
+                    buscarParametroPorPosicion(i);
 
             if (parametroReferenciado == null) {
-                throw new ParametrosCantidadError(posicion,lexema);            }
+                throw new ParametrosCantidadError(posicion,lexema);
+            }
 
-            EntradaClase entradaTipoParametroAcutal = st.buscarClase(parametroActual.tipo);
+            EntradaClase entradaTipoParametroAcutal = st.buscarClase(
+                    parametroActual.tipo
+            );
 
             if (entradaTipoParametroAcutal == null){
-                throw new ClaseNoDeclaradaError(parametroActual.posicion.getColumna(),parametroActual.posicion.getLinea(), parametroActual.tipo);
+                throw new ClaseNoDeclaradaError(
+                        parametroActual.posicion.getColumna(),
+                        parametroActual.posicion.getLinea(),
+                        parametroActual.tipo
+                );
             }
 
-            if (!entradaTipoParametroAcutal.buscarAncestro(st,parametroReferenciado.getTipo())) {
+            if (!entradaTipoParametroAcutal.buscarAncestro(
+                    st,
+                    parametroReferenciado.getTipo())
+            ) {
                 throw new ParametroTipoError(posicion, lexema);
             }
-
-//            if (!Objects.equals(parametroActual.tipo, parametroReferenciado.getTipo().getLexema())) {
-//                throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),
-//                        "el tipo del parametro " + (i+1) + " no coincide con el tipo esperado en el metodo " + lexema, "");
-//            }
-
-
 
         }
 
@@ -208,11 +243,16 @@ public class NodoLlamadaMetodo extends NodoVar{
             this.tipo = tipoRetorno.getLexema();
         }
 
-        salida += tabs(profundidad + 1) + claveJson("tipo") + valorJson(this.tipo) + ",\n";
-        salida += tabs(profundidad + 1) + claveJson("esEstatico") + valorJson(String.valueOf(esEstatico)) + ",\n";
-        salida += tabs(profundidad + 1) + claveJson("posicion") + "{\n";
-        salida += tabs(profundidad + 2) + claveJson("linea") + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
-        salida += tabs(profundidad + 2) + claveJson("columna") + valorJson(String.valueOf(posicion.getColumna())) + "\n";
+        salida += tabs(profundidad + 1) + claveJson("tipo")
+                + valorJson(this.tipo) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("esEstatico")
+                + valorJson(String.valueOf(esEstatico)) + ",\n";
+        salida += tabs(profundidad + 1) + claveJson("posicion")
+                + "{\n";
+        salida += tabs(profundidad + 2) + claveJson("linea")
+                + valorJson(String.valueOf(posicion.getLinea())) + ",\n";
+        salida += tabs(profundidad + 2) + claveJson("columna")
+                + valorJson(String.valueOf(posicion.getColumna())) + "\n";
         salida += tabs(profundidad + 1) + "}";
 
         if (encadenado != null){
@@ -229,9 +269,6 @@ public class NodoLlamadaMetodo extends NodoVar{
             salida += "\n";
         }
 
-        return salida.toString();
-
-
+        return salida;
     }
-
 }
