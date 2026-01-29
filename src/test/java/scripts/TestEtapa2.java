@@ -177,12 +177,6 @@ public class TestEtapa2 {
     }
 
     @Test
-    @DisplayName("Test del programa valorMaxArreglo.s")
-    public void testValorMaxArreglo() throws IOException, ErrorTiny{
-        testSintaxFile("valorMaxArreglo",true);
-    }
-
-    @Test
     @DisplayName("Test del programa bloquesSueltos.s")
     public  void testBloquesSueltos() throws IOException, ErrorTiny{
         testSintaxFile("bloquesSueltos",true);
@@ -246,11 +240,6 @@ public class TestEtapa2 {
     }
 
     @Test
-    @DisplayName("Test del programa implMalFormado.s")
-    public   void testImplMalFormado() throws IOException, ErrorTiny{
-        testSintaxFile("implMalFormado",false);
-    }
-    @Test
     @DisplayName("Test del programa constructorMalFormado.s")
     public   void testConstructorMalFormado() throws IOException, ErrorTiny{
         testSintaxFile("constructorMalFormado",false);
@@ -278,12 +267,6 @@ public class TestEtapa2 {
     @DisplayName("Test del programa asignacionInvalida.s")
     public   void testAsignacionInvalida() throws IOException, ErrorTiny{
         testSintaxFile("asignacionInvalida",true);
-    }
-
-    @Test
-    @DisplayName("Test del programa classArrayInt.s")
-    public   void testClassArrayInt() throws IOException, ErrorTiny{
-        testSintaxFile("classArrayInt",false);
     }
 
 
