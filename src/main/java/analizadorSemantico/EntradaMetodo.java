@@ -3,6 +3,9 @@ package analizadorSemantico;
 import java.util.HashMap;
 import java.util.Objects;
 
+import ast.NodoBloque;
+import generacionDeCodigo.TopVisitor;
+
 /** Clase que representa una entrada de método en la tabla de símbolos
  */
 public class EntradaMetodo extends Entrada{
