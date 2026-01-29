@@ -41,7 +41,7 @@ public class TopVisitor extends NodeVisitor {
 
         // Generamos las vtables de las clases
         for(EntradaClase clase : st.getClases().values()){
-            if (!esClasePrimitiva(clase)){
+            if (!clase.esClasePrimitiva()){
                 st.setClassActual(clase);
                 clase.accept(this);
             }
@@ -76,7 +76,7 @@ public class TopVisitor extends NodeVisitor {
 
         NodoBloque bloqueMetodo;
 
-        if (!esClasePrimitiva(clase)) {
+        if (!clase.esClasePrimitiva()) {
             for (EntradaMetodo metodo : clase.getMetodos().values()) {
                 st.setMetodoActual(metodo);
                 bloqueMetodo = nodoClase.getMetodo(metodo.getLexema());
@@ -239,21 +239,7 @@ public class TopVisitor extends NodeVisitor {
         return label;
     }
 
-    /**
-     * Verifica si una clase es primitiva.
-     * @param clase clase a verificar
-     * @return true si es primitiva, false en caso contrario
-     */
-    public boolean esClasePrimitiva(EntradaClase clase) {
-        return clase.getLexema().equals("Int") ||
-               clase.getLexema().equals("Double") ||
-               clase.getLexema().equals("Bool") ||
-               clase.getLexema().equals("Str") ||
-               clase.getLexema().equals("IO") ||
-                clase.getLexema().equals("Object") ||
-                clase.getLexema().equals("Array")
-                ;
-    }
+
 
     /**
      * Devuelve el codigo generado.

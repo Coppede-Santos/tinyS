@@ -869,7 +869,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
     /**
      * Genera codigo para una llamada de metodo
-     * @param nodoLlamadaMetodo
+     * @param nodoLlamadaMetodo nodo que contiene la llamada al metodo
      */
     public void generarCodigo(NodoLlamadaMetodo nodoLlamadaMetodo){
         // Si hay un encadenado previo -> $a0
@@ -905,7 +905,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         }
         else {
             // Si es un constructor, se crea un nuevo CIR por defecto para el objeto
-             generarCodigo(entradaClase);
+             generarCodigoClase(entradaClase.getLexema());
              codigo.agregarLinea("sw $a0, 0($sp) # Guardar el objeto de la llamada en la pila como self");
              codigo.agregarLinea("addiu $sp $sp -4 # movemos el puntero de la pila");
 
@@ -1133,7 +1133,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
     /**
      * Genera codigo para un acceso a al espacio en memoria de un atributo de array
-     * @param nodoArrayAcceso
+     * @param nodoArrayAcceso Nodo que contiene el nombre del atributo
      */
     public void generarCodigoIzquierdaAccesoArray(NodoArrayAcceso nodoArrayAcceso){
 
@@ -1163,7 +1163,6 @@ public class MethodBodyVisitor extends NodeVisitor {
 
     /**
      * Genera codigo para el construcotor de un array
-     * @param nodoArray
      */
     public void generarCodigo(NodoConstructorArray nodoArray) {
 
@@ -1254,101 +1253,12 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
     /**
-     *
-     * @param variable
+     * Genera codigo para la creacion de un objeto de una clase
+     * @param nombreClase nombre de la clase
      */
-    public void generarCodigo(EntradaVariable variable){
-        // Cargamos el valor por defecto de la variable en $a0
+    public void generarCodigoClase(String nombreClase){
 
-        if (Objects.equals(variable.getTipo(), "Int")){
-            codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
-            codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
-            codigo.agregarLinea("syscall ");
-
-            codigo.agregarLinea("la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal");
-            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR");
-            codigo.agregarLinea("li $t0, 0 # Guardamos el valor en la CIR en un temporal");
-            codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
-
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
-        }
-        if (Objects.equals(variable.getTipo(), "Double")){
-            codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
-            codigo.agregarLinea("li $a0, 12  # 8 bytes y su vtable");
-            codigo.agregarLinea("syscall ");
-
-            codigo.agregarLinea("la $t0, VTABLE_Double # Cargar la dirección de la vtable de Int en un temporal");
-            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableDouble en la CIR");
-            codigo.agregarLinea("li $t0, 0 # Guardamos el valor en la CIR en un temporal");
-            codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
-
-
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
-        }
-        if (Objects.equals(variable.getTipo(), "Bool")){
-            codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
-            codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
-            codigo.agregarLinea("syscall ");
-
-            codigo.agregarLinea("la $t0, VTABLE_Bool # Cargar la dirección de la vtable de Int en un temporal");
-            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableBool en la CIR");
-            codigo.agregarLinea("li $t0, 0 # Guardamos el valor en la CIR en un temporal");
-            codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
-
-
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
-        }
-        if (Objects.equals(variable.getTipo(), "String")){
-            codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
-            codigo.agregarLinea("li $a0, 8  # su vtable");
-            codigo.agregarLinea("syscall ");
-
-            codigo.agregarLinea("la $t0, VTABLE_String # Cargar la dirección de la vtable de String en un temporal");
-            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR");
-            codigo.agregarLinea("li $t0,  # Guardamos el valor en la CIR en un temporal");
-            codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
-
-
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
-        }
-
-        if (!variable.esPrimitivo()){
-            codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
-
-            EntradaClase clase =  st.buscarClase(variable.getTipo());
-
-            int z = clase.getTamanioObjeto();
-
-            codigo.agregarLinea("li $a0, "+ z +" #su vtable");
-            codigo.agregarLinea("syscall ");
-
-            codigo.agregarLinea("la $t0, VTABLE_"+ clase.getLexema() +" # Cargar la dirección de la vtable en un temporal");
-            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR");
-
-            int i;
-
-
-            codigo.agregarLinea("sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila");
-            codigo.agregarLinea("addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto");
-
-            for (EntradaAtributo atributo : clase.getAtributos().values()){
-
-                generarCodigo(atributo);
-                i = atributo.getPosicionAtributo();
-                codigo.agregarLinea("lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila");
-                codigo.agregarLinea("sw $a0 " + (4*i) + "($v0) #Inicializamos el atributo "+ atributo.getLexema());
-            }
-
-
-            codigo.agregarLinea("lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0");
-            codigo.agregarLinea("addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila");
-
-        }
-
-    }
-
-
-    public void generarCodigo(EntradaClase entradaClase){
+        EntradaClase entradaClase = st.buscarClase(nombreClase);
         // Cargamos el valor por defecto de la variable en $a0
 
         if (Objects.equals(entradaClase.getLexema(), "Int")){
@@ -1403,7 +1313,7 @@ public class MethodBodyVisitor extends NodeVisitor {
             codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
         }
 
-        if (!esClasePrimitiva(entradaClase)){
+        if (!entradaClase.getMetodos().isEmpty()){
             codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
 
 
@@ -1424,7 +1334,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
             for (EntradaAtributo atributo : entradaClase.getAtributos().values()){
 
-                generarCodigo(atributo);
+                generarCodigoClase(atributo.getTipo());
                 i = atributo.getPosicionAtributo();
                 codigo.agregarLinea("lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila");
                 codigo.agregarLinea("sw $a0 " + (4*i) + "($v0) #Inicializamos el atributo "+ atributo.getLexema());
@@ -1438,19 +1348,13 @@ public class MethodBodyVisitor extends NodeVisitor {
 
     }
 
-    public boolean esClasePrimitiva(EntradaClase clase) {
-        return clase.getLexema().equals("Int") ||
-                clase.getLexema().equals("Double") ||
-                clase.getLexema().equals("Bool") ||
-                clase.getLexema().equals("Str") ||
-                clase.getLexema().equals("IO") ||
-                clase.getLexema().equals("Object") ||
-                clase.getLexema().equals("Array")
-                ;
+    /**
+     * Genera codigo para un literal nil
+     * @param nodoNil nodo que contiene el valor nil
+     */
+    public void generarCodigo(NodoNil nodoNil){
+        codigo.agregarLinea("li $a0 , 0 #Guardamos el valor en la CIR en un temporal");
     }
 
 
-    public void generarCodigo(NodoSentencia nodoSentencia){
-        nodoSentencia.accept(this);
-    }
 }

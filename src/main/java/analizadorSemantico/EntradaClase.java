@@ -218,6 +218,21 @@ public class EntradaClase extends Entrada {
 
     }
 
+    /**
+     * Verifica si una clase es primitiva.
+     * @return true si es primitiva, false en caso contrario
+     */
+    public boolean esClasePrimitiva() {
+        return lexema.equals("Int") ||
+                lexema.equals("Double") ||
+                lexema.equals("Bool") ||
+                lexema.equals("Str") ||
+                lexema.equals("IO") ||
+                lexema.equals("Object") ||
+                lexema.equals("Array")
+                ;
+    }
+
     public int getTamanioObjeto() {
         // 4 bytes por la vtable
         int tamanio = 4;
@@ -229,6 +244,8 @@ public class EntradaClase extends Entrada {
     public HashMap<String, EntradaAtributo> getAtributos() {
         return atributos;
     }
+
+
 
     public void accept(TopVisitor topVisitor) {
         topVisitor.generarCodigo(this);
