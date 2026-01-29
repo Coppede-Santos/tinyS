@@ -439,16 +439,27 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
                     } else {
-                        //El caso de que ambos sean int:
-                        codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
-                        codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
+                        if(tipoIzq == "int" || tipoIzq == "bool") {
+                            //El caso de que ambos sean int:
+                            codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
+                            codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
 
 
-                        codigo.agregarLinea("slt $t2, $t0, $t1 #Comparo si izquierda es más grande que derecha");
-                        codigo.agregarLinea("slt $t3 , $t1, $t0 #Comparo si derecha es más grande que izquierda");
-                        codigo.agregarLinea("or $t0, $t2, $t3 #Si alguna de las dos es verdadera, entonces no son iguales");
-                        codigo.agregarLinea("xor $t0, $t0, 1 #Si ambas son iguales, seteamos el valor a 1, sino a 0");
-
+                            codigo.agregarLinea("slt $t2, $t0, $t1 #Comparo si izquierda es más grande que derecha");
+                            codigo.agregarLinea("slt $t3 , $t1, $t0 #Comparo si derecha es más grande que izquierda");
+                            codigo.agregarLinea("or $t0, $t2, $t3 #Si alguna de las dos es verdadera, entonces no son iguales");
+                            codigo.agregarLinea("xor $t0, $t0, 1 #Si ambas son iguales, seteamos el valor a 1, sino a 0");
+                        }
+                        else{
+                            // El caso de nil
+                            codigo.agregarLinea("li $t2, 0 #cargamos el valor de true");
+                            codigo.agregarLinea("beq $t0, $t1, true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna() +" #Si ambos son true, seteamos el valor a 1, sino a 0");
+                            codigo.agregarLinea("li $t2, 1 #cargamos el valor de false");
+                            String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
+                            codigo.agregarLinea(label + ":");
+                            codigo.agregarLinea("li $t1, 1");
+                            codigo.agregarLinea("sub $t1, $t1, $t2 #Si ambos son false, seteamos el valor a 0, sino a 1");
+                        }
                     }
                     expBinResultadoBool();
                 }
@@ -486,15 +497,26 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
                     } else {
-                        //El caso de que ambos sean int:
-                        codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
-                        codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
+                        if(tipoIzq.equals("int") || tipoIzq.equals("bool")) {
+                            //El caso de que ambos sean int:
+                            codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
+                            codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
 
 
-                        codigo.agregarLinea("slt $t2, $t0, $t1 #Comparo si izquierda es más grande que derecha");
-                        codigo.agregarLinea("slt $t3 , $t1, $t0 #Comparo si derecha es más grande que izquierda");
-                        codigo.agregarLinea("or $t0, $t2, $t3 #Si alguna de las dos es verdadera, entonces no son iguales");
+                            codigo.agregarLinea("slt $t2, $t0, $t1 #Comparo si izquierda es más grande que derecha");
+                            codigo.agregarLinea("slt $t3 , $t1, $t0 #Comparo si derecha es más grande que izquierda");
+                            codigo.agregarLinea("or $t0, $t2, $t3 #Si alguna de las dos es verdadera, entonces no son iguales");
 
+                        }else{
+                            // El caso de nil
+                            codigo.agregarLinea("li $t2, 1 #cargamos el valor de true");
+                            codigo.agregarLinea("beq $t0, $t1, true_"+ nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna() +" #Si ambos son true, seteamos el valor a 1, sino a 0");
+                            codigo.agregarLinea("li $t2, 0 #cargamos el valor de false");
+                            String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
+                            codigo.agregarLinea(label + ":");
+                            codigo.agregarLinea("li $t1, 1");
+                            codigo.agregarLinea("sub $t1, $t1, $t2 #Si ambos son false, seteamos el valor a 0, sino a 1");
+                        }
 
                     }
                     expBinResultadoBool();

@@ -156,6 +156,12 @@ public class TestTinyS {
         testTinyS("metodoEstatico", true);
     }
 
+    @Test
+    @DisplayName("Test probarNil.s")
+    void testProbarNil() throws IOException, ErrorTiny {
+        testTinyS("probarNil", true);
+    }
+
 
 
 }
