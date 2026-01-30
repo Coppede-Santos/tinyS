@@ -162,6 +162,17 @@ public class TestTinyS {
         testTinyS("probarNil", true);
     }
 
+    @Test
+    @DisplayName("Test divisionPorCero.s")
+    void testDivisionPorCero() throws IOException, ErrorTiny {
+        testTinyS("divisionPorCero", true);
+    }
 
+
+    @Test
+    @DisplayName("Test ArrayNegativo.s")
+    void testArrayNegativo() throws IOException, ErrorTiny {
+        testTinyS("ArrayNegativo", true);
+    }
 
 }
