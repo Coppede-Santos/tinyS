@@ -934,10 +934,10 @@ public class MethodBodyVisitor extends NodeVisitor {
         }
 
         int offSetParametro = 4;
-        for (int i = parametros.size()-1 ; i>=0; i-=1) {
-            parametros.get(i).accept(this); //Nos da la dirección de la CIR del argumento
+        for (NodoExp parametro : parametros) {
+            parametro.accept(this); //Nos da la dirección de la CIR del argumento
             offSetParametro = offSetParametro + 4; //Calculamos el offset parametro
-            codigo.agregarLinea("sw $a0 "+ offSetParametro+"($sp) # Guardar el argumento en la pila");
+            codigo.agregarLinea("sw $a0 " + offSetParametro + "($sp) # Guardar el argumento en la pila");
         }
 
         codigo.agregarLinea("lw $t0 4($sp) # Cargar el objeto self desde la pila");
