@@ -439,7 +439,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
                     } else {
-                        if(tipoIzq == "int" || tipoIzq == "bool") {
+                        if(tipoIzq.equals("Int") || tipoIzq.equals("Bool")) {
                             //El caso de que ambos sean int:
                             codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
                             codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
@@ -497,7 +497,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
                     } else {
-                        if(tipoIzq.equals("int") || tipoIzq.equals("bool")) {
+                        if(tipoIzq.equals("Int") || tipoIzq.equals("Bool")) {
                             //El caso de que ambos sean int:
                             codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int o bool izquierdo");
                             codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int o bool derecho");
