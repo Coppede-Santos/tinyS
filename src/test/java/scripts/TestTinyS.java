@@ -175,4 +175,16 @@ public class TestTinyS {
         testTinyS("ArrayNegativo", true);
     }
 
+    @Test
+    @DisplayName("Test muchasImpl.s")
+    void testMuchasImpl() throws IOException, ErrorTiny {
+        testTinyS("muchasImpl", true);
+    }
+
+    @Test
+    @DisplayName("Test start.s")
+    void testStart() throws IOException, ErrorTiny {
+        testTinyS("start", true);
+    }
+
 }
