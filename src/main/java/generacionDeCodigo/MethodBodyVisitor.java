@@ -1294,79 +1294,91 @@ public class MethodBodyVisitor extends NodeVisitor {
             codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
 
             codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
-        }
-        if (Objects.equals(entradaClase.getLexema(), "Double")){
-            codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
-            codigo.agregarLinea("li $a0, 12  # 8 bytes y su vtable");
-            codigo.agregarLinea("syscall ");
-
-            codigo.agregarLinea("la $t0, VTABLE_Double # Cargar la dirección de la vtable de Int en un temporal");
-            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableDouble en la CIR");
-            codigo.agregarLinea("li $t0, 0 # Guardamos el valor en la CIR en un temporal");
-            codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
+        }else {
 
 
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
-        }
-        if (Objects.equals(entradaClase.getLexema(), "Bool")){
-            codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
-            codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
-            codigo.agregarLinea("syscall ");
+            if (Objects.equals(entradaClase.getLexema(), "Double")) {
+                codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                codigo.agregarLinea("li $a0, 12  # 8 bytes y su vtable");
+                codigo.agregarLinea("syscall ");
 
-            codigo.agregarLinea("la $t0, VTABLE_Bool # Cargar la dirección de la vtable de Int en un temporal");
-            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableBool en la CIR");
-            codigo.agregarLinea("li $t0, 0 # Guardamos el valor en la CIR en un temporal");
-            codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
+                codigo.agregarLinea("la $t0, VTABLE_Double # Cargar la dirección de la vtable de Int en un temporal");
+                codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableDouble en la CIR");
+                codigo.agregarLinea("li $t0, 0 # Guardamos el valor en la CIR en un temporal");
+                codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
 
 
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
-        }
-        if (Objects.equals(entradaClase.getLexema(), "String")){
-            codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
-            codigo.agregarLinea("li $a0, 8  # su vtable");
-            codigo.agregarLinea("syscall ");
-
-            codigo.agregarLinea("la $t0, VTABLE_String # Cargar la dirección de la vtable de String en un temporal");
-            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR");
-            codigo.agregarLinea("li $t0,  # Guardamos el valor en la CIR en un temporal");
-            codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
+                codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
+            } else {
 
 
-            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
-        }
+                if (Objects.equals(entradaClase.getLexema(), "Bool")) {
+                    codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                    codigo.agregarLinea("syscall ");
 
-        if (!entradaClase.getMetodos().isEmpty()){
-            codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
-
-
-
-            int z = entradaClase.getTamanioObjeto();
-
-            codigo.agregarLinea("li $a0, "+ z +" #su vtable");
-            codigo.agregarLinea("syscall ");
-
-            codigo.agregarLinea("la $t0, VTABLE_"+ entradaClase.getLexema() +" # Cargar la dirección de la vtable en un temporal");
-            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR");
-
-            int i;
+                    codigo.agregarLinea("la $t0, VTABLE_Bool # Cargar la dirección de la vtable de Int en un temporal");
+                    codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableBool en la CIR");
+                    codigo.agregarLinea("li $t0, 0 # Guardamos el valor en la CIR en un temporal");
+                    codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
 
 
-            codigo.agregarLinea("sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila");
-            codigo.agregarLinea("addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto");
+                    codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
+                } else {
 
-            for (EntradaAtributo atributo : entradaClase.getAtributos().values()){
 
-                generarCodigoClase(atributo.getTipo());
-                i = atributo.getPosicionAtributo();
-                codigo.agregarLinea("lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila");
-                codigo.agregarLinea("sw $a0 " + (4*i) + "($v0) #Inicializamos el atributo "+ atributo.getLexema());
+                    if (Objects.equals(entradaClase.getLexema(), "String")) {
+                        codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                        codigo.agregarLinea("li $a0, 8  # su vtable");
+                        codigo.agregarLinea("syscall ");
+
+                        codigo.agregarLinea("la $t0, VTABLE_String # Cargar la dirección de la vtable de String en un temporal");
+                        codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR");
+                        codigo.agregarLinea("li $t0,  # Guardamos el valor en la CIR en un temporal");
+                        codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
+
+
+                        codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
+                    } else {
+
+
+                        codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+
+
+                        int z = entradaClase.getTamanioObjeto();
+
+                        codigo.agregarLinea("li $a0, " + z + " #su vtable");
+                        codigo.agregarLinea("syscall ");
+
+                        codigo.agregarLinea("la $t0, VTABLE_" + entradaClase.getLexema() + " # Cargar la dirección de la vtable en un temporal");
+                        codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR");
+
+                        int i;
+
+
+                        codigo.agregarLinea("sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila");
+                        codigo.agregarLinea("addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto");
+
+                        for (EntradaAtributo atributo : entradaClase.getAtributos().values()) {
+
+                            generarCodigoClase(atributo.getTipo());
+                            i = atributo.getPosicionAtributo();
+                            codigo.agregarLinea("lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila");
+                            codigo.agregarLinea("sw $a0 " + (4 * i) + "($v0) #Inicializamos el atributo " + atributo.getLexema());
+                        }
+
+
+                        codigo.agregarLinea("lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0");
+                        codigo.agregarLinea("addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila");
+
+                    }
+                }
             }
-
-
-            codigo.agregarLinea("lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0");
-            codigo.agregarLinea("addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila");
-
         }
+
+
+
+
 
     }
 

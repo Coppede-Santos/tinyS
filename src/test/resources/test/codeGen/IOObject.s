@@ -50,10 +50,13 @@ class Fibonacci{
  Int n;
 
  io = new IO();
- ob=new Object();
+  (io.out_str("esta funcionando ionicamente"));
+  (IO.out_str("\n"));
 
+  ob=new Object();
  fib=new Fibonacci();
- (io.out_str("esta funcionando ionicamente"));
+
+
 
  ob = fib.probar(io,ob);
 
