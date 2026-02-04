@@ -68,566 +68,567 @@ public class CodeGen {
     public String getCodigoVTABLES(){
         String s;
         s = """
-                .data
-                VTABLE_IO:
-                        .word IO
-                    	.word IO_out_array_int
-                    	.word IO_in_str
-                    	.word IO_in_double
-                    	.word IO_out_array_str
-                    	.word IO_in_int
-                    	.word IO_out_int
-                    	.word IO_in_bool
-                   	    .word IO_out_str
-                    	.word IO_out_double
-                    	.word IO_out_array_double
-                    	.word IO_out_bool
-                    	.word IO_out_array_bool
-               \s
-                true: .asciiz "true"
-                false: .asciiz "false"
-                new_line: .asciiz "\\n"
-                left_bracket: .asciiz "["
-                right_bracket: .asciiz "]"
-                comma: .asciiz ","
-               \s
-                .text
-                IO:
-               \s
-                IO_in_str:
-                	# Actualizamos frame pointer al de este metodo
-                	move $fp $sp
-               \s
-                	# Cargamos return address
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	# --- Se genera el codigo del metodo ---
-                	move $t0 $sp # Guardo el tope en t0
-                	addiu $sp $sp -1024 # Reservo 1024 bytes para el str
-               \s
-                	move $a0 $sp
-                	li $a1 1024
-                	li $v0 8 # Leo el dato
-                	syscall
-               \s
-                	move $a0 $sp
-                	li $t2 -1
-               \s
-                	loop_IO_in_str:
-                		lb $t3 ($a0)
-                		addi $a0 $a0 1
-                		addi $t2 $t2 1
-                		bne $t3 $zero loop_IO_in_str
-               \s
-                	#li $v0 1
-                	#move $a0 $t2
-                	#syscall
-               \s
-                	addiu $t2 $t2 4
-               \s
-                	li $v0 9
-                	move $a0 $t2
-                	syscall #Reservo espacio
-               \s
-                	la $a0, VTABLE_Str
-                	sw $a0, 0($v0)
-               \s
-                	move $a0, $v0
-               \s
-                	addiu $v0 $v0 4
-               \s
-                	move $t1 $v0 # Guardo puntero destino
-                	move $t3 $sp # Guardo puntero origen
-               \s
-                	loop_IO_in_str_2:
-                		lb $t2 ($t3)
-                		sb $t2 ($t1)
-                		addi $t3 $t3 1
-                		addi $t1 $t1 1
-                		bne $t2 $zero loop_IO_in_str_2
-               \s
-                	addiu $sp $sp 1024 # Desalojo espacio reservado para lectura
-                	# --- Fin del codigo del metodo ---
-               \s
-                	# --------------------------------------
-               \s
-               \s
-                	# Recuperar el valor del return address
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4 # desalojamos el enlace dinamico
-               \s
-                	jr $ra
-               \s
-                IO_out_str:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	# Cuerpo de length
-                	lw $t0 8($fp) # Cargo el objeto
-                	addiu $t0 $t0 4
-                	li $t1 -1 # Guardo un contador
-               \s
-                	loop_IO_out_str:
-                		lb $a0 ($t0) # t0 = char actual
-                		addi $t0 $t0 1 # Sumo un byte al valor str
-                		addi $t1 $t1 1 # Sumo en uno el contado
-                		li $v0 11
-                		syscall
-                		bne $a0 $zero loop_IO_out_str # Si llego a \\0, salgo
-               \s
-                	move $a0, $t1 # Muevo el resultado en a0
-               \s
-                	# Final de start
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
-               \s
-                IO_in_int:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	# 1. Creo el CIR
-                	li $v0 9
-                	li $a0 8
-                	syscall
-               \s
-                	move $a0 $v0
-               \s
-                	la $t0 VTABLE_Int
-                	sw $t0 0($a0)
-               \s
-                	# 2. Leo el int
-                	li $v0 5
-                	syscall
-               \s
-                	# 3. Guardo el int
-                	sw $v0 4($a0)
-               \s
-                	# --
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
-               \s
-               \s
-                IO_out_int:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	# 1. Recupero el int y lo imprimo
-                	lw $a0 8($fp)
-                	lw $a0 4($a0) # Obtengo el valor del CIR
-                	li $v0 1
-                	syscall
-               \s
-                	# --
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
-               \s
-                IO_in_bool:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	move $t0 $zero # flag = 0
-               \s
-                	# 1. Leo el input del usuario
-                	li $v0, 12
-                	syscall
-               \s
-                	move $t3, $v0
-               \s
-                	li $v0 4
-                	la $a0 new_line
-                	syscall
-               \s
-                	move $v0, $t3
-               \s
-                	# 2. Verifico si es igual a "1" o a "t"
-               \s
-                	li $t1, '1'
-                	li $t2, 't'
-               \s
-                	beq $t1, $v0, IO_in_bool_true
-                	beq $t2, $v0, IO_in_bool_true
-                	b IO_in_bool_default
-               \s
-                	IO_in_bool_true:
-                	addiu $t0 $t0 1
-               \s
-                	IO_in_bool_default:
-               \s
-                	li $v0 9
-                	li $a0 8
-                	syscall
-               \s
-                	move $a0, $v0
-               \s
-                	lw $t1, VTABLE_Bool
-                	sw $t1, 0($v0)
-                	sw $t0, 4($v0)
-               \s
-                	# --
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
-               \s
-                IO_out_bool:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	# 1. Recupero el bool
-                	lw $a0 8($fp)
-                	lw $a0 4($a0) # Obtengo el valor del CIR
-                	move $t0 $zero
-                	addiu $t0 $t0 1
-               \s
-                	beq $a0 $t0 IO_out_bool_true
-               \s
-                	IO_out_bool_false:
-                		li $v0 4
-                		la $a0 false
-                		syscall
-               \s
-                		b IO_out_bool_default
-               \s
-                	IO_out_bool_true:
-                		li $v0 4
-                		la $a0 true
-                		syscall
-               \s
-                	IO_out_bool_default:
-               \s
-                	# --
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
-               \s
-                IO_in_double:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	# 1. Creo el CIR
-                	li $v0 9
-                	li $a0 12
-                	syscall
-               \s
-                	move $a0 $v0
-               \s
-                	la $t0 VTABLE_Double
-                	sw $t0 0($a0)
-               \s
-                	# 2. Leo el double
-                	li $v0 7
-                	syscall
-               \s
-                	# 3. Guardo el double
-                	swc1 $f0 4($a0)
-                	swc1  $f1 8($a0)
-               \s
-                	# --
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
-               \s
-                IO_out_double:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	sw $a0 8($fp)
-               \s
-                	# 1. Recupero el double y lo imprimo
-                	lwc1 $f12 4($a0)
-                	lwc1 $f13 8($a0)
-                	li $v0 3
-                	syscall
-               \s
-                	# --
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
-               \s
-                IO_out_array_int:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	lw $t1 8($fp)
-               \s
-                	# 1. Recupero la longitud del arreglo
-                	lw $t0 4($t1)
-               \s
-                	# 2. Verifico si dim > 0
-                	la $a0 left_bracket
-                	li $v0 4
-                	syscall
-               \s
-                	beq $t0 $zero IO_out_array_int_exit
-               \s
-                	# 3. Si dim > 0, iteramos por cada CIR
-               \s
-               \s
-                    addiu $t1 $t1 4 # Aumento index
-               \s
-                	IO_out_array_int_loop:
-                		sw $fp 0($sp)
-                		addiu $sp $sp -4
-               \s
-               \s
-                        addiu $t1 $t1 4 # Aumento index
-                		lw $a0 0($t1) # Obtengo sig. pos
-                		sw $a0 0($sp) # Guardo en pila
-                		addiu $sp $sp -8
-                		jal IO_out_int # Imprimo elem
-               \s
-               \s
-               \s
-                		addiu $sp $sp 8
-                		lw $fp 0($sp)
-                		addiu $sp $sp 4
-               \s
-                		subiu $t0 $t0 1 # Obtenemos elem restantes
-               \s
-                		beq $t0 $zero IO_out_array_int_exit # Si ya no hay elem siguientes, salgo
-               \s
-                		la $a0 comma
-                		li $v0 4
-                		syscall
-               \s
-                		b IO_out_array_int_loop
-               \s
-                	IO_out_array_int_exit:
-                		la $a0 right_bracket
-                		li $v0 4
-                		syscall
-               \s
-                	# --
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
-               \s
-                IO_out_array_str:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	lw $t1 4($fp)
-               \s
-                	# 1. Recupero la longitud del arreglo
-                	lw $t0 4($t1)
-               \s
-                	# 2. Verifico si dim > 0
-                	la $a0 left_bracket
-                	li $v0 4
-                	syscall
-               \s
-                	beq $t0 $zero IO_out_array_str_exit
-               \s
-                	# Guardamos variables intermedias para que no se pierdan
-               \s
-                	## v1: Index
-                	sw $t1, 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	## v2: Contador
-                	sw $t0, 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	# 3. Si dim > 0, iteramos por cada CIR
-               \s
-                	IO_out_array_str_loop:
-                		sw $fp 0($sp)
-                		addiu $sp $sp -4
-               \s
-                		lw $t1, -4($fp) # Recupero index
-                		lw $t0, -8($fp) # Recupero contador
-               \s
-                		addiu $t1 $t1 4 # Aumento index
-                		subiu $t0 $t0 1 # Obtenemos elem restantes
-               \s
-                		sw $t1, -4($fp) # Guardo index
-                		sw $t0, -8($fp) # Guardo contador
-               \s
-                		lw $a0 4($t1) # Obtengo sig. pos
-                		sw $a0 0($sp) # Guardo en pila
-                		addiu $sp $sp -4
-                		jal IO_out_str # Imprimo elem
-                		addiu $sp $sp 4
-                        lw $fp 0($sp)
+            .data
+                    VTABLE_IO:
+                            .word IO
+                            .word m_out_array_int_0_0
+                            .word m_in_str_0_0
+                            .word m_in_double_0_0
+                            .word m_out_array_str_0_0
+                            .word m_in_int_0_0
+                            .word m_out_int_0_0
+                            .word m_in_bool_0_0
+                            .word m_out_str_0_0
+                            .word m_out_double_0_0
+                            .word m_out_array_double_0_0
+                            .word m_out_bool_0_0
+                            .word m_out_array_bool_0_0
+            
+                    true: .asciiz "true"
+                    false: .asciiz "false"
+                    new_line: .asciiz "\\n"
+                    left_bracket: .asciiz "["
+                    right_bracket: .asciiz "]"
+                    comma: .asciiz ","
+            
+                    .text
+                    IO:
+                        jr $ra
+            
+                    m_in_str_0_0:
+                        # Actualizamos frame pointer al de este metodo
+                        move $fp $sp
+            
+                        # Cargamos return address
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        # --- Se genera el codigo del metodo ---
+                        move $t0 $sp # Guardo el tope en t0
+                        addiu $sp $sp -1024 # Reservo 1024 bytes para el str
+            
+                        move $a0 $sp
+                        li $a1 1024
+                        li $v0 8 # Leo el dato
+                        syscall
+            
+                        move $a0 $sp
+                        li $t2 -1
+            
+                        loop_m_in_str:
+                            lb $t3 ($a0)
+                            addi $a0 $a0 1
+                            addi $t2 $t2 1
+                            bne $t3 $zero loop_m_in_str
+            
+                        #li $v0 1
+                        #move $a0 $t2
+                        #syscall
+            
+                        addiu $t2 $t2 4
+            
+                        li $v0 9
+                        move $a0 $t2
+                        syscall #Reservo espacio
+            
+                        la $a0, VTABLE_Str
+                        sw $a0, 0($v0)
+            
+                        move $a0, $v0
+            
+                        addiu $v0 $v0 4
+            
+                        move $t1 $v0 # Guardo puntero destino
+                        move $t3 $sp # Guardo puntero origen
+            
+                        loop_m_in_str_2:
+                            lb $t2 ($t3)
+                            sb $t2 ($t1)
+                            addi $t3 $t3 1
+                            addi $t1 $t1 1
+                            bne $t2 $zero loop_m_in_str_2
+            
+                        addiu $sp $sp 1024 # Desalojo espacio reservado para lectura
+                        # --- Fin del codigo del metodo ---
+            
+                        # --------------------------------------
+            
+            
+                        # Recuperar el valor del return address
+                        lw $ra 4($sp)
+                        addiu $sp $sp 4 # desalojamos el enlace dinamico
+            
+                        jr $ra
+            
+                    m_out_str_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        # Cuerpo de length
+                        lw $t0 8($fp) # Cargo el objeto
+                        addiu $t0 $t0 4
+                        li $t1 -1 # Guardo un contador
+            
+                        loop_m_out_str:
+                            lb $a0 ($t0) # t0 = char actual
+                            addi $t0 $t0 1 # Sumo un byte al valor str
+                            addi $t1 $t1 1 # Sumo en uno el contado
+                            li $v0 11
+                            syscall
+                            bne $a0 $zero loop_m_out_str # Si llego a \\0, salgo
+            
+                        move $a0, $t1 # Muevo el resultado en a0
+            
+                        # Final de start
+                        lw $ra 4($sp)
                         addiu $sp $sp 4
-               \s
-               \s
-                		lw $t0, -8($fp)
-                		beq $t0 $zero IO_out_array_str_exit # Si ya no hay elem siguientes, salgo
-               \s
-                		la $a0 comma
-                		li $v0 4
-                		syscall
-               \s
-                		b IO_out_array_str_loop
-               \s
-                	IO_out_array_str_exit:
-                		la $a0 right_bracket
-                		li $v0 4
-                		syscall
-               \s
-                	# Desalojo variables locales
-                	addiu $sp $sp 8
-               \s
-                	# --
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
-               \s
-                IO_out_array_bool:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	lw $t1 4($fp)
-               \s
-                	# 1. Recupero la longitud del arreglo
-                	lw $t0 4($t1)
-               \s
-                	# 2. Verifico si dim > 0
-                	la $a0 left_bracket
-                	li $v0 4
-                	syscall
-               \s
-                	beq $t0 $zero IO_out_array_bool_exit
-               \s
-                	# Guardamos variables intermedias para que no se pierdan
-               \s
-                	## v1: Index
-                	sw $t1, 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	## v2: Contador
-                	sw $t0, 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	# 3. Si dim > 0, iteramos por cada CIR
-                	addiu $t1 $t1 4 # Aumento index
-               \s
-                	IO_out_array_bool_loop:
-                		sw $fp 0($sp)
-                		addiu $sp $sp -4
-               \s
-               \s
-                        addiu $t1 $t1 4 # Aumento index
-                		lw $a0 0($t1) # Obtengo sig. pos
-                		sw $a0 0($sp) # Guardo en pila
-                		addiu $sp $sp -8
-                		jal IO_out_bool # Imprimo elem
-               \s
-               \s
-               \s
-                		addiu $sp $sp 8
-                		lw $fp 0($sp)
-                		addiu $sp $sp 4
-               \s
-                		subiu $t0 $t0 1 # Obtenemos elem restantes
-               \s
-                		beq $t0 $zero IO_out_array_bool_exit # Si ya no hay elem siguientes, salgo
-               \s
-                		la $a0 comma
-                		li $v0 4
-                		syscall
-               \s
-                		b IO_out_array_bool_loop
-               \s
-                	IO_out_array_bool_exit:
-                		la $a0 right_bracket
-                		li $v0 4
-                		syscall
-               \s
-                	# Desalojo variables locales
-                	addiu $sp $sp 8
-               \s
-                	# --
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
-               \s
-                IO_out_array_double:
-                	move $fp $sp
-                	sw $ra 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	lw $t1 4($fp)
-               \s
-                	# 1. Recupero la longitud del arreglo
-                	lw $t0 4($t1)
-               \s
-                	# 2. Verifico si dim > 0
-                	la $a0 left_bracket
-                	li $v0 4
-                	syscall
-               \s
-                	beq $t0 $zero IO_out_array_double_exit
-               \s
-                	# Guardamos variables intermedias para que no se pierdan
-               \s
-                	## v1: Index
-                	sw $t1, 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	## v2: Contador
-                	sw $t0, 0($sp)
-                	addiu $sp $sp -4
-               \s
-                	# 3. Si dim > 0, iteramos por cada CIR
-               \s
-                	IO_out_array_double_loop:
-                		sw $fp 0($sp)
-                		addiu $sp $sp -4
-               \s
-                		lw $t1, -4($fp) # Recupero index
-                		lw $t0, -8($fp) # Recupero contador
-               \s
-                		addiu $t1 $t1 4 # Aumento index
-                		subiu $t0 $t0 1 # Obtenemos elem restantes
-               \s
-                		sw $t1, -4($fp) # Guardo index
-                		sw $t0, -8($fp) # Guardo contador
-               \s
-                		lw $a0 4($t1) # Obtengo sig. pos
-                		sw $a0 0($sp) # Guardo en pila
-                		addiu $sp $sp -4
-                		jal IO_out_double # Imprimo elem
-                		addiu $sp $sp 4
-                        lw $fp 0($sp)
+                        jr $ra
+            
+                    m_in_int_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        # 1. Creo el CIR
+                        li $v0 9
+                        li $a0 8
+                        syscall
+            
+                        move $a0 $v0
+            
+                        la $t0 VTABLE_Int
+                        sw $t0 0($a0)
+            
+                        # 2. Leo el int
+                        li $v0 5
+                        syscall
+            
+                        # 3. Guardo el int
+                        sw $v0 4($a0)
+            
+                        # --
+                        lw $ra 4($sp)
                         addiu $sp $sp 4
-               \s
-               \s
-                		lw $t0, -8($fp)
-                		beq $t0 $zero IO_out_array_double_exit # Si ya no hay elem siguientes, salgo
-               \s
-                		la $a0 comma
-                		li $v0 4
-                		syscall
-               \s
-                		b IO_out_array_double_loop
-               \s
-                	IO_out_array_double_exit:
-                		la $a0 right_bracket
-                		li $v0 4
-                		syscall
-               \s
-                	# Desalojo variables locales
-                	addiu $sp $sp 8
-               \s
-                	# --
-                	lw $ra 4($sp)
-                	addiu $sp $sp 4
-                	jr $ra
+                        jr $ra
+            
+            
+                    m_out_int_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        # 1. Recupero el int y lo imprimo
+                        lw $a0 8($fp)
+                        lw $a0 4($a0) # Obtengo el valor del CIR
+                        li $v0 1
+                        syscall
+            
+                        # --
+                        lw $ra 4($sp)
+                        addiu $sp $sp 4
+                        jr $ra
+            
+                    m_in_bool_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        move $t0 $zero # flag = 0
+            
+                        # 1. Leo el input del usuario
+                        li $v0, 12
+                        syscall
+            
+                        move $t3, $v0
+            
+                        li $v0 4
+                        la $a0 new_line
+                        syscall
+            
+                        move $v0, $t3
+            
+                        # 2. Verifico si es igual a "1" o a "t"
+            
+                        li $t1, '1'
+                        li $t2, 't'
+            
+                        beq $t1, $v0, m_in_bool_true
+                        beq $t2, $v0, m_in_bool_true
+                        b m_in_bool_default
+            
+                        m_in_bool_true:
+                        addiu $t0 $t0 1
+            
+                        m_in_bool_default:
+            
+                        li $v0 9
+                        li $a0 8
+                        syscall
+            
+                        move $a0, $v0
+            
+                        lw $t1, VTABLE_Bool
+                        sw $t1, 0($v0)
+                        sw $t0, 4($v0)
+            
+                        # --
+                        lw $ra 4($sp)
+                        addiu $sp $sp 4
+                        jr $ra
+            
+                    m_out_bool_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        # 1. Recupero el bool
+                        lw $a0 8($fp)
+                        lw $a0 4($a0) # Obtengo el valor del CIR
+                        move $t0 $zero
+                        addiu $t0 $t0 1
+            
+                        beq $a0 $t0 m_out_bool_true
+            
+                        m_out_bool_false:
+                            li $v0 4
+                            la $a0 false
+                            syscall
+            
+                            b m_out_bool_default
+            
+                        m_out_bool_true:
+                            li $v0 4
+                            la $a0 true
+                            syscall
+            
+                        m_out_bool_default:
+            
+                        # --
+                        lw $ra 4($sp)
+                        addiu $sp $sp 4
+                        jr $ra
+            
+                    m_in_double_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        # 1. Creo el CIR
+                        li $v0 9
+                        li $a0 12
+                        syscall
+            
+                        move $a0 $v0
+            
+                        la $t0 VTABLE_Double
+                        sw $t0 0($a0)
+            
+                        # 2. Leo el double
+                        li $v0 7
+                        syscall
+            
+                        # 3. Guardo el double
+                        swc1 $f0 4($a0)
+                        swc1  $f1 8($a0)
+            
+                        # --
+                        lw $ra 4($sp)
+                        addiu $sp $sp 4
+                        jr $ra
+            
+                    m_out_double_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        sw $a0 8($fp)
+            
+                        # 1. Recupero el double y lo imprimo
+                        lwc1 $f12 4($a0)
+                        lwc1 $f13 8($a0)
+                        li $v0 3
+                        syscall
+            
+                        # --
+                        lw $ra 4($sp)
+                        addiu $sp $sp 4
+                        jr $ra
+            
+                    m_out_array_int_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        lw $t1 8($fp)
+            
+                        # 1. Recupero la longitud del arreglo
+                        lw $t0 4($t1)
+            
+                        # 2. Verifico si dim > 0
+                        la $a0 left_bracket
+                        li $v0 4
+                        syscall
+            
+                        beq $t0 $zero m_out_array_int_exit
+            
+                        # 3. Si dim > 0, iteramos por cada CIR
+            
+            
+                        addiu $t1 $t1 4 # Aumento index
+            
+                        m_out_array_int_loop:
+                            sw $fp 0($sp)
+                            addiu $sp $sp -4
+            
+            
+                            addiu $t1 $t1 4 # Aumento index
+                            lw $a0 0($t1) # Obtengo sig. pos
+                            sw $a0 0($sp) # Guardo en pila
+                            addiu $sp $sp -8
+                            jal m_out_int_0_0 # Imprimo elem
+            
+            
+            
+                            addiu $sp $sp 8
+                            lw $fp 0($sp)
+                            addiu $sp $sp 4
+            
+                            subiu $t0 $t0 1 # Obtenemos elem restantes
+            
+                            beq $t0 $zero m_out_array_int_exit # Si ya no hay elem siguientes, salgo
+            
+                            la $a0 comma
+                            li $v0 4
+                            syscall
+            
+                            b m_out_array_int_loop
+            
+                        m_out_array_int_exit:
+                            la $a0 right_bracket
+                            li $v0 4
+                            syscall
+            
+                        # --
+                        lw $ra 4($sp)
+                        addiu $sp $sp 4
+                        jr $ra
+            
+                    m_out_array_str_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        lw $t1 4($fp)
+            
+                        # 1. Recupero la longitud del arreglo
+                        lw $t0 4($t1)
+            
+                        # 2. Verifico si dim > 0
+                        la $a0 left_bracket
+                        li $v0 4
+                        syscall
+            
+                        beq $t0 $zero m_out_array_str_exit
+            
+                        # Guardamos variables intermedias para que no se pierdan
+            
+                        ## v1: Index
+                        sw $t1, 0($sp)
+                        addiu $sp $sp -4
+            
+                        ## v2: Contador
+                        sw $t0, 0($sp)
+                        addiu $sp $sp -4
+            
+                        # 3. Si dim > 0, iteramos por cada CIR
+            
+                        m_out_array_str_loop:
+                            sw $fp 0($sp)
+                            addiu $sp $sp -4
+            
+                            lw $t1, -4($fp) # Recupero index
+                            lw $t0, -8($fp) # Recupero contador
+            
+                            addiu $t1 $t1 4 # Aumento index
+                            subiu $t0 $t0 1 # Obtenemos elem restantes
+            
+                            sw $t1, -4($fp) # Guardo index
+                            sw $t0, -8($fp) # Guardo contador
+            
+                            lw $a0 4($t1) # Obtengo sig. pos
+                            sw $a0 0($sp) # Guardo en pila
+                            addiu $sp $sp -4
+                            jal m_out_str_0_0 # Imprimo elem
+                            addiu $sp $sp 4
+                            lw $fp 0($sp)
+                            addiu $sp $sp 4
+            
+            
+                            lw $t0, -8($fp)
+                            beq $t0 $zero m_out_array_str_exit # Si ya no hay elem siguientes, salgo
+            
+                            la $a0 comma
+                            li $v0 4
+                            syscall
+            
+                            b m_out_array_str_loop
+            
+                        m_out_array_str_exit:
+                            la $a0 right_bracket
+                            li $v0 4
+                            syscall
+            
+                        # Desalojo variables locales
+                        addiu $sp $sp 8
+            
+                        # --
+                        lw $ra 4($sp)
+                        addiu $sp $sp 4
+                        jr $ra
+            
+                    m_out_array_bool_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        lw $t1 4($fp)
+            
+                        # 1. Recupero la longitud del arreglo
+                        lw $t0 4($t1)
+            
+                        # 2. Verifico si dim > 0
+                        la $a0 left_bracket
+                        li $v0 4
+                        syscall
+            
+                        beq $t0 $zero m_out_array_bool_exit
+            
+                        # Guardamos variables intermedias para que no se pierdan
+            
+                        ## v1: Index
+                        sw $t1, 0($sp)
+                        addiu $sp $sp -4
+            
+                        ## v2: Contador
+                        sw $t0, 0($sp)
+                        addiu $sp $sp -4
+            
+                        # 3. Si dim > 0, iteramos por cada CIR
+                        addiu $t1 $t1 4 # Aumento index
+            
+                        m_out_array_bool_loop:
+                            sw $fp 0($sp)
+                            addiu $sp $sp -4
+            
+            
+                            addiu $t1 $t1 4 # Aumento index
+                            lw $a0 0($t1) # Obtengo sig. pos
+                            sw $a0 0($sp) # Guardo en pila
+                            addiu $sp $sp -8
+                            jal m_out_bool_0_0 # Imprimo elem
+            
+            
+            
+                            addiu $sp $sp 8
+                            lw $fp 0($sp)
+                            addiu $sp $sp 4
+            
+                            subiu $t0 $t0 1 # Obtenemos elem restantes
+            
+                            beq $t0 $zero m_out_array_bool_exit # Si ya no hay elem siguientes, salgo
+            
+                            la $a0 comma
+                            li $v0 4
+                            syscall
+            
+                            b m_out_array_bool_loop
+            
+                        m_out_array_bool_exit:
+                            la $a0 right_bracket
+                            li $v0 4
+                            syscall
+            
+                        # Desalojo variables locales
+                        addiu $sp $sp 8
+            
+                        # --
+                        lw $ra 4($sp)
+                        addiu $sp $sp 4
+                        jr $ra
+            
+                    m_out_array_double_0_0:
+                        move $fp $sp
+                        sw $ra 0($sp)
+                        addiu $sp $sp -4
+            
+                        lw $t1 4($fp)
+            
+                        # 1. Recupero la longitud del arreglo
+                        lw $t0 4($t1)
+            
+                        # 2. Verifico si dim > 0
+                        la $a0 left_bracket
+                        li $v0 4
+                        syscall
+            
+                        beq $t0 $zero m_out_array_double_exit
+            
+                        # Guardamos variables intermedias para que no se pierdan
+            
+                        ## v1: Index
+                        sw $t1, 0($sp)
+                        addiu $sp $sp -4
+            
+                        ## v2: Contador
+                        sw $t0, 0($sp)
+                        addiu $sp $sp -4
+            
+                        # 3. Si dim > 0, iteramos por cada CIR
+            
+                        m_out_array_double_loop:
+                            sw $fp 0($sp)
+                            addiu $sp $sp -4
+            
+                            lw $t1, -4($fp) # Recupero index
+                            lw $t0, -8($fp) # Recupero contador
+            
+                            addiu $t1 $t1 4 # Aumento index
+                            subiu $t0 $t0 1 # Obtenemos elem restantes
+            
+                            sw $t1, -4($fp) # Guardo index
+                            sw $t0, -8($fp) # Guardo contador
+            
+                            lw $a0 4($t1) # Obtengo sig. pos
+                            sw $a0 0($sp) # Guardo en pila
+                            addiu $sp $sp -4
+                            jal m_out_double_0_0 # Imprimo elem
+                            addiu $sp $sp 4
+                            lw $fp 0($sp)
+                            addiu $sp $sp 4
+            
+            
+                            lw $t0, -8($fp)
+                            beq $t0 $zero m_out_array_double_exit # Si ya no hay elem siguientes, salgo
+            
+                            la $a0 comma
+                            li $v0 4
+                            syscall
+            
+                            b m_out_array_double_loop
+            
+                        m_out_array_double_exit:
+                            la $a0 right_bracket
+                            li $v0 4
+                            syscall
+            
+                        # Desalojo variables locales
+                        addiu $sp $sp 8
+            
+                        # --
+                        lw $ra 4($sp)
+                        addiu $sp $sp 4
+                        jr $ra
                 \t
                 .data
                \s
@@ -859,6 +860,13 @@ public class CodeGen {
                 VTABLE_Double:
                 VTABLE_Bool:
                 VTABLE_Object:
+                    .word Object
+                    
+                .text
+                Object:
+                	jr $ra
+                    
+                .data
                \s
                 db_one: .double 1.0
                 db_cero: .double 0.0

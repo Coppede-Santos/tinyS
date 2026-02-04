@@ -310,13 +310,15 @@ public class Parser {
             macheo(IMPL);
 
             EntradaClase claseActual = symbolTable.buscarClase(currentToken.getLexema());
+
+            macheo(IDCLASS);
+
             if(claseActual == null){
                 throw new ClaseNoDeclaradaError(currentToken.getLine(),currentToken.getColumn(),currentToken.getLexema());
             }
 
             symbolTable.setClassActual(claseActual);
 
-            macheo(IDCLASS);
             macheo(LEFT_BRACE);
             miembro();
             miembro_impl_recursivo();

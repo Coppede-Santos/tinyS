@@ -53,7 +53,7 @@ class Fibonacci{
  ob=new Object();
 
  fib=new Fibonacci();
- io.out_str("esta funcionando ionicamente");
+ (io.out_str("esta funcionando ionicamente"));
 
  ob = fib.probar(io,ob);
 

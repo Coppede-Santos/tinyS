@@ -1,18 +1,18 @@
 .data
 VTABLE_IO:
         .word IO
-    	.word IO_out_array_int
-    	.word IO_in_str
-    	.word IO_in_double
-    	.word IO_out_array_str
-    	.word IO_in_int
-    	.word IO_out_int
-    	.word IO_in_bool
-   	    .word IO_out_str
-    	.word IO_out_double
-    	.word IO_out_array_double
-    	.word IO_out_bool
-    	.word IO_out_array_bool
+    	.word m_out_array_int_0_0
+    	.word m_in_str_0_0
+    	.word m_in_double_0_0
+    	.word m_out_array_str_0_0
+    	.word m_in_int_0_0
+    	.word m_out_int_0_0
+    	.word m_in_bool_0_0
+   	    .word m_out_str_0_0
+    	.word m_out_double_0_0
+    	.word m_out_array_double_0_0
+    	.word m_out_bool_0_0
+    	.word m_out_array_bool_0_0
 
 true: .asciiz "true"
 false: .asciiz "false"
@@ -23,8 +23,9 @@ comma: .asciiz ","
 
 .text
 IO:
+    jr $ra
 
-IO_in_str:
+m_in_str_0_0:
 	# Actualizamos frame pointer al de este metodo
 	move $fp $sp
 
@@ -44,11 +45,11 @@ IO_in_str:
 	move $a0 $sp
 	li $t2 -1
 
-	loop_IO_in_str:
+	loop_m_in_str:
 		lb $t3 ($a0)
 		addi $a0 $a0 1
 		addi $t2 $t2 1
-		bne $t3 $zero loop_IO_in_str
+		bne $t3 $zero loop_m_in_str
 
 	#li $v0 1
 	#move $a0 $t2
@@ -70,12 +71,12 @@ IO_in_str:
 	move $t1 $v0 # Guardo puntero destino
 	move $t3 $sp # Guardo puntero origen
 
-	loop_IO_in_str_2:
+	loop_m_in_str_2:
 		lb $t2 ($t3)
 		sb $t2 ($t1)
 		addi $t3 $t3 1
 		addi $t1 $t1 1
-		bne $t2 $zero loop_IO_in_str_2
+		bne $t2 $zero loop_m_in_str_2
 
 	addiu $sp $sp 1024 # Desalojo espacio reservado para lectura
 	# --- Fin del codigo del metodo ---
@@ -89,7 +90,7 @@ IO_in_str:
 
 	jr $ra
 
-IO_out_str:
+m_out_str_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -99,13 +100,13 @@ IO_out_str:
 	addiu $t0 $t0 4
 	li $t1 -1 # Guardo un contador
 
-	loop_IO_out_str:
+	loop_m_out_str:
 		lb $a0 ($t0) # t0 = char actual
 		addi $t0 $t0 1 # Sumo un byte al valor str
 		addi $t1 $t1 1 # Sumo en uno el contado
 		li $v0 11
 		syscall
-		bne $a0 $zero loop_IO_out_str # Si llego a \0, salgo
+		bne $a0 $zero loop_m_out_str # Si llego a \0, salgo
 
 	move $a0, $t1 # Muevo el resultado en a0
 
@@ -114,7 +115,7 @@ IO_out_str:
 	addiu $sp $sp 4
 	jr $ra
 
-IO_in_int:
+m_in_int_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -142,7 +143,7 @@ IO_in_int:
 	jr $ra
 
 
-IO_out_int:
+m_out_int_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -158,7 +159,7 @@ IO_out_int:
 	addiu $sp $sp 4
 	jr $ra
 
-IO_in_bool:
+m_in_bool_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -182,14 +183,14 @@ IO_in_bool:
 	li $t1, '1'
 	li $t2, 't'
 
-	beq $t1, $v0, IO_in_bool_true
-	beq $t2, $v0, IO_in_bool_true
-	b IO_in_bool_default
+	beq $t1, $v0, m_in_bool_true
+	beq $t2, $v0, m_in_bool_true
+	b m_in_bool_default
 
-	IO_in_bool_true:
+	m_in_bool_true:
 	addiu $t0 $t0 1
 
-	IO_in_bool_default:
+	m_in_bool_default:
 
 	li $v0 9
 	li $a0 8
@@ -206,7 +207,7 @@ IO_in_bool:
 	addiu $sp $sp 4
 	jr $ra
 
-IO_out_bool:
+m_out_bool_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -217,28 +218,28 @@ IO_out_bool:
 	move $t0 $zero
 	addiu $t0 $t0 1
 
-	beq $a0 $t0 IO_out_bool_true
+	beq $a0 $t0 m_out_bool_true
 
-	IO_out_bool_false:
+	m_out_bool_false:
 		li $v0 4
 		la $a0 false
 		syscall
 
-		b IO_out_bool_default
+		b m_out_bool_default
 
-	IO_out_bool_true:
+	m_out_bool_true:
 		li $v0 4
 		la $a0 true
 		syscall
 
-	IO_out_bool_default:
+	m_out_bool_default:
 
 	# --
 	lw $ra 4($sp)
 	addiu $sp $sp 4
 	jr $ra
 
-IO_in_double:
+m_in_double_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -266,7 +267,7 @@ IO_in_double:
 	addiu $sp $sp 4
 	jr $ra
 
-IO_out_double:
+m_out_double_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -284,7 +285,7 @@ IO_out_double:
 	addiu $sp $sp 4
 	jr $ra
 
-IO_out_array_int:
+m_out_array_int_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -299,14 +300,14 @@ IO_out_array_int:
 	li $v0 4
 	syscall
 
-	beq $t0 $zero IO_out_array_int_exit
+	beq $t0 $zero m_out_array_int_exit
 
 	# 3. Si dim > 0, iteramos por cada CIR
 
 
     addiu $t1 $t1 4 # Aumento index
 
-	IO_out_array_int_loop:
+	m_out_array_int_loop:
 		sw $fp 0($sp)
 		addiu $sp $sp -4
 
@@ -315,7 +316,7 @@ IO_out_array_int:
 		lw $a0 0($t1) # Obtengo sig. pos
 		sw $a0 0($sp) # Guardo en pila
 		addiu $sp $sp -8
-		jal IO_out_int # Imprimo elem
+		jal m_out_int_0_0 # Imprimo elem
 
 
 
@@ -325,15 +326,15 @@ IO_out_array_int:
 
 		subiu $t0 $t0 1 # Obtenemos elem restantes
 
-		beq $t0 $zero IO_out_array_int_exit # Si ya no hay elem siguientes, salgo
+		beq $t0 $zero m_out_array_int_exit # Si ya no hay elem siguientes, salgo
 
 		la $a0 comma
 		li $v0 4
 		syscall
 
-		b IO_out_array_int_loop
+		b m_out_array_int_loop
 
-	IO_out_array_int_exit:
+	m_out_array_int_exit:
 		la $a0 right_bracket
 		li $v0 4
 		syscall
@@ -343,7 +344,7 @@ IO_out_array_int:
 	addiu $sp $sp 4
 	jr $ra
 
-IO_out_array_str:
+m_out_array_str_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -358,7 +359,7 @@ IO_out_array_str:
 	li $v0 4
 	syscall
 
-	beq $t0 $zero IO_out_array_str_exit
+	beq $t0 $zero m_out_array_str_exit
 
 	# Guardamos variables intermedias para que no se pierdan
 
@@ -372,7 +373,7 @@ IO_out_array_str:
 
 	# 3. Si dim > 0, iteramos por cada CIR
 
-	IO_out_array_str_loop:
+	m_out_array_str_loop:
 		sw $fp 0($sp)
 		addiu $sp $sp -4
 
@@ -388,22 +389,22 @@ IO_out_array_str:
 		lw $a0 4($t1) # Obtengo sig. pos
 		sw $a0 0($sp) # Guardo en pila
 		addiu $sp $sp -4
-		jal IO_out_str # Imprimo elem
+		jal m_out_str_0_0 # Imprimo elem
 		addiu $sp $sp 4
         lw $fp 0($sp)
         addiu $sp $sp 4
 
 
 		lw $t0, -8($fp)
-		beq $t0 $zero IO_out_array_str_exit # Si ya no hay elem siguientes, salgo
+		beq $t0 $zero m_out_array_str_exit # Si ya no hay elem siguientes, salgo
 
 		la $a0 comma
 		li $v0 4
 		syscall
 
-		b IO_out_array_str_loop
+		b m_out_array_str_loop
 
-	IO_out_array_str_exit:
+	m_out_array_str_exit:
 		la $a0 right_bracket
 		li $v0 4
 		syscall
@@ -416,7 +417,7 @@ IO_out_array_str:
 	addiu $sp $sp 4
 	jr $ra
 
-IO_out_array_bool:
+m_out_array_bool_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -431,7 +432,7 @@ IO_out_array_bool:
 	li $v0 4
 	syscall
 
-	beq $t0 $zero IO_out_array_bool_exit
+	beq $t0 $zero m_out_array_bool_exit
 
 	# Guardamos variables intermedias para que no se pierdan
 
@@ -446,7 +447,7 @@ IO_out_array_bool:
 	# 3. Si dim > 0, iteramos por cada CIR
 	addiu $t1 $t1 4 # Aumento index
 
-	IO_out_array_bool_loop:
+	m_out_array_bool_loop:
 		sw $fp 0($sp)
 		addiu $sp $sp -4
 
@@ -455,7 +456,7 @@ IO_out_array_bool:
 		lw $a0 0($t1) # Obtengo sig. pos
 		sw $a0 0($sp) # Guardo en pila
 		addiu $sp $sp -8
-		jal IO_out_bool # Imprimo elem
+		jal m_out_bool_0_0 # Imprimo elem
 
 
 
@@ -465,15 +466,15 @@ IO_out_array_bool:
 
 		subiu $t0 $t0 1 # Obtenemos elem restantes
 
-		beq $t0 $zero IO_out_array_bool_exit # Si ya no hay elem siguientes, salgo
+		beq $t0 $zero m_out_array_bool_exit # Si ya no hay elem siguientes, salgo
 
 		la $a0 comma
 		li $v0 4
 		syscall
 
-		b IO_out_array_bool_loop
+		b m_out_array_bool_loop
 
-	IO_out_array_bool_exit:
+	m_out_array_bool_exit:
 		la $a0 right_bracket
 		li $v0 4
 		syscall
@@ -486,7 +487,7 @@ IO_out_array_bool:
 	addiu $sp $sp 4
 	jr $ra
 
-IO_out_array_double:
+m_out_array_double_0_0:
 	move $fp $sp
 	sw $ra 0($sp)
 	addiu $sp $sp -4
@@ -501,7 +502,7 @@ IO_out_array_double:
 	li $v0 4
 	syscall
 
-	beq $t0 $zero IO_out_array_double_exit
+	beq $t0 $zero m_out_array_double_exit
 
 	# Guardamos variables intermedias para que no se pierdan
 
@@ -515,7 +516,7 @@ IO_out_array_double:
 
 	# 3. Si dim > 0, iteramos por cada CIR
 
-	IO_out_array_double_loop:
+	m_out_array_double_loop:
 		sw $fp 0($sp)
 		addiu $sp $sp -4
 
@@ -531,22 +532,22 @@ IO_out_array_double:
 		lw $a0 4($t1) # Obtengo sig. pos
 		sw $a0 0($sp) # Guardo en pila
 		addiu $sp $sp -4
-		jal IO_out_double # Imprimo elem
+		jal m_out_double_0_0 # Imprimo elem
 		addiu $sp $sp 4
         lw $fp 0($sp)
         addiu $sp $sp 4
 
 
 		lw $t0, -8($fp)
-		beq $t0 $zero IO_out_array_double_exit # Si ya no hay elem siguientes, salgo
+		beq $t0 $zero m_out_array_double_exit # Si ya no hay elem siguientes, salgo
 
 		la $a0 comma
 		li $v0 4
 		syscall
 
-		b IO_out_array_double_loop
+		b m_out_array_double_loop
 
-	IO_out_array_double_exit:
+	m_out_array_double_exit:
 		la $a0 right_bracket
 		li $v0 4
 		syscall

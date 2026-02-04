@@ -18,8 +18,17 @@ public class SymbolTable
         inicializarMetodosDeClaseIO();
         inicializarMetodosDeClaseArray();
         inicializarMetodosDeClaseString();
+        inicializarConstructorClaseObject();
 
+    }
 
+    private void inicializarConstructorClaseObject() {
+        EntradaClase objectClase = buscarClase("Object");
+        if (objectClase != null) {
+            EntradaMetodo constructor = new EntradaMetodo("Object", true, null);
+            constructor.setPosicion(0,0);
+            objectClase.setConstructor(constructor);
+        }
     }
 
     public EntradaClase buscarClase(String nombreClase)
@@ -95,25 +104,33 @@ public class SymbolTable
         // IO methods
         EntradaClase ioClase = buscarClase("IO");
         if (ioClase != null) {
+            EntradaMetodo constructor = new EntradaMetodo("IO", true, null);
+            constructor.setPosicion(0,0);
+            ioClase.setConstructor(constructor);
+
             EntradaMetodo out_str = new EntradaMetodo("out_str", true, null);
             EntradaParametro parametroOutStr = new EntradaParametro("s", "Str", 0);
             out_str.insertarParametro("s", parametroOutStr);
+            out_str.setPosicion(0,0);
             ioClase.insertarMetodo("out_str", out_str);
 
             EntradaMetodo out_int = new EntradaMetodo("out_int", true, null);
             EntradaParametro parametroOutInt = new EntradaParametro("i", "Int", 0);
             out_int.insertarParametro("i", parametroOutInt);
+            out_int.setPosicion(0,0);
             ioClase.insertarMetodo("out_int", out_int);
 
             EntradaMetodo out_bool = new EntradaMetodo("out_bool", true, null);
             EntradaParametro parametroOutBool = new EntradaParametro("b", "Bool", 0);
             out_bool.insertarParametro("b", parametroOutBool);
+            out_bool.setPosicion(0,0);
             ioClase.insertarMetodo("out_bool", out_bool);
 
             // out_double
             EntradaMetodo out_double = new EntradaMetodo("out_double", true, null);
             EntradaParametro parametroOutDouble = new EntradaParametro("d", "Double", 0);
             out_double.insertarParametro("d", parametroOutDouble);
+            out_double.setPosicion(0,0);
             ioClase.insertarMetodo("out_double", out_double);
 
             // out_array_int
@@ -124,6 +141,7 @@ public class SymbolTable
                     "Int",
                     0);
             out_array_int.insertarParametro("a", parametroOutArrayInt);
+            out_array_int.setPosicion(0,0);
             ioClase.insertarMetodo("out_array_int", out_array_int);
 
             // out_array_str
@@ -134,6 +152,7 @@ public class SymbolTable
                     "Str",
                     0);
             out_array_str.insertarParametro("a", parametroOutArrayStr);
+            out_array_str.setPosicion(0,0);
             ioClase.insertarMetodo("out_array_str", out_array_str);
 
             // out_array_bool
@@ -144,6 +163,7 @@ public class SymbolTable
                     "Bool",
                     0);
             out_array_bool.insertarParametro("a", parametroOutArrayBool);
+            out_array_bool.setPosicion(0,0);
             ioClase.insertarMetodo("out_array_bool", out_array_bool);
 
             // out_array_double
@@ -154,22 +174,27 @@ public class SymbolTable
                     "Double",
                     0);
             out_array_double.insertarParametro("a", parametroOutArrayDouble);
+            out_array_double.setPosicion(0,0);
             ioClase.insertarMetodo("out_array_double", out_array_double);
 
             // in_str
             EntradaMetodo in_str = new EntradaMetodo("in_str", true, buscarClase("Str"));
+            in_str.setPosicion(0,0);
             ioClase.insertarMetodo("in_str", in_str);
 
             // in_int
             EntradaMetodo in_int = new EntradaMetodo("in_int", true, buscarClase("Int"));
+            in_int.setPosicion(0,0);
             ioClase.insertarMetodo("in_int", in_int);
 
             // in_bool
             EntradaMetodo in_bool = new EntradaMetodo("in_bool", true, buscarClase("Bool"));
+            in_bool.setPosicion(0,0);
             ioClase.insertarMetodo("in_bool", in_bool);
 
             // in_double
             EntradaMetodo in_double = new EntradaMetodo("in_double", true, buscarClase("Double"));
+            in_double.setPosicion(0,0);
             ioClase.insertarMetodo("in_double", in_double);
         }
     }
