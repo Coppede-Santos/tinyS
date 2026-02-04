@@ -281,6 +281,8 @@ public class EntradaClase extends Entrada {
             salida += "\t\t},\n";
         }
 
+        this.estaConsolidada = true;
+
         return salida;
     }
 }
