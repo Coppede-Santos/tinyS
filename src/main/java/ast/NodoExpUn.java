@@ -73,7 +73,7 @@ public class NodoExpUn extends NodoExp{
             }
         }
 
-        if(operador == TokenType.LEFT_PAREN){
+        if(operador == TokenType.INT){
             if (!Objects.equals(tipo, "Double")) {
                 throw new ExpresionInvalidaError (
                         posicion, String.valueOf(operador)

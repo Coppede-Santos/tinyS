@@ -4,6 +4,7 @@ package scripts;
 import ErrorManage.ErrorTiny;
 import analizadorSemantico.Etapa3;
 import ast.Etapa4;
+import ast.OldEtapa4;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +42,7 @@ public class TestEtapa4 {
         String outputFilePath = basePath + "/src/test/resources/output/" + fileName + ".txt";
 
         // Ejecutar el analizador léxico
-        Etapa4.main(new String[]{testFilePath, outputFilePath});
+        OldEtapa4.main(new String[]{testFilePath, outputFilePath});
 
         // Leer el archivo generado
         String actualOutput = Files.readString(Paths.get(outputFilePath));

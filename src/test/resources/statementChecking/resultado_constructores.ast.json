@@ -124,6 +124,19 @@
         "posicion": {
           "linea": "16",
           "columna": "4"
+        },
+        "encadenado":
+        {
+          "tipoNodo": "NodoLlamadaEncadenado",
+          "lexema": "inc",
+          "parametros": [
+          ],
+          "tipo": "Int",
+          "esEstatico": "false",
+          "posicion": {
+            "linea": "16",
+            "columna": "9"
+          }
         }
       }
     ]
