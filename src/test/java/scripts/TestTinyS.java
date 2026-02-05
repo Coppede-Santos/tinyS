@@ -192,5 +192,10 @@ public class TestTinyS {
     void testIOObject() throws IOException, ErrorTiny {
         testTinyS("IOObject", true);
     }
+    @Test
+    @DisplayName("Test metodos_arreglos.s")
+    void testMetodosArreglos() throws IOException, ErrorTiny {
+        testTinyS("metodos_arreglos", true);
+    }
 
 }

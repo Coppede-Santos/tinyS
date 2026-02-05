@@ -447,13 +447,13 @@ public class CodeGen {
                             sw $fp 0($sp)
                             addiu $sp $sp -4
             
-                            lw $t1, -4($fp) # Recupero index
+                            lw $t1, -12($fp) # Recupero index
                             lw $t0, -8($fp) # Recupero contador
             
                             addiu $t1 $t1 4 # Aumento index
                             subiu $t0 $t0 1 # Obtenemos elem restantes
             
-                            sw $t1, -4($fp) # Guardo index
+                            sw $t1, -12($fp) # Guardo index
                             sw $t0, -8($fp) # Guardo contador
             
                             lw $a0 4($t1) # Obtengo sig. pos
@@ -523,18 +523,22 @@ public class CodeGen {
             
             
                             addiu $t1 $t1 4 # Aumento index
+                            sw $t1, 8($sp)
                             lw $a0 0($t1) # Obtengo sig. pos
                             sw $a0 0($sp) # Guardo en pila
                             addiu $sp $sp -8
                             jal m_out_bool_0_0 # Imprimo elem
             
-            
+                            lw $t1, 8($sp)
             
                             addiu $sp $sp 8
                             lw $fp 0($sp)
                             addiu $sp $sp 4
             
+                            #cargamos el contador
+                            lw $t0, 4($sp)
                             subiu $t0 $t0 1 # Obtenemos elem restantes
+                            sw $t0, 4($sp)
             
                             beq $t0 $zero m_out_array_bool_exit # Si ya no hay elem siguientes, salgo
             
