@@ -63,9 +63,13 @@ public class NodoAsignacion extends NodoSentencia{
 
         if ((!derechaClase.buscarAncestro(st,izquierda.tipo))
                 || derecha.getTipo().isEmpty()) {
-            throw new TipoInvalidoError(
-                    posicion, izquierda.lexema, derecha.getTipo()
-            );
+            if (!(izquierda.getTipo().equals("Double")
+                    && derecha.getTipo().equals("Int"))) {
+                throw new TipoInvalidoError(
+                        posicion, izquierda.lexema, derecha.getTipo()
+                );
+            }
+
         }
 
         if (derecha.getClass() == NodoConstructorArray.class) {
