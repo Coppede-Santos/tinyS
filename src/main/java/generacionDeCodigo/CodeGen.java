@@ -566,7 +566,7 @@ public class CodeGen {
                         sw $ra 0($sp)
                         addiu $sp $sp -4
             
-                        lw $t1 4($fp)
+                        lw $t1 8($fp)
             
                         # 1. Recupero la longitud del arreglo
                         lw $t0 4($t1)
