@@ -62,7 +62,7 @@ public class NodoAsignacion extends NodoSentencia{
         EntradaClase derechaClase = st.buscarClase(derecha.tipo);
 
         if ((!derechaClase.buscarAncestro(st,izquierda.tipo))
-                && derecha.getTipo().isEmpty()) {
+                || derecha.getTipo().isEmpty()) {
             throw new TipoInvalidoError(
                     posicion, izquierda.lexema, derecha.getTipo()
             );
