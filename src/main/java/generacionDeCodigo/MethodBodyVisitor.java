@@ -790,8 +790,17 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("la $t0, VTABLE_Double # Cargar la dirección de la vtable de Int en un temporal");
         codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableDouble en la CIR");
-        codigo.agregarLinea("li $t0, " + nodoDouble.getValor() + " # Guardamos el valor en la CIR en un temporal");
-        codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
+
+
+        String label = nodoDouble.posicion.getLinea() + "_" + nodoDouble.posicion.getColumna();
+
+        codigo.agregarData("double_const_" + label + ": .double " + nodoDouble.getValor());
+
+        codigo.agregarLinea("ldc1 $f0, double_const_" + label + " # Guardamos el valor en la CIR en un temporal");
+
+
+        codigo.agregarLinea("swc1 $f0, 4($v0) #guardar el valor del double");
+        codigo.agregarLinea("swc1 $f1, 8($v0) #cargar la segunda mitad del valor del double");
 
 
         codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
