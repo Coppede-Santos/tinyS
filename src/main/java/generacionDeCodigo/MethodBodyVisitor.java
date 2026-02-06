@@ -147,6 +147,8 @@ public class MethodBodyVisitor extends NodeVisitor {
             codigo.agregarLinea("li $a0, 0 # Valor de retorno nulo");
         }
 
+        codigo.agregarLinea("j " + getLabel(st.getMetodoActual()) + "_end # Salta al epilogo del método");
+
     }
 
 
@@ -171,17 +173,33 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("sub.d $f2, $f2, $f4 #1.0 - 1.0 = 0.0 ");
                     codigo.agregarLinea("sub.d $f2, $f2, $f4 #0.0 - 1.0 = -1.0 ");
                     codigo.agregarLinea("mul.d $f0, $f0, $f2 #multiplicar por -1");
+
+                    codigo.agregarLinea("li $v0 , 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("li $a0, 12  # 4 bytes y su vtable");
+                    codigo.agregarLinea("syscall ");
+
+                    codigo.agregarLinea("la $t2, VTABLE_Double # Cargar la dirección de la vtable de Double en un temporal");
+                    codigo.agregarLinea("sw $t2, 0($v0) #guardamos la dirección de la vtableDouble en la CIR");
+                    codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Double queda en $a0");
+
                     codigo.agregarLinea("swc1 $f0, 4($a0) #guardar el valor del double");
                     codigo.agregarLinea("swc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
 
-
                 }else{
-
                     codigo.agregarLinea("li $t0, -1");
                     codigo.agregarLinea("lw $t1, 4($a0) #cargar el valor del int");
                     codigo.agregarLinea("mul $t1, $t1, $t0 #multiplicar por -1");
-                    codigo.agregarLinea("sw $t1, 4($a0) #guardar el valor del int");
 
+                    codigo.agregarLinea("li $v0 , 9  # Solicitar espacio en memoria");
+                    codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                    codigo.agregarLinea("syscall ");
+
+                    codigo.agregarLinea("la $t2, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal");
+                    codigo.agregarLinea("sw $t2, 0($v0) #guardamos la dirección de la vtableInt en la CIR");
+
+                    codigo.agregarLinea("sw $t1, 4($v0) #guardar el valor del int");
+
+                    codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
                 }
                 break;
 
@@ -190,7 +208,17 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                 codigo.agregarLinea("li $t1, 1");
                 codigo.agregarLinea("xor $t0, $t0, $t1 #invertir el valor del bool");
-                codigo.agregarLinea("sw $t0, 4($a0) #guardar el valor del bool");
+
+                codigo.agregarLinea("li $v0 , 9  # Solicitar espacio en memoria");
+                codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                codigo.agregarLinea("syscall ");
+
+                codigo.agregarLinea("la $t2, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
+                codigo.agregarLinea("sw $t2, 0($v0) #guardamos la dirección de la vtableInt en la CIR");
+
+                codigo.agregarLinea("sw $t0, 4($v0) #guardar el valor del int");
+
+                codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
                 break;
 
             case PLUS_PLUS:
@@ -1267,7 +1295,7 @@ public class MethodBodyVisitor extends NodeVisitor {
 
         codigo.agregarLinea("move $t2, $v0 # La dirección del objeto Array queda en $t2");
 
-        String labelLoop = genLabel(st.getMetodoActual()) + genLabel(nodoArray) + "_loop";
+        String labelLoop = getLabel(st.getMetodoActual()) + genLabel(nodoArray) + "_loop";
         codigo.agregarLinea(labelLoop + ":" );
 
         codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
@@ -1297,12 +1325,6 @@ public class MethodBodyVisitor extends NodeVisitor {
     }
 
 
-    /**
-     * Genera un label para un entradaMetodo
-     */
-    public String genLabel(EntradaMetodo entradaMetodo){
-        return "M_" + entradaMetodo.getLexema() + "_" + entradaMetodo.getLinea()+"_"+entradaMetodo.getColumna();
-    }
 
 
     /**

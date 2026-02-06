@@ -203,4 +203,16 @@ public class TestTinyS {
         testTinyS("expresionesString");
     }
 
+    @Test
+    @DisplayName("Test a-bubbleSort.s")
+    void testBubbleSort() throws IOException, ErrorTiny {
+        testTinyS("a-bubbleSort");
+    }
+
+    @Test
+    @DisplayName("Test a-bubbleSortDouble.s")
+    void testBubbleSortDouble() throws IOException, ErrorTiny {
+        testTinyS("a-bubbleSortDouble");
+    }
+
 }

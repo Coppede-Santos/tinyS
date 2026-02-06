@@ -1,5 +1,6 @@
 package generacionDeCodigo;
 
+import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.SymbolTable;
 import ast.AST;
 import ast.NodoSentencia;
@@ -22,6 +23,15 @@ public abstract class NodeVisitor {
      */
     AST ast;
 
+    /**
+     * Genera el label para un metodo.
+     * @param metodo metodo para el cual se generara el label
+     * @return label generado
+     */
+    public String getLabel(EntradaMetodo metodo) {
+        String label = "m_" + metodo.getLexema() + "_" +metodo.getLinea() + "_" + metodo.getColumna();
+        return label;
+    }
 
 
 }

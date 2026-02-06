@@ -187,6 +187,12 @@ public class TopVisitor extends NodeVisitor {
             sentencia.accept(methodBodyVisitor);
         }
 
+        // TODO: Manejar el caso en el que no haya un return explicito
+        // Dejamos el valor por defecto en $a0 para los metodos que devuelven un valor,
+        // nil para los objetos y 0 para los primitivos
+
+        codigo.agregarLinea(getLabel(entradaMetodo) + "_end: # Label para el return del metodo");
+
         String lexemaMetodo = entradaMetodo.getLexema();
 
         if (Character.isUpperCase(lexemaMetodo.charAt(0))) {
@@ -203,18 +209,6 @@ public class TopVisitor extends NodeVisitor {
 
 
     }
-
-
-    /**
-     * Genera el label para un metodo.
-     * @param metodo metodo para el cual se generara el label
-     * @return label generado
-     */
-    public String getLabel(EntradaMetodo metodo) {
-        String label = "m_" + metodo.getLexema() + "_" +metodo.getLinea() + "_" + metodo.getColumna();
-        return label;
-    }
-
 
 
     /**
