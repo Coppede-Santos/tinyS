@@ -121,8 +121,8 @@ public class MethodBodyVisitor extends NodeVisitor {
             codigo.agregarLinea("li $a0, 12  # 8 bytes y su vtable");
             codigo.agregarLinea("syscall ");
 
-            codigo.agregarLinea("la $t0, VTABLE_Double # Cargar la dirección de la vtable de Int en un temporal");
-            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableDouble en la CIR");
+            codigo.agregarLinea("la $t2, VTABLE_Double # Cargar la dirección de la vtable de Int en un temporal");
+            codigo.agregarLinea("sw $t2, 0($v0) #guardamos la dirección de la vtableDouble en la CIR");
             codigo.agregarLinea("swc1 $f12, 4($v0) #guardar el valor del double");
             codigo.agregarLinea("swc1 $f13, 8($v0) #cargar la segunda mitad del valor del double");
 
