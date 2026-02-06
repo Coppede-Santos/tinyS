@@ -705,8 +705,8 @@ public class CodeGen {
                 		bne $t0 $zero loop # Si llego a \\0, salgo
                \s
                 	# Creo CIR Int
-                	addiu $t2, $t1, 4 # Sumo len + 4 VT
-                	move $a0, $t1 # Muevo el resultado en a0
+                	#addiu $t2, $t1, 4 # Sumo len + 4 VT
+                	li $a0, 8 # reservo 4 bytes para VT y 4 bytes para el int
                 	li $v0, 9 # Reservo bytes
                 	syscall
                \s
@@ -718,11 +718,11 @@ public class CodeGen {
                \s
                 	# Final de start
                 	lw $ra 4($sp)
-                	addiu $sp $sp 12
+                	addiu $sp $sp 4
                 	lw $fp 0($sp)
                 	jr $ra
                \s
-                concat:
+                concat: #----------------------------------------------------------
                 	move $fp $sp
                 	sw $ra 0($sp)
                 	addiu $sp $sp -4
@@ -737,6 +737,10 @@ public class CodeGen {
                 	sw $a0 0($sp) # Lo guardamos en la pila
                 	addiu $sp $sp -4
                 	jal length
+                	
+                	addiu $sp $sp 4
+                	lw $fp 4($sp)
+                	addiu $sp $sp 4
                \s
                 	sw $a0, 0($sp) # Guardamos l1 en la pila
                 	addiu $sp $sp -4
@@ -749,6 +753,10 @@ public class CodeGen {
                 	sw $a0 0($sp) # Lo guardamos en la pila
                 	addiu $sp $sp -4
                 	jal length
+                	
+                	addiu $sp $sp 4
+                	lw $fp 4($sp)
+                	addiu $sp $sp 4
                \s
                 	sw $a0, 0($sp) # Guardamos l2 en la pila
                 	addiu $sp $sp -4
@@ -757,9 +765,9 @@ public class CodeGen {
                 	## - Guardar la dirección de v0 en un registro para no perderlo
                 	## - Crear CIR de Str nuevo, incluye guardar la VT
                \s
-                	lw $t0, -4($fp) # Obtengo el CIR de l1
-                	lw $t0, 4($t0) # Obtengo el len de l1
-                	lw $t1, -8($fp) # Obtengo l2
+                	lw $t0, 4($sp) # Obtengo el CIR de L1
+                	lw $t0, 4($t0) # Obtengo el len de L1
+                	lw $t1, 8($sp) # Obtengo L2
                 	lw $t1, 4($t1) # Obtengo el len de l2
                \s
                 	#move $a0, $zero
@@ -809,11 +817,10 @@ public class CodeGen {
                \s
                 	# Final del concat
                 	lw $ra 4($sp)
-                	addiu $sp $sp 16
-                	lw $fp 0($sp)
+                	addiu $sp $sp 4
                 	jr $ra
                \s
-                save_str: # Escribe el contenido de $a0 en la direccion apuntada por v0 + 4
+                save_str: # Escribe el contenido de $a0 en la direccion apuntada por v0 + 4 #----------------------------------------------------------
                 	move $t0 $a0
                 	move $t2 $v0
                 	addiu $t2 $t2 4

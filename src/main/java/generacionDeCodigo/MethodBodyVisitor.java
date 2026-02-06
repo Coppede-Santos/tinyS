@@ -262,7 +262,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         String tipoDer = nodoExpBin.getLadoDerecho().getTipo();
 
         boolean esDouble = tipoIzq.equals("Double") || tipoDer.equals("Double");
-        boolean esString = tipoIzq.equals("String") || tipoDer.equals("String");
+        boolean esString = tipoIzq.equals("Str") || tipoDer.equals("Str");
 
         codigo.agregarLinea("#Empieza codigo para expBin");
 
@@ -281,7 +281,7 @@ public class MethodBodyVisitor extends NodeVisitor {
             case PLUS:
                 if (esString) {
                     codigo.agregarLinea("#Se concatenan dos String");
-                    codigo.agregarLinea("sw $jp 0($sp) # Guardar el valor de $jp en la pila antes de la llamada a concat)");
+                    codigo.agregarLinea("sw $fp 0($sp) # Guardar el valor de $fp en la pila antes de la llamada a concat)");
                     codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
                     codigo.agregarLinea("sw $t1 0($sp) #Guardamos el puntero de CIR de la expresión derecha en el la pila como un parametro de concat");
                     codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
@@ -291,7 +291,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("jal concat");
 
                     codigo.agregarLinea("addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro de concat");
-                    codigo.agregarLinea("lw $jp, 0($sp) #Restauramos el valor de $jp en la pila");
+                    codigo.agregarLinea("lw $fp, 4($sp) #Restauramos el valor de $fp en la pila");
                     codigo.agregarLinea("addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior");
                     // El resultado de la llamada a concat se guarda en $a0
 
@@ -735,7 +735,7 @@ public class MethodBodyVisitor extends NodeVisitor {
      */
     private void expBinString() {
 
-        codigo.agregarLinea("sw $jp 0($sp) # Guardar el valor de $jp en la pila antes de la llamada a eq_string)");
+        codigo.agregarLinea("sw $fp 0($sp) # Guardar el valor de $fp en la pila antes de la llamada a eq_string)");
         codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
         codigo.agregarLinea("sw $t1 0($sp) #Guardamos el valor de la expresión derecha en el la pila como un parametro de eq_string");
         codigo.agregarLinea("addi $sp, $sp, -4 #movemos el puntero de la pila");
@@ -745,7 +745,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("jal eq_str #nos devuelve un bool, 1 si los string son iguales");
 
         codigo.agregarLinea("addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro");
-        codigo.agregarLinea("lw $jp, 0($sp) #Restauramos el valor de $jp en la pila");
+        codigo.agregarLinea("lw $fp, 0($sp) #Restauramos el valor de $fp en la pila");
         codigo.agregarLinea("addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior");
     }
 
@@ -1354,16 +1354,14 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                     codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Int queda en $a0");
                 } else {
-
-
-                    if (Objects.equals(entradaClase.getLexema(), "String")) {
+                    if (Objects.equals(entradaClase.getLexema(), "Str")) {
                         codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
                         codigo.agregarLinea("li $a0, 8  # su vtable");
                         codigo.agregarLinea("syscall ");
 
-                        codigo.agregarLinea("la $t0, VTABLE_String # Cargar la dirección de la vtable de String en un temporal");
+                        codigo.agregarLinea("la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal");
                         codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR");
-                        codigo.agregarLinea("li $t0,  # Guardamos el valor en la CIR en un temporal");
+                        codigo.agregarLinea("li $t0, 0 # Guardamos el valor en la CIR en un temporal");
                         codigo.agregarLinea("sw $t0, 4($v0) #Guardamos el valor en la CIR");
 
 

@@ -32,17 +32,16 @@ public class TestTinyS {
      * @throws IOException Si ocurre un error de E/S
      * @throws ErrorTiny   Si ocurre un error del compilador
      */
-    private void testTinyS(String fileName, Boolean correcto) throws IOException, ErrorTiny {
+    private void testTinyS(String fileName) throws IOException, ErrorTiny {
         String basePath = System.getProperty("user.dir");
         String testFilePath = basePath + "/src/test/resources/test/codeGen/" + fileName + ".s";
-        String assertFilePath = basePath + "/src/test/resources/codeGen/resultado_correcto.txt";
-        if (!correcto) {
-            assertFilePath = basePath + "/src/test/resources/codeGen/resultado_" + fileName + ".txt";
-        }
-        String outputFilePath = basePath + "/src/test/resources/output/" + fileName + ".txt";
+
+        String assertFilePath = basePath + "/src/test/resources/codeGen/resultado_" + fileName + ".asm";
+
+        String outputFilePath = basePath + "/src/test/resources/test/codeGen/" + fileName + ".asm";
 
         // Ejecutar el analizador léxico
-        TinyS.main(new String[]{testFilePath, outputFilePath});
+        TinyS.main(new String[]{testFilePath});
 
         // Leer el archivo generado
         String actualOutput = Files.readString(Paths.get(outputFilePath));
@@ -68,134 +67,140 @@ public class TestTinyS {
     @Test
     @DisplayName("Test fibonacci.s")
     void testFibonacci() throws IOException, ErrorTiny {
-        testTinyS("fibonacci", true);
+        testTinyS("fibonacci");
     }
 
     @Test
     @DisplayName("Test constructorParams.s")
     void testConstructorParams() throws IOException, ErrorTiny {
-        testTinyS("constructorParams", true);
+        testTinyS("constructorParams");
     }
 
     @Test
     @DisplayName("Test metodosHeredados.s")
     void testMetodosHeredados() throws IOException, ErrorTiny {
-        testTinyS("metodosHeredados", true);
+        testTinyS("metodosHeredados");
     }
 
     @Test
     @DisplayName("Test factorial.s")
     void testFactorial() throws IOException, ErrorTiny {
-        testTinyS("factorial", true);
+        testTinyS("factorial");
     }
 
     @Test
     @DisplayName("Test arraysCorrecto.s")
     void testArraysCorrecto() throws IOException, ErrorTiny {
-        testTinyS("arraysCorrecto", true);
+        testTinyS("arraysCorrecto");
     }
 
     // Test para expresiones.s
     @Test
     @DisplayName("Test expresiones.s")
     void testExpresiones() throws IOException, ErrorTiny {
-        testTinyS("expresiones", true);
+        testTinyS("expresiones");
     }
 
     @Test
     @DisplayName("Test stresArray.s")
     void testStresArray() throws IOException, ErrorTiny {
-        testTinyS("stresArray", true);
+        testTinyS("stresArray");
     }
 
     @Test
     @DisplayName("Test condicionales.s")
     void testcondicionales() throws IOException, ErrorTiny {
-        testTinyS("condicionales", true);
+        testTinyS("condicionales");
     }
 
     @Test
     @DisplayName("Test contador.s")
     void testcontador() throws IOException, ErrorTiny {
-        testTinyS("contador", true);
+        testTinyS("contador");
     }
 
     @Test
     @DisplayName("Test ifAnidado.s")
     void testifAnidado() throws IOException, ErrorTiny {
-        testTinyS("ifAnidado", true);
+        testTinyS("ifAnidado");
     }
 
     @Test
     @DisplayName("Test banco.s")
     void testBanco() throws IOException, ErrorTiny {
-        testTinyS("banco", true);
+        testTinyS("banco");
     }
 
     @Test
     @DisplayName("Test nilTest.s")
     void testNilTest() throws IOException, ErrorTiny {
-        testTinyS("nilTest", true);
+        testTinyS("nilTest");
     }
 
     @Test
     @DisplayName("Test atributoPrivado.s")
     void testAtributoPrivado() throws IOException, ErrorTiny {
-        testTinyS("atributoPrivado", true);
+        testTinyS("atributoPrivado");
     }
 
     @Test
     @DisplayName("Test atributoPub.s")
     void testAtributoPub() throws IOException, ErrorTiny {
-        testTinyS("atributoPub", true);
+        testTinyS("atributoPub");
     }
 
     @Test
     @DisplayName("Test metodoEstatico.s")
     void testMetodoEstatico() throws IOException, ErrorTiny {
-        testTinyS("metodoEstatico", true);
+        testTinyS("metodoEstatico");
     }
 
     @Test
     @DisplayName("Test probarNil.s")
     void testProbarNil() throws IOException, ErrorTiny {
-        testTinyS("probarNil", true);
+        testTinyS("probarNil");
     }
 
     @Test
     @DisplayName("Test divisionPorCero.s")
     void testDivisionPorCero() throws IOException, ErrorTiny {
-        testTinyS("divisionPorCero", true);
+        testTinyS("divisionPorCero");
     }
 
 
     @Test
     @DisplayName("Test ArrayNegativo.s")
     void testArrayNegativo() throws IOException, ErrorTiny {
-        testTinyS("ArrayNegativo", true);
+        testTinyS("ArrayNegativo");
     }
 
     @Test
     @DisplayName("Test muchasImpl.s")
     void testMuchasImpl() throws IOException, ErrorTiny {
-        testTinyS("muchasImpl", true);
+        testTinyS("muchasImpl");
     }
 
     @Test
     @DisplayName("Test start.s")
     void testStart() throws IOException, ErrorTiny {
-        testTinyS("start", true);
+        testTinyS("start");
     }
 
     @Test
     @DisplayName("Test IOObject.s")
     void testIOObject() throws IOException, ErrorTiny {
-        testTinyS("IOObject", true);
+        testTinyS("IOObject");
     }
     @Test
     @DisplayName("Test metodos_arreglos.s")
     void testMetodosArreglos() throws IOException, ErrorTiny {
-        testTinyS("metodos_arreglos", true);
+        testTinyS("metodos_arreglos");
+    }
+
+    @Test
+    @DisplayName("Test expresionesString.s")
+    void testExpresionesString() throws IOException, ErrorTiny {
+        testTinyS("expresionesString");
     }
 
 }

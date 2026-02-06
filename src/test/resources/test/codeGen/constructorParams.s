@@ -1,3 +1,4 @@
+// El objetivo de este test es probar los constructores con parametros, el output esperado es: 10 20 30 10 20 30
 class A {
     Int a;
     Int b;
