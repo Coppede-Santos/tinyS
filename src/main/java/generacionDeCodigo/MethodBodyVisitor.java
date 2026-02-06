@@ -199,7 +199,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar el valor del double");
                     codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar el valor del double en la pila");
                     codigo.agregarLinea("ldc1 $f2, db_one");
-                    codigo.agregarLinea("add.d $f0, $f0, $f1 #decrementar el valor del double");
+                    codigo.agregarLinea("add.d $f0, $f0, $f2 #decrementar el valor del double");
                     codigo.agregarLinea("swc1 $f0, 4($a0) #guardar el valor del double");
                     codigo.agregarLinea("swc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
 
@@ -218,7 +218,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                     codigo.agregarLinea("lwc1 $f0, 4($a0) #cargar el valor del double");
                     codigo.agregarLinea("lwc1 $f1, 8($a0) #cargar el valor del double en la pila");
                     codigo.agregarLinea("ldc1 $f2, db_one");
-                    codigo.agregarLinea("sub.d $f0, $f0, $f1 #decrementar el valor del double");
+                    codigo.agregarLinea("sub.d $f0, $f0, $f2 #decrementar el valor del double");
                     codigo.agregarLinea("swc1 $f0, 4($a0) #guardar el valor del double");
                     codigo.agregarLinea("swc1 $f1, 8($a0) #cargar la segunda mitad del valor del double");
 

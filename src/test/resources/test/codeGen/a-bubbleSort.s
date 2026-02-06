@@ -9,36 +9,21 @@ class BubbleSort : Sort {}
 impl BubbleSort {
     .() {}
 
-    st fn void sort(Array Double arrNotSorted) {
+    st fn void sort(Array Int arrNotSorted) {
         Int n;
         Int i;
         Int j;
-        Double temp;
-        Array Double arr;
+        Int temp;
+        Array Int arr;
         arr = arrNotSorted;
 
         n = (arr.length());
 
-        (IO.out_str("Longitud del arreglo: "));
-        (IO.out_int(n));
-        (IO.out_str("\n"));
-
         i = 0;
         while (i < n) {
-            (IO.out_str("Iteracion i="));
-            (IO.out_int(i));
-            (IO.out_str("\n"));
             j = 0;
             while (j < n - i - 1) {
-                (IO.out_str("Iteracion j="));
-                (IO.out_int(j));
-                (IO.out_str("\n"));
                 if ((arr[j]) > (arr[j + 1])) {
-                    (IO.out_str("Swapping "));
-                    (IO.out_double(arr[j]));
-                    (IO.out_str(" and "));
-                    (IO.out_double(arr[j + 1]));
-                    (IO.out_str("\n"));
                     temp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = temp;
@@ -51,9 +36,9 @@ impl BubbleSort {
 }
 
 start{
-    Array Double arr;
+    Array Int arr;
 
-    arr = new Double[5];
+    arr = new Int[5];
     arr[0] = 64;
     arr[1] = 34;
     arr[2] = 25;
@@ -61,11 +46,11 @@ start{
     arr[4] = 22;
 
     (IO.out_str("Arreglo original: "));
-    (IO.out_array_double(arr));
+    (IO.out_array_int(arr));
 
     (IO.out_str("\n"));
     (BubbleSort.sort(arr));
 
     (IO.out_str("Arreglo ordenado: "));
-    (IO.out_array_double(arr));
+    (IO.out_array_int(arr));
 }
