@@ -109,6 +109,26 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("lw $t0, 4($sp)");
         codigo.agregarLinea("addi $sp, $sp, 4");
 
+        if (nodoAsignacion.getIzquierda().getTipo().equals("Double")
+                && nodoAsignacion.getDerecha().getTipo().equals("Int")) {
+            // Convertir Int a Double antes de la asignación
+            codigo.agregarLinea("lw $t1, 4($a0) # Cargar el valor del Int");
+            codigo.agregarLinea("mtc1.d $t1, $f12 # Mover el valor entero a un registro de punto flotante");
+            codigo.agregarLinea("cvt.d.w $f12, $f12 # Convertir el valor entero a double");
+
+            // Crear un nuevo objeto Double para la asignación
+            codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+            codigo.agregarLinea("li $a0, 12  # 8 bytes y su vtable");
+            codigo.agregarLinea("syscall ");
+
+            codigo.agregarLinea("la $t0, VTABLE_Double # Cargar la dirección de la vtable de Int en un temporal");
+            codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtableDouble en la CIR");
+            codigo.agregarLinea("swc1 $f12, 4($v0) #guardar el valor del double");
+            codigo.agregarLinea("swc1 $f13, 8($v0) #cargar la segunda mitad del valor del double");
+
+            codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Double queda en $a0");
+        }
+
         // *asignación real*
         codigo.agregarLinea("sw $a0, 0($t0)");
     }
