@@ -414,26 +414,28 @@ public class CodeGen {
                         addiu $sp $sp 4
                         jr $ra
             
-                    m_out_array_str_0_0:
+                    m_out_array_str_0_0:  #+++++++++++++++++++++++++++++++++++
                         move $fp $sp
                         sw $ra 0($sp)
                         addiu $sp $sp -4
             
-                        lw $t1 4($fp)
+                        lw $t1 8($fp)
             
                         # 1. Recupero la longitud del arreglo
                         lw $t0 4($t1)
             
-                        # 2. Verifico si dim > 0
+                        
                         la $a0 left_bracket
                         li $v0 4
                         syscall
             
+                        # 2. Verifico si dim > 0
                         beq $t0 $zero m_out_array_str_exit
             
                         # Guardamos variables intermedias para que no se pierdan
             
                         ## v1: Index
+                        addiu $t1 $t1 4 # Aumento index
                         sw $t1, 0($sp)
                         addiu $sp $sp -4
             
@@ -447,25 +449,25 @@ public class CodeGen {
                             sw $fp 0($sp)
                             addiu $sp $sp -4
             
-                            lw $t1, -12($fp) # Recupero index
-                            lw $t0, -8($fp) # Recupero contador
-            
+                            lw $t1, 12($sp) # Recupero index
                             addiu $t1 $t1 4 # Aumento index
-                            subiu $t0 $t0 1 # Obtenemos elem restantes
+                            sw $t1, 12($sp) # Recupero index
+                            
             
-                            sw $t1, -12($fp) # Guardo index
-                            sw $t0, -8($fp) # Guardo contador
-            
-                            lw $a0 4($t1) # Obtengo sig. pos
+                            lw $a0 0($t1) # Obtengo sig. pos
                             sw $a0 0($sp) # Guardo en pila
-                            addiu $sp $sp -4
+                            addiu $sp $sp -8
                             jal m_out_str_0_0 # Imprimo elem
-                            addiu $sp $sp 4
+                            
+                            addiu $sp $sp 8
                             lw $fp 0($sp)
                             addiu $sp $sp 4
             
             
-                            lw $t0, -8($fp)
+                            lw $t0, 4($sp)
+                            subiu $t0 $t0 1 # Obtenemos elem restantes
+                            sw $t0, 4($sp)
+                            
                             beq $t0 $zero m_out_array_str_exit # Si ya no hay elem siguientes, salgo
             
                             la $a0 comma
@@ -487,26 +489,27 @@ public class CodeGen {
                         addiu $sp $sp 4
                         jr $ra
             
-                    m_out_array_bool_0_0:
+                    m_out_array_bool_0_0: #------------------------------
                         move $fp $sp
                         sw $ra 0($sp)
                         addiu $sp $sp -4
             
-                        lw $t1 4($fp)
+                        lw $t1 8($fp)
             
                         # 1. Recupero la longitud del arreglo
                         lw $t0 4($t1)
             
-                        # 2. Verifico si dim > 0
                         la $a0 left_bracket
                         li $v0 4
                         syscall
-            
+                        
+                        # 2. Verifico si dim > 0
                         beq $t0 $zero m_out_array_bool_exit
             
                         # Guardamos variables intermedias para que no se pierdan
             
                         ## v1: Index
+                        addiu $t1 $t1 4 # Aumento index
                         sw $t1, 0($sp)
                         addiu $sp $sp -4
             
@@ -514,24 +517,25 @@ public class CodeGen {
                         sw $t0, 0($sp)
                         addiu $sp $sp -4
             
-                        # 3. Si dim > 0, iteramos por cada CIR
-                        addiu $t1 $t1 4 # Aumento index
             
-                        m_out_array_bool_loop:
+                        # 3. Si dim > 0, iteramos por cada CIR
+                        
+            
+                        m_out_array_bool_loop:  
                             sw $fp 0($sp)
                             addiu $sp $sp -4
             
-            
+                            lw $t1, 12($sp) # Recupero index
                             addiu $t1 $t1 4 # Aumento index
-                            sw $t1, 8($sp)
+                            sw $t1, 12($sp) # Recupero index
+                            
                             lw $a0 0($t1) # Obtengo sig. pos
                             sw $a0 0($sp) # Guardo en pila
                             addiu $sp $sp -8
                             jal m_out_bool_0_0 # Imprimo elem
             
-                            lw $t1, 8($sp)
-            
                             addiu $sp $sp 8
+                            
                             lw $fp 0($sp)
                             addiu $sp $sp 4
             
@@ -561,7 +565,7 @@ public class CodeGen {
                         addiu $sp $sp 4
                         jr $ra
             
-                    m_out_array_double_0_0:
+                    m_out_array_double_0_0: #++++++++++++++++++++++++++++++++++
                         move $fp $sp
                         sw $ra 0($sp)
                         addiu $sp $sp -4
@@ -571,16 +575,18 @@ public class CodeGen {
                         # 1. Recupero la longitud del arreglo
                         lw $t0 4($t1)
             
-                        # 2. Verifico si dim > 0
+                        
                         la $a0 left_bracket
                         li $v0 4
                         syscall
-            
+                        
+                        # 2. Verifico si dim > 0
                         beq $t0 $zero m_out_array_double_exit
             
                         # Guardamos variables intermedias para que no se pierdan
             
                         ## v1: Index
+                        addiu $t1 $t1 4 # Aumento index
                         sw $t1, 0($sp)
                         addiu $sp $sp -4
             
@@ -594,25 +600,27 @@ public class CodeGen {
                             sw $fp 0($sp)
                             addiu $sp $sp -4
             
-                            lw $t1, -4($fp) # Recupero index
-                            lw $t0, -8($fp) # Recupero contador
-            
+                            lw $t1, 12($sp) # Recupero index
                             addiu $t1 $t1 4 # Aumento index
-                            subiu $t0 $t0 1 # Obtenemos elem restantes
+                            sw $t1, 12($sp) # Recupero index
             
-                            sw $t1, -4($fp) # Guardo index
-                            sw $t0, -8($fp) # Guardo contador
-            
-                            lw $a0 4($t1) # Obtengo sig. pos
+                            lw $a0 0($t1) # Obtengo sig. pos
                             sw $a0 0($sp) # Guardo en pila
-                            addiu $sp $sp -4
+                            addiu $sp $sp -8
                             jal m_out_double_0_0 # Imprimo elem
-                            addiu $sp $sp 4
+                            
+                            addiu $sp $sp 8
                             lw $fp 0($sp)
                             addiu $sp $sp 4
             
             
-                            lw $t0, -8($fp)
+            
+            
+                            #cargamos el contador
+                            lw $t0, 4($sp)
+                            subiu $t0 $t0 1 # Obtenemos elem restantes
+                            sw $t0, 4($sp)
+                            
                             beq $t0 $zero m_out_array_double_exit # Si ya no hay elem siguientes, salgo
             
                             la $a0 comma

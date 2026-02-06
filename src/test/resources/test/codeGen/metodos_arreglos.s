@@ -27,16 +27,16 @@ arrboo[4] = true;
 
 arrdbl[0] = 1.0;
 arrdbl[1] = 2.0;
-arrdbl[2] = 3.0;
+arrdbl[4] = 5.55555;
 arrdbl[3] = 4.0;
-arrdbl[4] = 5.0;
-//(IO.out_array_double(arrdbl));
+arrdbl[2] = 3.555555;
+(IO.out_array_double(arrdbl));
 
 arrstr[0] = "hola";
 arrstr[4] = "adios";
 arrstr[2] = "que tal";
 arrstr[3] = "como estas";
 arrstr[1] = "que tal";
-//(IO.out_array_str(arrstr));
+(IO.out_array_str(arrstr));
 
 }
