@@ -772,7 +772,7 @@ public class CodeGen {
                \s
                 	#move $a0, $zero
                 	add $a0, $t0, $t1 # a0 = l1 + l2
-                	addi $a0, $a0, 4 # a0 = vt + len
+                	addi $a0, $a0, 5 # a0 = vt + len + padding
                \s
                 	li $v0, 9
                 	syscall
