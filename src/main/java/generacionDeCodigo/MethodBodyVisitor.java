@@ -777,11 +777,11 @@ public class MethodBodyVisitor extends NodeVisitor {
     private void expBinDouble(String tipoIzq, String tipoDer) {
 
         if (tipoIzq.equals("Int")) {
-            codigo.agregarLinea("lwc1 $f0, 4($t1) #cargar el valor del int izquierdo");
+            codigo.agregarLinea("lwc1 $f0, 4($t0) #cargar el valor del int izquierdo");
             codigo.agregarLinea("cvt.d.w $f0, $f0 #convertir el int a double");
 
-            codigo.agregarLinea("swc1 $f2 4($t1) #guardamos el valor de derecha en $f2");
-            codigo.agregarLinea("swc1 $f3 8($t1) #guardamos el valor de derecha en $f3 para completar el double");
+            codigo.agregarLinea("lwc1 $f2 4($t1) #guardamos el valor de derecha en $f2");
+            codigo.agregarLinea("lwc1 $f3 8($t1) #guardamos el valor de derecha en $f3 para completar el double");
 
         } else {
             if (tipoDer.equals("Int")) {
@@ -791,8 +791,8 @@ public class MethodBodyVisitor extends NodeVisitor {
                 codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del double izquierdo");
                 codigo.agregarLinea("lwc1 $f3, 8($t1) #cargar el valor del double derecho");
             }
-            codigo.agregarLinea("swc1 $f0 4($t0) #guardamos el valor de izquierda en $f0");
-            codigo.agregarLinea("swc1 $f1 8($t0) #guardamos el valor de izquierda en $f1 para completar el double");
+            codigo.agregarLinea("lwc1 $f0 4($t0) #guardamos el valor de izquierda en $f0");
+            codigo.agregarLinea("lwc1 $f1 8($t0) #guardamos el valor de izquierda en $f1 para completar el double");
         }
     }
 

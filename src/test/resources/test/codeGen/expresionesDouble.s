@@ -12,7 +12,7 @@ start{
     (IO.out_double(2.1 * 6.5));
     (IO.out_str("\n"));
 
-    (IO.out_str("Division (9 / 2): "));
+    (IO.out_str("Division (9 / 2.0): "));
     (IO.out_double(9 / 2.0));
     (IO.out_str("\n"));
 
@@ -39,20 +39,69 @@ start{
     (IO.out_str("\n"));
 
     (IO.out_str("\nResultados de operaciones relacionales:\n"));
+
     (IO.out_str("Mayor que (5.2 > 3.4): "));
     (IO.out_bool(5.2 > 3.4));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Mayor que (1.014 > 3.4): "));
+    (IO.out_bool(1.014 > 3.4));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Mayor que (4.2 > 4.2): "));
+    (IO.out_bool(4.2 > 4.2));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Mayor igual que (5.2 >= 3.4): "));
+    (IO.out_bool(5.2 >= 3.4));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Mayor igual que (1.014 >= 3.4): "));
+    (IO.out_bool(1.014 >= 3.4));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Mayor igual que (4.2 >= 4.2): "));
+    (IO.out_bool(4.2 >= 4.2));
     (IO.out_str("\n"));
 
     (IO.out_str("Menor que (2.1 < 4.1): "));
     (IO.out_bool(2.1 < 4.1));
     (IO.out_str("\n"));
 
+    (IO.out_str("Menor que (122.1 < 4.1): "));
+    (IO.out_bool(122.1 < 4.1));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Menor que (54.04 < 54.04): "));
+    (IO.out_bool(54.04 < 54.04));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Menor igual que (2.1 <= 4.1): "));
+    (IO.out_bool(2.1 <= 4.1));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Menor igual que (122.1 <= 4.1): "));
+    (IO.out_bool(122.1 <= 4.1));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Menor igual que (54.04 <= 54.04): "));
+    (IO.out_bool(54.04 <= 54.04));
+    (IO.out_str("\n"));
+
     (IO.out_str("Igual a (6.5 == 6.7): "));
+    (IO.out_bool(6.5 == 6.7));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Igual a (6.5 == 6.5): "));
     (IO.out_bool(6.5 == 6.5));
     (IO.out_str("\n"));
 
     (IO.out_str("Diferente de (7.2 != 7.21): "));
     (IO.out_bool(7.2 != 7.21));
+    (IO.out_str("\n"));
+
+    (IO.out_str("Diferente de (7.2 != 7.2): "));
+    (IO.out_bool(7.2 != 7.2));
     (IO.out_str("\n"));
 
 }
