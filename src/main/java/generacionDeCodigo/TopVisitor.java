@@ -147,37 +147,8 @@ public class TopVisitor extends NodeVisitor {
 
 
                         codigo.agregarLinea("move $a0, $v0 # La dirección del objeto String queda en $a0");
-                    } else {
-                        codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
-
-                        EntradaClase clase = st.buscarClase(variable.getTipo());
-
-                        int z = clase.getTamanioObjeto();
-
-                        codigo.agregarLinea("li $a0," + z + "# su vtable");
-                        codigo.agregarLinea("syscall ");
-
-                        codigo.agregarLinea("la $t0, VTABLE_" + clase.getLexema() + " # Cargar la dirección de la vtable en un temporal");
-                        codigo.agregarLinea("sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR");
-
-                        int i;
-
-
-                        codigo.agregarLinea("sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila");
-                        codigo.agregarLinea("addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto");
-
-                        for (EntradaAtributo atributo : clase.getAtributos().values()) {
-
-                            atributo.accept(this);
-                            i = atributo.getPosicionAtributo();
-                            codigo.agregarLinea("lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila");
-                            codigo.agregarLinea("sw $a0 " + (4 * i) + "($v0) #Inicializamos el atributo " + atributo.getLexema());
-                        }
-
-
-                        codigo.agregarLinea("lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0");
-                        codigo.agregarLinea("addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila");
-
+                    }else{
+                        codigo.agregarLinea("li $a0 0 # Valor por defecto para los objetos, nill");
                     }
                 }
             }

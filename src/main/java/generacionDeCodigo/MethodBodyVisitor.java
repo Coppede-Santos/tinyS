@@ -970,6 +970,8 @@ public class MethodBodyVisitor extends NodeVisitor {
         }
 
         codigo.agregarLinea("lw $t0 4($sp) # Cargar el objeto self desde la pila");
+        codigo.agregarLinea("beqz $t0, nullPointerException # Verificar si el objeto es null");
+
         codigo.agregarLinea("lw $t0, 0($t0) # Cargar la vtable del objeto");
 
         int offSetMetodo = entradaClase.getMetodo(nodoLlamadaMetodo.getLexema()).getPosicionMetodo(); //Obtemenos el offset del metodo

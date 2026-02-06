@@ -897,6 +897,8 @@ public class CodeGen {
                 	.asciiz "ERROR: INDICE DE ARRAY FUERA DE RANGO"
                 NegativeArraySizeExceptionMessage:
                 	.asciiz "ERROR: LONGITUD DE ARRAY NEGATIVO"
+                nullPointerExceptionMessage:
+                    .asciiz "ERROR: OBJETO NULO"
                \s
                 .text
                 DivisionByZeroException:
@@ -925,6 +927,16 @@ public class CodeGen {
                 	li $v0, 17
                 	li $a0, 1
                 	syscall
+                	
+                nullPointerException:
+                    	la $a0 nullPointerExceptionMessage
+                    	li $v0, 4
+                    	syscall
+                   \s
+                    	li $v0, 17
+                    	li $a0, 1
+                    	syscall
+                   \s
                \s""";
 
         return s;
