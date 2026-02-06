@@ -57,8 +57,14 @@ public class NodoAsignacion extends NodoSentencia{
 
 
             // Buscamos que el tipo de la izquierda sea ancestro de la clase derecha, en otro caso es error
-            if ((!derechaClase.buscarAncestro(st,izquierda.tipo)) && derecha.getTipo().isEmpty())
-                throw new TipoInvalidoError(posicion, izquierda.lexema, derecha.getTipo());
+            if ((!derechaClase.buscarAncestro(st,izquierda.tipo)) || derecha.getTipo().isEmpty()) {
+                if (!(izquierda.getTipo().equals("Double")
+                        && derecha.getTipo().equals("Int"))) {
+                    throw new TipoInvalidoError(
+                            posicion, izquierda.lexema, derecha.getTipo()
+                    );
+                }
+            }
 
 
             // Array Int a;

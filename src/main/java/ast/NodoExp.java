@@ -24,6 +24,15 @@ public abstract class NodoExp extends NodoSentencia {
 //        methodBodyVisitor.generarCodigo(this);
 //    }
 
+    /** Metodo para obtener el ultimo encadenado */
+    public NodoExp getUltimoEncadenado() {
+        NodoExp actual = this;
+        while (actual.getEncadenado() != null) {
+            actual = actual.getEncadenado();
+        }
+        return actual;
+    }
+
     public void setEncadenado(NodoExp encadenado) {
         this.encadenado = encadenado;
     }

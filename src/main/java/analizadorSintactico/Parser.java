@@ -1698,7 +1698,14 @@ public class Parser {
                 NodoExp nodoExp = expOr();
                 macheo(RIGHT_PAREN);
                 NodoExp nodoEncadenado = encadenado_factorizado();
-                nodoExp.setEncadenado(nodoEncadenado);
+                NodoExp ultimoNodoEncadenado = nodoExp.getUltimoEncadenado();
+
+                if (ultimoNodoEncadenado == null) {
+                    nodoExp.setEncadenado(nodoEncadenado);
+                } else {
+                    ultimoNodoEncadenado.setEncadenado(nodoEncadenado);
+                }
+
                 return nodoExp;
 
 
