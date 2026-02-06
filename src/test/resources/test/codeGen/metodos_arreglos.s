@@ -26,7 +26,7 @@ arrboo[4] = true;
 
 
 arrdbl[0] = 1.0;
-arrdbl[1] = 2.0;
+arrdbl[1] = 2;
 arrdbl[4] = 5.55555;
 arrdbl[3] = 4.0;
 arrdbl[2] = 3.555555;
