@@ -1,3 +1,11 @@
+//Objetivo es poder probar la salida de un array
+//Salida esperada:
+//Array contents:
+//[4, 16, 64]
+//4
+//16
+//64
+
 class A {}
 
 impl A {
@@ -23,6 +31,7 @@ start {
     myArray[2] = 64;
     (IO.out_str("Array contents:\n"));
     (IO.out_array_int(myArray));
+    (IO.out_str("\n"));
     (A.printArray(myArray));
 
 }

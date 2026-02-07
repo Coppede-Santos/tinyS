@@ -1,3 +1,7 @@
+//Salida esperada:
+//100
+//60
+//60
 class Banco {
 pub Int saldo;
 }

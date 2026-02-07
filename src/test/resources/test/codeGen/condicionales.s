@@ -1,3 +1,6 @@
+// Test de condicionales
+//Salida:
+//devuelve el maximo entre dos numeros
 class Calculadora {
 pub Int a,b;
 }

@@ -1,13 +1,14 @@
 .data
-VTABLE_A: #Vtable de la clase A
-.word m_A_9_5
-.word m_toStr_15_12
-str_const_17_25: .asciiz ", "
-str_const_19_25: .asciiz ", "
-str_const_21_25: .asciiz ", "
-str_const_23_25: .asciiz ", "
-str_const_25_25: .asciiz ", "
-str_const_27_25: .asciiz "\n"
+str_const_65_17: .asciiz "\n"
+VTABLE_StressArray: #Vtable de la clase StressArray
+.word m_StressArray_50_1
+.word m_run_17_10
+str_const_23_18: .asciiz "i: "
+str_const_25_17: .asciiz "\n"
+str_const_34_21: .asciiz "v[i]: "
+str_const_36_17: .asciiz "\n"
+str_const_40_20: .asciiz "acc: "
+str_const_42_17: .asciiz "\n"
 
 .text
 main:
@@ -16,7 +17,7 @@ main:
 
 	addiu $sp $sp -4
 
-	jal m_start_31_5
+	jal m_start_57_5
 
 	lw $fp 0($sp)
 
@@ -24,7 +25,7 @@ main:
 
 	b exit
 
-	m_start_31_5: # Label del metodo
+	m_start_57_5: # Label del metodo
 
 	move $fp $sp #El frame apunta al enlace dinamico
 
@@ -32,25 +33,43 @@ main:
 
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
 
-	addi $sp $sp -4 #restamos 4 bytes para cada variable local
+	addi $sp $sp -8 #restamos 4 bytes para cada variable local
 
 	li $a0 0 # Valor por defecto para los objetos, nill
 
 	sw $a0 -4($fp)
 
-	addiu $a0 $fp , -4 #Devolvemos la direccion de la variable en la pila a_1
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 -8($fp)
+
+	addiu $a0 $fp , -4 #Devolvemos la direccion de la variable en la pila s_1
 
 	sw $a0, 0($sp)
 
 	addi $sp, $sp, -4
 
-	#Comienza codigo para llamada de metodo A
+	#Comienza codigo para llamada de metodo StressArray
 
 	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
 
 	addiu $sp $sp -4 # movemos el puntero de la pila
 
-	addi $sp, $sp, -12 # guardamos en la pila el espacio para todos los argumentos
+	addi $sp, $sp, 0 # guardamos en la pila el espacio para todos los argumentos
 
 	li $v0, 9  # Solicitar espacio en memoria
 
@@ -58,7 +77,7 @@ main:
 
 	syscall 
 
-	la $t0, VTABLE_A # Cargar la dirección de la vtable en un temporal
+	la $t0, VTABLE_StressArray # Cargar la dirección de la vtable en un temporal
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR
 
@@ -84,7 +103,29 @@ main:
 
 	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
 
-	sw $a0 4($v0) #Inicializamos el atributo a
+	sw $a0 4($v0) #Inicializamos el atributo acc
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 4 #su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Array # Cargar la dirección de la vtable en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR
+
+	sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila
+
+	addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto
+
+	lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0
+
+	addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila
+
+	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
+
+	sw $a0 8($v0) #Inicializamos el atributo v
 
 	li $v0, 9  # Solicitar espacio en memoria
 
@@ -104,27 +145,7 @@ main:
 
 	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
 
-	sw $a0 8($v0) #Inicializamos el atributo b
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 0 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
-
-	sw $a0 12($v0) #Inicializamos el atributo c
+	sw $a0 12($v0) #Inicializamos el atributo i
 
 	lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0
 
@@ -134,60 +155,6 @@ main:
 
 	addiu $sp $sp -4 # movemos el puntero de la pila
 
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 10 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	sw $a0 8($sp) # Guardar el argumento en la pila
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 20 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	sw $a0 12($sp) # Guardar el argumento en la pila
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 30 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	sw $a0 16($sp) # Guardar el argumento en la pila
-
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
 	beqz $t0, nullPointerException # Verificar si el objeto es null
@@ -196,9 +163,9 @@ main:
 
 	lw $t0, 0($t0) # Calcular la dirección del método en la vtable
 
-	jalr $t0 # Llamar al método A
+	jalr $t0 # Llamar al método StressArray
 
-	addi $sp $sp 12 # movemos el puntero de la pila para sacar los parametros
+	addi $sp $sp 0 # movemos el puntero de la pila para sacar los parametros
 
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
 
@@ -214,9 +181,25 @@ main:
 
 	sw $a0, 0($t0)
 
-	lw $a0 ,-4($fp) #Buscamos la variable en la pila
+	addiu $a0 $fp , -8 #Devolvemos la direccion de la variable en la pila n_2
 
-	#Comienza codigo para llamada de metodo toStr
+	sw $a0, 0($sp)
+
+	addi $sp, $sp, -4
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo in_int
 
 	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
 
@@ -234,9 +217,9 @@ main:
 
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
-	lw $t0, 4($t0) # Calcular la dirección del método en la vtable
+	lw $t0, 20($t0) # Calcular la dirección del método en la vtable
 
-	jalr $t0 # Llamar al método toStr
+	jalr $t0 # Llamar al método in_int
 
 	addi $sp $sp 0 # movemos el puntero de la pila para sacar los parametros
 
@@ -248,19 +231,171 @@ main:
 
 	#Termina codigo para llamada de metodo
 
+	lw $t0, 4($sp)
+
+	addi $sp, $sp, 4
+
+	sw $a0, 0($t0)
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_int
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	lw $a0 ,-4($fp) #Buscamos la variable en la pila
+
+	#Comienza codigo para llamada de metodo run
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	lw $a0 ,-8($fp) #Buscamos la variable en la pila
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 4($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método run
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 24($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_int
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_65_17 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
 	li $a0, 0 # Valor de retorno por defecto
 
-	m_start_31_5_end: # Label para el return del metodo
+	m_start_57_5_end: # Label para el return del metodo
 
 	lw $ra 0($fp) #cargamos el return address
 
-	addiu $sp $sp 4 #limpiamos la pila de las variables locales
+	addiu $sp $sp 8 #limpiamos la pila de las variables locales
 
 	addiu $sp $sp 4 #limpiamos la pila del return address
 
 	jr $ra #salimos del metodo
 
-	m_A_9_5: # Label del metodo
+	m_StressArray_50_1: # Label del metodo
 
 	move $fp $sp #El frame apunta al enlace dinamico
 
@@ -270,17 +405,29 @@ main:
 
 	addi $sp $sp 0 #restamos 4 bytes para cada variable local
 
-	addiu $a0 $fp , 4 #Devolvemos la direccion de self en la pila
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	lw $a0 0($a0) # Cargamos el CIR del encadenado previo
-
-	addiu $a0 $a0 , 4 #Devolvemos la direccion del atributo en la CIR del encadenado previo
+	addiu $a0 $t0 12 #Devolvemos la direccion del atributo en la CIR
 
 	sw $a0, 0($sp)
 
 	addi $sp, $sp, -4
 
-	lw $a0 ,8($fp) #Buscamos el parametro en la pila
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
 
 	lw $t0, 4($sp)
 
@@ -288,35 +435,29 @@ main:
 
 	sw $a0, 0($t0)
 
-	addiu $a0 $fp , 4 #Devolvemos la direccion de self en la pila
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	lw $a0 0($a0) # Cargamos el CIR del encadenado previo
-
-	addiu $a0 $a0 , 8 #Devolvemos la direccion del atributo en la CIR del encadenado previo
+	addiu $a0 $t0 4 #Devolvemos la direccion del atributo en la CIR
 
 	sw $a0, 0($sp)
 
 	addi $sp, $sp, -4
 
-	lw $a0 ,12($fp) #Buscamos el parametro en la pila
+	li $v0, 9  # Solicitar espacio en memoria
 
-	lw $t0, 4($sp)
+	li $a0, 8  # 4 bytes y su vtable
 
-	addi $sp, $sp, 4
+	syscall 
 
-	sw $a0, 0($t0)
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
 
-	addiu $a0 $fp , 4 #Devolvemos la direccion de self en la pila
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
 
-	lw $a0 0($a0) # Cargamos el CIR del encadenado previo
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
 
-	addiu $a0 $a0 , 12 #Devolvemos la direccion del atributo en la CIR del encadenado previo
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
 
-	sw $a0, 0($sp)
-
-	addi $sp, $sp, -4
-
-	lw $a0 ,16($fp) #Buscamos el parametro en la pila
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
 
 	lw $t0, 4($sp)
 
@@ -326,7 +467,7 @@ main:
 
 	li $a0, 0 # Valor de retorno por defecto
 
-	m_A_9_5_end: # Label para el return del metodo
+	m_StressArray_50_1_end: # Label para el return del metodo
 
 	# Devolvemos el self del constructor en $a0
 
@@ -340,7 +481,7 @@ main:
 
 	jr $ra #salimos del metodo
 
-	m_toStr_15_12: # Label del metodo
+	m_run_17_10: # Label del metodo
 
 	move $fp $sp #El frame apunta al enlace dinamico
 
@@ -350,167 +491,179 @@ main:
 
 	addi $sp $sp 0 #restamos 4 bytes para cada variable local
 
-	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
-
-	li $v0 9  # Solicitar espacio en memoria
-
-	syscall 
-
-	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
-
-	sw $a0, 0($v0) # Guardar la vtable en la CIR
-
-	move $a0, $v0 # La dirección del objeto queda en $a0
-
-	#Comienza codigo para llamada de metodo out_int
-
-	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
-
-	addiu $sp $sp -4 # movemos el puntero de la pila
-
-	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
-
-	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
-
-	addiu $sp $sp -4 #movemos el puntero de la pila
-
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	lw $a0 ,4($t0) #Buscamos el atributo en la CIR
+	addiu $a0 $t0 8 #Devolvemos la direccion del atributo en la CIR
 
-	sw $a0 8($sp) # Guardar el argumento en la pila
+	sw $a0, 0($sp)
 
-	lw $t0 4($sp) # Cargar el objeto self desde la pila
+	addi $sp, $sp, -4
 
-	beqz $t0, nullPointerException # Verificar si el objeto es null
+	lw $a0 ,8($fp) #Buscamos el parametro en la pila
 
-	lw $t0, 0($t0) # Cargar la vtable del objeto
+	lw $t0, 4($a0) #Cargar el tamaño del array
 
-	lw $t0, 24($t0) # Calcular la dirección del método en la vtable
+	slti $t2, $t0, 0 #Saber si el indice es negativo
 
-	jalr $t0 # Llamar al método out_int
+	bne $t2, $zero, NegativeArraySizeException #Si es menor que cero salimos del metodo
 
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+	mul $t1, $t0, 4 #Calcular el tamaño en bytes del array
 
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 4($sp) # Restauramos el frame pointer
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
-
-	#Termina codigo para llamada de metodo
-
-	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
-
-	li $v0 9  # Solicitar espacio en memoria
-
-	syscall 
-
-	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
-
-	sw $a0, 0($v0) # Guardar la vtable en la CIR
-
-	move $a0, $v0 # La dirección del objeto queda en $a0
-
-	#Comienza codigo para llamada de metodo out_str
-
-	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
-
-	addiu $sp $sp -4 # movemos el puntero de la pila
-
-	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
-
-	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
-
-	addiu $sp $sp -4 #movemos el puntero de la pila
+	addi $t1, $t1, 8 #Se suma al tamaño del array el espacio para guadar el tamaño y la vtable
 
 	li $v0, 9  # Solicitar espacio en memoria
 
-	li $a0, 8  #  len() bytes + padding + su vtable
+	move $a0, $t1  # Espacio para el array
 
 	syscall 
 
-	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+	la $t1, VTABLE_Array # Cargar la dirección de la vtable de Array en un temporal
 
-	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+	sw $t1, 0($v0) #guardamos la dirección de la vtableArray en la CIR
 
-	la $a0, str_const_17_25 # Guardamos el valor en la CIR en un temporal
+	sw $t0, 4($v0) #Guardamos el tamaño del array en la CIR
 
-	jal save_str #Guardamos el valor en la CIR
+	move $t4, $v0  # Espacio para el array
+
+	addi $t4 $t4 8 #apuntamos al primer elemento del array
+
+	move $t2, $v0 # La dirección del objeto Array queda en $t2
+
+	m_run_17_10S_18_12_loop:
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	move $a0, $t3 # Espacio para el primer elemento del array
+
+	syscall
+
+	sw $t1, 0($v0) #guardamos la dirección de la vtable del tipo en la CIR
+
+	sw $v0 0($t4) #Guardamos el objeto en el array
+
+	addi $t4 $t4 4 #apuntamos al siguiente elemento del array
+
+	addi $t0, $t0, -1 #Decrementamos el tamaño del contador
+
+	bnez $t0 m_run_17_10S_18_12_loop #Si el tamaño del array es distinto de cero, saltar la inicialización
+
+	move $a0, $t2 # La dirección del objeto Array queda en $a0
+
+	lw $t0, 4($sp)
+
+	addi $sp, $sp, 4
+
+	sw $a0, 0($t0)
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	addiu $a0 $t0 12 #Devolvemos la direccion del atributo en la CIR
+
+	sw $a0, 0($sp)
+
+	addi $sp, $sp, -4
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
 
 	move $a0, $v0 # La dirección del objeto Int queda en $a0
 
-	sw $a0 8($sp) # Guardar el argumento en la pila
+	lw $t0, 4($sp)
 
-	lw $t0 4($sp) # Cargar el objeto self desde la pila
+	addi $sp, $sp, 4
 
-	beqz $t0, nullPointerException # Verificar si el objeto es null
-
-	lw $t0, 0($t0) # Cargar la vtable del objeto
-
-	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
-
-	jalr $t0 # Llamar al método out_str
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 4($sp) # Restauramos el frame pointer
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
-
-	#Termina codigo para llamada de metodo
-
-	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
-
-	li $v0 9  # Solicitar espacio en memoria
-
-	syscall 
-
-	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
-
-	sw $a0, 0($v0) # Guardar la vtable en la CIR
-
-	move $a0, $v0 # La dirección del objeto queda en $a0
-
-	#Comienza codigo para llamada de metodo out_int
-
-	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
-
-	addiu $sp $sp -4 # movemos el puntero de la pila
-
-	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
-
-	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
-
-	addiu $sp $sp -4 #movemos el puntero de la pila
+	sw $a0, 0($t0)
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	lw $a0 ,8($t0) #Buscamos el atributo en la CIR
+	addiu $a0 $t0 4 #Devolvemos la direccion del atributo en la CIR
 
-	sw $a0 8($sp) # Guardar el argumento en la pila
+	sw $a0, 0($sp)
 
-	lw $t0 4($sp) # Cargar el objeto self desde la pila
+	addi $sp, $sp, -4
 
-	beqz $t0, nullPointerException # Verificar si el objeto es null
+	li $v0, 9  # Solicitar espacio en memoria
 
-	lw $t0, 0($t0) # Cargar la vtable del objeto
+	li $a0, 8  # 4 bytes y su vtable
 
-	lw $t0, 24($t0) # Calcular la dirección del método en la vtable
+	syscall 
 
-	jalr $t0 # Llamar al método out_int
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
 
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
 
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
 
-	lw $fp 4($sp) # Restauramos el frame pointer
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
 
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
 
-	#Termina codigo para llamada de metodo
+	lw $t0, 4($sp)
+
+	addi $sp, $sp, 4
+
+	sw $a0, 0($t0)
+
+	#Empieza codigo para While
+
+	loopS_22_5: #label del loop
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	lw $a0 ,8($fp) #Buscamos el parametro en la pila
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	lw $t0 4($t0) #Cargar el valor del int o bool izquierdo
+
+	lw $t1 4($t1) #Cargar el valor del int o bool derecho
+
+	slt $t0, $t0, $t1 #Comparo si izquierda es más chico que derecha
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	move $a0 $v0 #La dirección del objeto Bool queda en $a0
+
+	la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal
+
+	sw $t1, 0($a0) #guardamos la dirección de la vtableBool en la CIR
+
+	sw $t0, 4($a0) #guardar el valor del Bool en la CIR
+
+	#Termina codigo para expBin
+
+	lw $a0, 4($a0) # Carga el valor de la condicion while
+
+	bne $a0, 1, doneWS_22_5 #En caso de que la condición no se cumpla, saltamos al done label.
 
 	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
 
@@ -538,7 +691,7 @@ main:
 
 	li $v0, 9  # Solicitar espacio en memoria
 
-	li $a0, 8  #  len() bytes + padding + su vtable
+	li $a0, 12  #  len() bytes + padding + su vtable
 
 	syscall 
 
@@ -546,7 +699,7 @@ main:
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
-	la $a0, str_const_19_25 # Guardamos el valor en la CIR en un temporal
+	la $a0, str_const_23_18 # Guardamos el valor en la CIR en un temporal
 
 	jal save_str #Guardamos el valor en la CIR
 
@@ -658,7 +811,599 @@ main:
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
-	la $a0, str_const_21_25 # Guardamos el valor en la CIR en un temporal
+	la $a0, str_const_25_17 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	#Empieza codigo para IF
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 2 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	lw $t0 4($t0) #Cargar el valor del int izquierdo
+
+	lw $t1 4($t1) #Cargar el valor del int derecho
+
+	beqz $t1, DivisionByZeroException #Si el lado derecho es igual a cero saltamos un error
+
+	div $t0, $t1 #dividimos los dos int
+
+	mfhi $t0 #guardamos el resultado en $t0 del resto
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	move $a0 $v0 #La dirección del objeto Int queda en $a0
+
+	la $t1, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t1, 0($a0) #guardamos la dirección de la vtableInt en la CIR
+
+	sw $t0, 4($a0) #guardar el valor del int
+
+	#Termina codigo para expBin
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	li $t0, 0 # Guardamos el valor en la CIR en un temporal
+
+	sw $t0, 4($v0) #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	lw $t0 4($t0) #Cargar el valor del int o bool izquierdo
+
+	lw $t1 4($t1) #Cargar el valor del int o bool derecho
+
+	slt $t2, $t0, $t1 #Comparo si izquierda es más grande que derecha
+
+	slt $t3 , $t1, $t0 #Comparo si derecha es más grande que izquierda
+
+	or $t0, $t2, $t3 #Si alguna de las dos es verdadera, entonces no son iguales
+
+	xor $t0, $t0, 1 #Si ambas son iguales, seteamos el valor a 1, sino a 0
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	move $a0 $v0 #La dirección del objeto Bool queda en $a0
+
+	la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal
+
+	sw $t1, 0($a0) #guardamos la dirección de la vtableBool en la CIR
+
+	sw $t0, 4($a0) #guardar el valor del Bool en la CIR
+
+	#Termina codigo para expBin
+
+	lw $a0, 4($a0) # Carga el valor de la condicion if
+
+	bne $a0, 1, falseIS_27_2 # Si no se cumple la condición salta a la labelFalse
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	addiu $a0 $t0 8 #Devolvemos la direccion del atributo en la CIR
+
+	lw $a0, 0($a0) #Cargar el array
+
+	sw $a0, 0($sp) #guardar el objeto en la pila
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
+
+	lw $t0, 4($sp) #Cargar el array
+
+	lw $t1, 4($t0) #Cargar el tamaño del array
+
+	lw $t2, 4($a0) #Cargar el indice del array
+
+	slt $t3, $t1, $t2 #Saber si el indice es mayor al tamaño del array
+
+	beq $t3, 1, ArrayIndexOutOfBoundsException #Si es mayor salimos del metodo
+
+	mul $t2, $t2, 4 #Convertir el indice del array a bytes
+
+	add $t2 $t2 8  #Agregamos el offset de Vtable y tamaño
+
+	add $a0, $t0, $t2 #Obtenemos la direccion del elemento del array
+
+	addiu $sp $sp 4 #movemos el puntero de la pila
+
+	sw $a0, 0($sp)
+
+	addi $sp, $sp, -4
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
+
+	lw $t0, 4($sp)
+
+	addi $sp, $sp, 4
+
+	sw $a0, 0($t0)
+
+	j doneIS_27_2 #Salta al doneLabel, se termina el if
+
+	falseIS_27_2: #labelFalse de if
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	addiu $a0 $t0 8 #Devolvemos la direccion del atributo en la CIR
+
+	lw $a0, 0($a0) #Cargar el array
+
+	sw $a0, 0($sp) #guardar el objeto en la pila
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
+
+	lw $t0, 4($sp) #Cargar el array
+
+	lw $t1, 4($t0) #Cargar el tamaño del array
+
+	lw $t2, 4($a0) #Cargar el indice del array
+
+	slt $t3, $t1, $t2 #Saber si el indice es mayor al tamaño del array
+
+	beq $t3, 1, ArrayIndexOutOfBoundsException #Si es mayor salimos del metodo
+
+	mul $t2, $t2, 4 #Convertir el indice del array a bytes
+
+	add $t2 $t2 8  #Agregamos el offset de Vtable y tamaño
+
+	add $a0, $t0, $t2 #Obtenemos la direccion del elemento del array
+
+	addiu $sp $sp 4 #movemos el puntero de la pila
+
+	sw $a0, 0($sp)
+
+	addi $sp, $sp, -4
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
+
+	li $t0, -1
+
+	lw $t1, 4($a0) #cargar el valor del int
+
+	mul $t1, $t1, $t0 #multiplicar por -1
+
+	li $v0 , 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall 
+
+	la $t2, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t2, 0($v0) #guardamos la dirección de la vtableInt en la CIR
+
+	sw $t1, 4($v0) #guardar el valor del int
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $t0, 4($sp)
+
+	addi $sp, $sp, 4
+
+	sw $a0, 0($t0)
+
+	doneIS_27_2: #labelDone del if
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_34_21 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_int
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,8($t0) #Buscamos el atributo en la CIR
+
+	sw $a0, 0($sp) #guardar el objeto en la pila
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
+
+	lw $t0, 4($sp) #Cargar el array
+
+	lw $t1, 4($t0) #Cargar el tamaño del array
+
+	lw $t2, 4($a0) #Cargar el indice del array
+
+	slt $t3, $t1, $t2 #Saber si el indice es mayor al tamaño del array
+
+	beq $t3, 1, ArrayIndexOutOfBoundsException #Si es mayor salimos del metodo
+
+	mul $t2, $t2, 4 #Convertir el indice del array a bytes
+
+	add $t2 $t2 8 #Agregamos el offset de Vtable y tamaño
+
+	add $t0, $t0, $t2 #Obtenemos el valor del elemento del array
+
+	lw $a0, 0($t0) #Cargar el valor del elemento del array
+
+	addiu $sp $sp 4 #movemos el puntero de la pila
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 24($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_int
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_36_17 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	addiu $a0 $t0 4 #Devolvemos la direccion del atributo en la CIR
+
+	sw $a0, 0($sp)
+
+	addi $sp, $sp, -4
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,4($t0) #Buscamos el atributo en la CIR
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,8($t0) #Buscamos el atributo en la CIR
+
+	sw $a0, 0($sp) #guardar el objeto en la pila
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
+
+	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
+
+	lw $t0, 4($sp) #Cargar el array
+
+	lw $t1, 4($t0) #Cargar el tamaño del array
+
+	lw $t2, 4($a0) #Cargar el indice del array
+
+	slt $t3, $t1, $t2 #Saber si el indice es mayor al tamaño del array
+
+	beq $t3, 1, ArrayIndexOutOfBoundsException #Si es mayor salimos del metodo
+
+	mul $t2, $t2, 4 #Convertir el indice del array a bytes
+
+	add $t2 $t2 8 #Agregamos el offset de Vtable y tamaño
+
+	add $t0, $t0, $t2 #Obtenemos el valor del elemento del array
+
+	lw $a0, 0($t0) #Cargar el valor del elemento del array
+
+	addiu $sp $sp 4 #movemos el puntero de la pila
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	lw $t0 4($t0) #Cargar el valor del int izquierdo
+
+	lw $t1 4($t1) #Cargar el valor del int derecho
+
+	add $t0, $t0, $t1 #sumar los dos int
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	move $a0 $v0 #La dirección del objeto Int queda en $a0
+
+	la $t1, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
+
+	sw $t1, 0($a0) #guardamos la dirección de la vtableInt en la CIR
+
+	sw $t0, 4($a0) #guardar el valor del int
+
+	#Termina codigo para expBin
+
+	lw $t0, 4($sp)
+
+	addi $sp, $sp, 4
+
+	sw $a0, 0($t0)
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_40_20 # Guardamos el valor en la CIR en un temporal
 
 	jal save_str #Guardamos el valor en la CIR
 
@@ -770,7 +1515,7 @@ main:
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
-	la $a0, str_const_23_25 # Guardamos el valor en la CIR en un temporal
+	la $a0, str_const_42_17 # Guardamos el valor en la CIR en un temporal
 
 	jal save_str #Guardamos el valor en la CIR
 
@@ -797,234 +1542,30 @@ main:
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	#Termina codigo para llamada de metodo
-
-	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
-
-	li $v0 9  # Solicitar espacio en memoria
-
-	syscall 
-
-	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
-
-	sw $a0, 0($v0) # Guardar la vtable en la CIR
-
-	move $a0, $v0 # La dirección del objeto queda en $a0
-
-	#Comienza codigo para llamada de metodo out_int
-
-	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
-
-	addiu $sp $sp -4 # movemos el puntero de la pila
-
-	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
-
-	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
-
-	addiu $sp $sp -4 #movemos el puntero de la pila
-
-	lw $t0  4($fp) #Buscamos el objeto self en la pila
-
-	lw $a0 ,8($t0) #Buscamos el atributo en la CIR
-
-	sw $a0 8($sp) # Guardar el argumento en la pila
-
-	lw $t0 4($sp) # Cargar el objeto self desde la pila
-
-	beqz $t0, nullPointerException # Verificar si el objeto es null
-
-	lw $t0, 0($t0) # Cargar la vtable del objeto
-
-	lw $t0, 24($t0) # Calcular la dirección del método en la vtable
-
-	jalr $t0 # Llamar al método out_int
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 4($sp) # Restauramos el frame pointer
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
-
-	#Termina codigo para llamada de metodo
-
-	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
-
-	li $v0 9  # Solicitar espacio en memoria
-
-	syscall 
-
-	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
-
-	sw $a0, 0($v0) # Guardar la vtable en la CIR
-
-	move $a0, $v0 # La dirección del objeto queda en $a0
-
-	#Comienza codigo para llamada de metodo out_str
-
-	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
-
-	addiu $sp $sp -4 # movemos el puntero de la pila
-
-	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
-
-	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
-
-	addiu $sp $sp -4 #movemos el puntero de la pila
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  #  len() bytes + padding + su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
-
-	la $a0, str_const_25_25 # Guardamos el valor en la CIR en un temporal
-
-	jal save_str #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	sw $a0 8($sp) # Guardar el argumento en la pila
-
-	lw $t0 4($sp) # Cargar el objeto self desde la pila
-
-	beqz $t0, nullPointerException # Verificar si el objeto es null
-
-	lw $t0, 0($t0) # Cargar la vtable del objeto
-
-	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
-
-	jalr $t0 # Llamar al método out_str
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 4($sp) # Restauramos el frame pointer
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
-
-	#Termina codigo para llamada de metodo
-
-	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
-
-	li $v0 9  # Solicitar espacio en memoria
-
-	syscall 
-
-	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
-
-	sw $a0, 0($v0) # Guardar la vtable en la CIR
-
-	move $a0, $v0 # La dirección del objeto queda en $a0
-
-	#Comienza codigo para llamada de metodo out_int
-
-	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
-
-	addiu $sp $sp -4 # movemos el puntero de la pila
-
-	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
-
-	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
-
-	addiu $sp $sp -4 #movemos el puntero de la pila
 
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
 	lw $a0 ,12($t0) #Buscamos el atributo en la CIR
 
-	sw $a0 8($sp) # Guardar el argumento en la pila
+	lw $t0, 4($a0) #cargar el valor del int
 
-	lw $t0 4($sp) # Cargar el objeto self desde la pila
+	addi $t0, $t0, 1 #incrementar el valor del int
 
-	beqz $t0, nullPointerException # Verificar si el objeto es null
+	sw $t0, 4($a0) #guardar el valor del int
 
-	lw $t0, 0($t0) # Cargar la vtable del objeto
+	j loopS_22_5 #Volvemos al loop
 
-	lw $t0, 24($t0) # Calcular la dirección del método en la vtable
+	doneWS_22_5: #termina el loop
 
-	jalr $t0 # Llamar al método out_int
+	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+	lw $a0 ,4($t0) #Buscamos el atributo en la CIR
 
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 4($sp) # Restauramos el frame pointer
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
-
-	#Termina codigo para llamada de metodo
-
-	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
-
-	li $v0 9  # Solicitar espacio en memoria
-
-	syscall 
-
-	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
-
-	sw $a0, 0($v0) # Guardar la vtable en la CIR
-
-	move $a0, $v0 # La dirección del objeto queda en $a0
-
-	#Comienza codigo para llamada de metodo out_str
-
-	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
-
-	addiu $sp $sp -4 # movemos el puntero de la pila
-
-	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
-
-	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
-
-	addiu $sp $sp -4 #movemos el puntero de la pila
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  #  len() bytes + padding + su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
-
-	la $a0, str_const_27_25 # Guardamos el valor en la CIR en un temporal
-
-	jal save_str #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	sw $a0 8($sp) # Guardar el argumento en la pila
-
-	lw $t0 4($sp) # Cargar el objeto self desde la pila
-
-	beqz $t0, nullPointerException # Verificar si el objeto es null
-
-	lw $t0, 0($t0) # Cargar la vtable del objeto
-
-	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
-
-	jalr $t0 # Llamar al método out_str
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
-
-	lw $fp 4($sp) # Restauramos el frame pointer
-
-	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
-
-	#Termina codigo para llamada de metodo
+	j m_run_17_10_end # Salta al epilogo del método
 
 	li $a0, 0 # Valor de retorno por defecto
 
-	m_toStr_15_12_end: # Label para el return del metodo
+	m_run_17_10_end: # Label para el return del metodo
 
 	lw $ra 0($fp) #cargamos el return address
 

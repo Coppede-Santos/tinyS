@@ -187,9 +187,7 @@ public class TopVisitor extends NodeVisitor {
             sentencia.accept(methodBodyVisitor);
         }
 
-        // TODO: Manejar el caso en el que no haya un return explicito
-        // Dejamos el valor por defecto en $a0 para los metodos que devuelven un valor,
-        // nil para los objetos y 0 para los primitivos
+        codigo.agregarLinea("li $a0, 0 # Valor de retorno por defecto");
 
         codigo.agregarLinea(getLabel(entradaMetodo) + "_end: # Label para el return del metodo");
 

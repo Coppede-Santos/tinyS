@@ -33,83 +33,7 @@ main:
 
 	addi $sp $sp -8 #restamos 4 bytes para cada variable local
 
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0,16# su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Fibonacci # Cargar la dirección de la vtable en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR
-
-	sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila
-
-	addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 0 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
-
-	sw $a0 4($v0) #Inicializamos el atributo suma
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 0 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
-
-	sw $a0 8($v0) #Inicializamos el atributo i
-
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 0 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
-	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
-
-	sw $a0 12($v0) #Inicializamos el atributo j
-
-	lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0
-
-	addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila
+	li $a0 0 # Valor por defecto para los objetos, nill
 
 	sw $a0 -4($fp)
 
@@ -229,6 +153,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 0($t0) # Calcular la dirección del método en la vtable
@@ -282,6 +208,8 @@ main:
 	addiu $sp $sp -4 #movemos el puntero de la pila
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
 
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
@@ -349,6 +277,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 12($t0) # Calcular la dirección del método en la vtable
@@ -369,6 +299,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 24($t0) # Calcular la dirección del método en la vtable
@@ -384,6 +316,10 @@ main:
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	#Termina codigo para llamada de metodo
+
+	li $a0, 0 # Valor de retorno por defecto
+
+	m_start_43_6_end: # Label para el return del metodo
 
 	lw $ra 0($fp) #cargamos el return address
 
@@ -493,6 +429,10 @@ main:
 
 	sw $a0, 0($t0)
 
+	li $a0, 0 # Valor de retorno por defecto
+
+	m_Fibonacci_27_2_end: # Label para el return del metodo
+
 	# Devolvemos el self del constructor en $a0
 
 	lw $a0 4($fp) # cargamos el self en $a0
@@ -544,6 +484,8 @@ main:
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
 
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
@@ -605,6 +547,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
@@ -620,6 +564,10 @@ main:
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	#Termina codigo para llamada de metodo
+
+	li $a0, 0 # Valor de retorno por defecto
+
+	m_imprimo_sucesion_37_20_end: # Label para el return del metodo
 
 	lw $ra 0($fp) #cargamos el return address
 
@@ -683,6 +631,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
@@ -728,6 +678,8 @@ main:
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
 
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
@@ -789,6 +741,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
@@ -804,6 +758,10 @@ main:
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	#Termina codigo para llamada de metodo
+
+	li $a0, 0 # Valor de retorno por defecto
+
+	m_imprimo_numero_32_18_end: # Label para el return del metodo
 
 	lw $ra 0($fp) #cargamos el return address
 
@@ -1055,6 +1013,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 8($t0) # Calcular la dirección del método en la vtable
@@ -1092,6 +1052,8 @@ main:
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
 
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
@@ -1203,6 +1165,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 8($t0) # Calcular la dirección del método en la vtable
@@ -1299,6 +1263,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 4($t0) # Calcular la dirección del método en la vtable
@@ -1340,6 +1306,8 @@ main:
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
 
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
@@ -1495,6 +1463,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 4($t0) # Calcular la dirección del método en la vtable
@@ -1532,6 +1502,12 @@ main:
 	lw $t0  4($fp) #Buscamos el objeto self en la pila
 
 	lw $a0 ,4($t0) #Buscamos el atributo en la CIR
+
+	j m_sucesion_fib_6_20_end # Salta al epilogo del método
+
+	li $a0, 0 # Valor de retorno por defecto
+
+	m_sucesion_fib_6_20_end: # Label para el return del metodo
 
 	lw $ra 0($fp) #cargamos el return address
 
@@ -2252,7 +2228,7 @@ main:
     
     	#move $a0, $zero
     	add $a0, $t0, $t1 # a0 = l1 + l2
-    	addi $a0, $a0, 4 # a0 = vt + len
+    	addi $a0, $a0, 5 # a0 = vt + len + padding
     
     	li $v0, 9
     	syscall
@@ -2377,6 +2353,8 @@ main:
     	.asciiz "ERROR: INDICE DE ARRAY FUERA DE RANGO"
     NegativeArraySizeExceptionMessage:
     	.asciiz "ERROR: LONGITUD DE ARRAY NEGATIVO"
+    nullPointerExceptionMessage:
+        .asciiz "ERROR: OBJETO NULO"
     
     .text
     DivisionByZeroException:
@@ -2405,4 +2383,14 @@ main:
     	li $v0, 17
     	li $a0, 1
     	syscall
+
+    nullPointerException:
+        	la $a0 nullPointerExceptionMessage
+        	li $v0, 4
+        	syscall
+        
+        	li $v0, 17
+        	li $a0, 1
+        	syscall
+        
     

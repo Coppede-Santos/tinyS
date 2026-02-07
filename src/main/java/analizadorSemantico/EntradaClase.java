@@ -191,6 +191,8 @@ public class EntradaClase extends Entrada {
 
         int posicionMetodoActual = cantidadMetodosSuperclase + 1;
 
+        EntradaMetodo metodoAncestro;
+
         salida += "\t\t\t\"metodos\": [\n";
         for (EntradaMetodo metodo : metodos.values()) {
 
@@ -200,8 +202,17 @@ public class EntradaClase extends Entrada {
                 salida += metodo.consolidarMetodo(4, true);
             }
             if(metodo.getPosicionMetodo() == 0) {
-                metodo.setPosicionMetodo(posicionMetodoActual);
-                posicionMetodoActual++;
+                //Chequea si el metodo esta sobrescrito o es nuevo, en el caso de ser nuevo se le asigna la siguiente posicion disponible, en el caso de ser sobrescrito se le asigna la posicion del metodo ancestro.
+                metodoAncestro =  entradaSuperClase.buscarMetodo(metodo.lexema);
+                if (metodoAncestro != null){
+
+                    metodo.setPosicionMetodo(metodoAncestro.posicionMetodo);
+
+                }else {
+
+                    metodo.setPosicionMetodo(posicionMetodoActual);
+                    posicionMetodoActual++;
+                }
             }
         }
         salida += "\t\t\t]\n";

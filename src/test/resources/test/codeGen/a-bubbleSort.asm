@@ -33,23 +33,7 @@ main:
 
 	addi $sp $sp -4 #restamos 4 bytes para cada variable local
 
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0,4# su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Array # Cargar la dirección de la vtable en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR
-
-	sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila
-
-	addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto
-
-	lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0
-
-	addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila
+	li $a0 0 # Valor por defecto para los objetos, nill
 
 	sw $a0 -4($fp)
 
@@ -103,7 +87,7 @@ main:
 
 	move $t2, $v0 # La dirección del objeto Array queda en $t2
 
-	M_start_38_5S_41_18_loop:
+	m_start_38_5S_41_18_loop:
 
 	li $v0, 9  # Solicitar espacio en memoria
 
@@ -119,7 +103,7 @@ main:
 
 	addi $t0, $t0, -1 #Decrementamos el tamaño del contador
 
-	bnez $t0 M_start_38_5S_41_18_loop #Si el tamaño del array es distinto de cero, saltar la inicialización
+	bnez $t0 m_start_38_5S_41_18_loop #Si el tamaño del array es distinto de cero, saltar la inicialización
 
 	move $a0, $t2 # La dirección del objeto Array queda en $a0
 
@@ -513,6 +497,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
@@ -558,6 +544,8 @@ main:
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
 
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
@@ -619,6 +607,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
@@ -664,6 +654,8 @@ main:
 	sw $a0 8($sp) # Guardar el argumento en la pila
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
 
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
@@ -725,6 +717,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
@@ -771,6 +765,8 @@ main:
 
 	lw $t0 4($sp) # Cargar el objeto self desde la pila
 
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
 	lw $t0, 0($t0) # Cargar la vtable del objeto
 
 	lw $t0, 4($t0) # Calcular la dirección del método en la vtable
@@ -786,6 +782,10 @@ main:
 	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
 
 	#Termina codigo para llamada de metodo
+
+	li $a0, 0 # Valor de retorno por defecto
+
+	m_start_38_5_end: # Label para el return del metodo
 
 	lw $ra 0($fp) #cargamos el return address
 
@@ -804,6 +804,10 @@ main:
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
 
 	addi $sp $sp 0 #restamos 4 bytes para cada variable local
+
+	li $a0, 0 # Valor de retorno por defecto
+
+	m_BubbleSort_10_5_end: # Label para el return del metodo
 
 	# Devolvemos el self del constructor en $a0
 
@@ -827,23 +831,7 @@ main:
 
 	addi $sp $sp -20 #restamos 4 bytes para cada variable local
 
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0,4# su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Array # Cargar la dirección de la vtable en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtable en la CIR
-
-	sw $v0 0($sp) #Guardamos la direccion de la cir del objeto en la pila
-
-	addiu $sp $sp -4 #restamos 4 bytes para guardar la direccion de la cir del objeto
-
-	lw $a0 4($sp) #Recuperamos la direccion de la cir del objeto de la pila y la dejamos en $a0
-
-	addiu $sp $sp 4 #Sacamos la direccion de la cir del objeto de la pila
+	li $a0 0 # Valor por defecto para los objetos, nill
 
 	sw $a0 -4($fp)
 
@@ -940,6 +928,38 @@ main:
 	addi $sp, $sp, -4
 
 	lw $a0 ,-4($fp) #Buscamos la variable en la pila
+
+	#Comienza codigo para llamada de metodo length
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, 0 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 4($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método length
+
+	addi $sp $sp 0 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
 
 	lw $t0, 4($sp)
 
@@ -1735,6 +1755,10 @@ main:
 
 	doneWS_23_13: #termina el loop
 
+	li $a0, 0 # Valor de retorno por defecto
+
+	m_sort_12_19_end: # Label para el return del metodo
+
 	lw $ra 0($fp) #cargamos el return address
 
 	addiu $sp $sp 20 #limpiamos la pila de las variables locales
@@ -1752,6 +1776,10 @@ main:
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
 
 	addi $sp $sp 0 #restamos 4 bytes para cada variable local
+
+	li $a0, 0 # Valor de retorno por defecto
+
+	m_Sort_4_5_end: # Label para el return del metodo
 
 	# Devolvemos el self del constructor en $a0
 
@@ -2118,26 +2146,28 @@ main:
             addiu $sp $sp 4
             jr $ra
 
-        m_out_array_str_0_0:
+        m_out_array_str_0_0:  #+++++++++++++++++++++++++++++++++++
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
 
-            lw $t1 4($fp)
+            lw $t1 8($fp)
 
             # 1. Recupero la longitud del arreglo
             lw $t0 4($t1)
 
-            # 2. Verifico si dim > 0
+
             la $a0 left_bracket
             li $v0 4
             syscall
 
+            # 2. Verifico si dim > 0
             beq $t0 $zero m_out_array_str_exit
 
             # Guardamos variables intermedias para que no se pierdan
 
             ## v1: Index
+            addiu $t1 $t1 4 # Aumento index
             sw $t1, 0($sp)
             addiu $sp $sp -4
 
@@ -2151,25 +2181,25 @@ main:
                 sw $fp 0($sp)
                 addiu $sp $sp -4
 
-                lw $t1, -4($fp) # Recupero index
-                lw $t0, -8($fp) # Recupero contador
-
+                lw $t1, 12($sp) # Recupero index
                 addiu $t1 $t1 4 # Aumento index
-                subiu $t0 $t0 1 # Obtenemos elem restantes
+                sw $t1, 12($sp) # Recupero index
 
-                sw $t1, -4($fp) # Guardo index
-                sw $t0, -8($fp) # Guardo contador
 
-                lw $a0 4($t1) # Obtengo sig. pos
+                lw $a0 0($t1) # Obtengo sig. pos
                 sw $a0 0($sp) # Guardo en pila
-                addiu $sp $sp -4
+                addiu $sp $sp -8
                 jal m_out_str_0_0 # Imprimo elem
-                addiu $sp $sp 4
+
+                addiu $sp $sp 8
                 lw $fp 0($sp)
                 addiu $sp $sp 4
 
 
-                lw $t0, -8($fp)
+                lw $t0, 4($sp)
+                subiu $t0 $t0 1 # Obtenemos elem restantes
+                sw $t0, 4($sp)
+
                 beq $t0 $zero m_out_array_str_exit # Si ya no hay elem siguientes, salgo
 
                 la $a0 comma
@@ -2191,26 +2221,27 @@ main:
             addiu $sp $sp 4
             jr $ra
 
-        m_out_array_bool_0_0:
+        m_out_array_bool_0_0: #------------------------------
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
 
-            lw $t1 4($fp)
+            lw $t1 8($fp)
 
             # 1. Recupero la longitud del arreglo
             lw $t0 4($t1)
 
-            # 2. Verifico si dim > 0
             la $a0 left_bracket
             li $v0 4
             syscall
 
+            # 2. Verifico si dim > 0
             beq $t0 $zero m_out_array_bool_exit
 
             # Guardamos variables intermedias para que no se pierdan
 
             ## v1: Index
+            addiu $t1 $t1 4 # Aumento index
             sw $t1, 0($sp)
             addiu $sp $sp -4
 
@@ -2218,27 +2249,32 @@ main:
             sw $t0, 0($sp)
             addiu $sp $sp -4
 
+
             # 3. Si dim > 0, iteramos por cada CIR
-            addiu $t1 $t1 4 # Aumento index
+
 
             m_out_array_bool_loop:
                 sw $fp 0($sp)
                 addiu $sp $sp -4
 
-
+                lw $t1, 12($sp) # Recupero index
                 addiu $t1 $t1 4 # Aumento index
+                sw $t1, 12($sp) # Recupero index
+
                 lw $a0 0($t1) # Obtengo sig. pos
                 sw $a0 0($sp) # Guardo en pila
                 addiu $sp $sp -8
                 jal m_out_bool_0_0 # Imprimo elem
 
-
-
                 addiu $sp $sp 8
+
                 lw $fp 0($sp)
                 addiu $sp $sp 4
 
+                #cargamos el contador
+                lw $t0, 4($sp)
                 subiu $t0 $t0 1 # Obtenemos elem restantes
+                sw $t0, 4($sp)
 
                 beq $t0 $zero m_out_array_bool_exit # Si ya no hay elem siguientes, salgo
 
@@ -2261,26 +2297,28 @@ main:
             addiu $sp $sp 4
             jr $ra
 
-        m_out_array_double_0_0:
+        m_out_array_double_0_0: #++++++++++++++++++++++++++++++++++
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
 
-            lw $t1 4($fp)
+            lw $t1 8($fp)
 
             # 1. Recupero la longitud del arreglo
             lw $t0 4($t1)
 
-            # 2. Verifico si dim > 0
+
             la $a0 left_bracket
             li $v0 4
             syscall
 
+            # 2. Verifico si dim > 0
             beq $t0 $zero m_out_array_double_exit
 
             # Guardamos variables intermedias para que no se pierdan
 
             ## v1: Index
+            addiu $t1 $t1 4 # Aumento index
             sw $t1, 0($sp)
             addiu $sp $sp -4
 
@@ -2294,25 +2332,27 @@ main:
                 sw $fp 0($sp)
                 addiu $sp $sp -4
 
-                lw $t1, -4($fp) # Recupero index
-                lw $t0, -8($fp) # Recupero contador
-
+                lw $t1, 12($sp) # Recupero index
                 addiu $t1 $t1 4 # Aumento index
-                subiu $t0 $t0 1 # Obtenemos elem restantes
+                sw $t1, 12($sp) # Recupero index
 
-                sw $t1, -4($fp) # Guardo index
-                sw $t0, -8($fp) # Guardo contador
-
-                lw $a0 4($t1) # Obtengo sig. pos
+                lw $a0 0($t1) # Obtengo sig. pos
                 sw $a0 0($sp) # Guardo en pila
-                addiu $sp $sp -4
+                addiu $sp $sp -8
                 jal m_out_double_0_0 # Imprimo elem
-                addiu $sp $sp 4
+
+                addiu $sp $sp 8
                 lw $fp 0($sp)
                 addiu $sp $sp 4
 
 
-                lw $t0, -8($fp)
+
+
+                #cargamos el contador
+                lw $t0, 4($sp)
+                subiu $t0 $t0 1 # Obtenemos elem restantes
+                sw $t0, 4($sp)
+
                 beq $t0 $zero m_out_array_double_exit # Si ya no hay elem siguientes, salgo
 
                 la $a0 comma
@@ -2397,8 +2437,8 @@ main:
     		bne $t0 $zero loop # Si llego a \0, salgo
     
     	# Creo CIR Int
-    	addiu $t2, $t1, 4 # Sumo len + 4 VT
-    	move $a0, $t1 # Muevo el resultado en a0
+    	#addiu $t2, $t1, 4 # Sumo len + 4 VT
+    	li $a0, 8 # reservo 4 bytes para VT y 4 bytes para el int
     	li $v0, 9 # Reservo bytes
     	syscall
     
@@ -2410,11 +2450,11 @@ main:
     
     	# Final de start
     	lw $ra 4($sp)
-    	addiu $sp $sp 12
+    	addiu $sp $sp 4
     	lw $fp 0($sp)
     	jr $ra
     
-    concat:
+    concat: #----------------------------------------------------------
     	move $fp $sp
     	sw $ra 0($sp)
     	addiu $sp $sp -4
@@ -2429,6 +2469,10 @@ main:
     	sw $a0 0($sp) # Lo guardamos en la pila
     	addiu $sp $sp -4
     	jal length
+
+    	addiu $sp $sp 4
+    	lw $fp 4($sp)
+    	addiu $sp $sp 4
     
     	sw $a0, 0($sp) # Guardamos l1 en la pila
     	addiu $sp $sp -4
@@ -2441,6 +2485,10 @@ main:
     	sw $a0 0($sp) # Lo guardamos en la pila
     	addiu $sp $sp -4
     	jal length
+
+    	addiu $sp $sp 4
+    	lw $fp 4($sp)
+    	addiu $sp $sp 4
     
     	sw $a0, 0($sp) # Guardamos l2 en la pila
     	addiu $sp $sp -4
@@ -2449,14 +2497,14 @@ main:
     	## - Guardar la dirección de v0 en un registro para no perderlo
     	## - Crear CIR de Str nuevo, incluye guardar la VT
     
-    	lw $t0, -4($fp) # Obtengo el CIR de l1
-    	lw $t0, 4($t0) # Obtengo el len de l1
-    	lw $t1, -8($fp) # Obtengo l2
+    	lw $t0, 4($sp) # Obtengo el CIR de L1
+    	lw $t0, 4($t0) # Obtengo el len de L1
+    	lw $t1, 8($sp) # Obtengo L2
     	lw $t1, 4($t1) # Obtengo el len de l2
     
     	#move $a0, $zero
     	add $a0, $t0, $t1 # a0 = l1 + l2
-    	addi $a0, $a0, 4 # a0 = vt + len
+    	addi $a0, $a0, 5 # a0 = vt + len + padding
     
     	li $v0, 9
     	syscall
@@ -2501,11 +2549,10 @@ main:
     
     	# Final del concat
     	lw $ra 4($sp)
-    	addiu $sp $sp 16
-    	lw $fp 0($sp)
+    	addiu $sp $sp 4
     	jr $ra
     
-    save_str: # Escribe el contenido de $a0 en la direccion apuntada por v0 + 4
+    save_str: # Escribe el contenido de $a0 en la direccion apuntada por v0 + 4 #----------------------------------------------------------
     	move $t0 $a0
     	move $t2 $v0
     	addiu $t2 $t2 4
@@ -2582,6 +2629,8 @@ main:
     	.asciiz "ERROR: INDICE DE ARRAY FUERA DE RANGO"
     NegativeArraySizeExceptionMessage:
     	.asciiz "ERROR: LONGITUD DE ARRAY NEGATIVO"
+    nullPointerExceptionMessage:
+        .asciiz "ERROR: OBJETO NULO"
     
     .text
     DivisionByZeroException:
@@ -2610,4 +2659,14 @@ main:
     	li $v0, 17
     	li $a0, 1
     	syscall
+
+    nullPointerException:
+        	la $a0 nullPointerExceptionMessage
+        	li $v0, 4
+        	syscall
+        
+        	li $v0, 17
+        	li $a0, 1
+        	syscall
+        
     

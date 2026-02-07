@@ -1,3 +1,7 @@
+//Salida esperada:
+// 1, si es positivo
+// 0, si es cero
+// -1, si es negativo
 class Clasificador {
 }
 

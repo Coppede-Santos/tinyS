@@ -1,3 +1,12 @@
+// Este test es para probar el uso de arrays en casos limites
+//Salida:
+//i: 0
+//v[i]: 0
+//acc: 0
+//i: 1
+//v[i]: -1
+//acc: -1
+
 class StressArray {
 pub Array Int v;
 pub Int i, acc;

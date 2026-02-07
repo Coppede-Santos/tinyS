@@ -1,3 +1,7 @@
+//Salida esperada:
+//1
+//2
+//1
 class Contador {
 pub Int valor;
 }
