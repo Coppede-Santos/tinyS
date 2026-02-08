@@ -11,6 +11,8 @@ import java.util.Objects;
  */
 public class MethodBodyVisitor extends NodeVisitor {
 
+    private LinkedList<String> generatedClasses = new LinkedList<>();
+
 
     /**
      * Constructor de la clase
@@ -506,7 +508,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                             String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
                             codigo.agregarLinea(label + ":");
                             codigo.agregarLinea("li $t1, 1");
-                            codigo.agregarLinea("sub $t1, $t1, $t2 #Si ambos son false, seteamos el valor a 0, sino a 1");
+                            codigo.agregarLinea("sub $t0, $t1, $t2 #Si ambos son false, seteamos el valor a 0, sino a 1");
                         }
                     }
                     expBinResultadoBool();
@@ -563,7 +565,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                             String label = "true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna();
                             codigo.agregarLinea(label + ":");
                             codigo.agregarLinea("li $t1, 1");
-                            codigo.agregarLinea("sub $t1, $t1, $t2 #Si ambos son false, seteamos el valor a 0, sino a 1");
+                            codigo.agregarLinea("sub $t0, $t1, $t2 #Si ambos son false, seteamos el valor a 0, sino a 1");
                         }
 
                     }
@@ -1038,17 +1040,28 @@ public class MethodBodyVisitor extends NodeVisitor {
         int offset;
 
 
-        if (nodoVar.getEsEncadenado()){
-            //El caso de que el objeto sea el resultado de un encadenado previo
-            //El encadenado previo ya dejo la dirección de la CIR en $a0
+        if (nodoVar.getEsEncadenado()) {
 
-            claseReferenciada = st.buscarClase(nodoVar.getClaseEncadenadoPrev()); //Buscamos la clase a la cual pertenece el objeto como atributo
-            EntradaAtributo atributo = claseReferenciada.buscarAtributo(nodoVar.getLexema()); //Buscamos el atributo en la clase referenciadas
-            offset = (atributo.getPosicionAtributo() * (4)); //Calculamos ell offset dentro de la CIR del objeto del encadenado previo
+            if (!nodoVar.getClaseEncadenadoPrev().equals(st.getClassActual().getLexema())
+                    || entradaMetodo.getLexema().equals("start")) {
+                //El caso de que el objeto sea el resultado de un encadenado previo
+                //El encadenado previo ya dejo la dirección de la CIR en $a0
 
-            codigo.agregarLinea("lw $a0 ," + offset + "($a0) #Buscamos el atributo en la CIR del encadenado previo");
+                claseReferenciada = st.buscarClase(nodoVar.getClaseEncadenadoPrev()); //Buscamos la clase a la cual pertenece el objeto como atributo
+                EntradaAtributo atributo = claseReferenciada.buscarAtributo(nodoVar.getLexema()); //Buscamos el atributo en la clase referenciadas
+                offset = (atributo.getPosicionAtributo() * (4)); //Calculamos ell offset dentro de la CIR del objeto del encadenado previo
 
+                codigo.agregarLinea("lw $a0 ," + offset + "($a0) #Buscamos el atributo en la CIR del encadenado previo");
+            } else {
+                // Caso de self.<atributo>
+                EntradaClase clase = st.getClassActual();
+                EntradaAtributo atributo = clase.buscarAtributo(nodoVar.getLexema());
 
+                codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
+
+                offset = atributo.getPosicionAtributo() * 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
+                codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
+            }
         }else {
             if(! nodoVar.getEsEstatico()){
                 //No es estatico
@@ -1066,14 +1079,16 @@ public class MethodBodyVisitor extends NodeVisitor {
                         offset = (parametro.getPosicionParametro() * (4)) + 8; //Buscamos la posición del parametro pero el offset apunta primero al enlace dinamico y arriba esta el self
                         codigo.agregarLinea("lw $a0 ," + offset + "($fp) #Buscamos el parametro en la pila");
                     } else {
-                        //El caso de que el objeto sea una variable de instancia
-                        EntradaClase clase = st.getClassActual();
-                        EntradaAtributo atributo = clase.buscarAtributo(nodoVar.getLexema());
+                        if (!nodoVar.getLexema().equals(st.getClassActual().getLexema())) {
+                            //El caso de que el objeto sea una variable de instancia
+                            EntradaClase clase = st.getClassActual();
+                            EntradaAtributo atributo = clase.buscarAtributo(nodoVar.getLexema());
 
-                        codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
+                            codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
 
-                        offset = atributo.getPosicionAtributo() * 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
-                        codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
+                            offset = atributo.getPosicionAtributo() * 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
+                            codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
+                        }
 
                     }
                 }
@@ -1334,6 +1349,8 @@ public class MethodBodyVisitor extends NodeVisitor {
     public void generarCodigoClase(String nombreClase){
 
         EntradaClase entradaClase = st.buscarClase(nombreClase);
+
+        this.generatedClasses.add(nombreClase);
         // Cargamos el valor por defecto de la variable en $a0
 
         if (Objects.equals(entradaClase.getLexema(), "Int")){
@@ -1412,7 +1429,9 @@ public class MethodBodyVisitor extends NodeVisitor {
 
                         for (EntradaAtributo atributo : entradaClase.getAtributos().values()) {
 
-                            generarCodigoClase(atributo.getTipo());
+                            if (!this.generatedClasses.contains(atributo.getTipo())) {
+                                generarCodigoClase(atributo.getTipo());
+                            }
                             i = atributo.getPosicionAtributo();
                             codigo.agregarLinea("lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila");
                             codigo.agregarLinea("sw $a0 " + (4 * i) + "($v0) #Inicializamos el atributo " + atributo.getLexema());
