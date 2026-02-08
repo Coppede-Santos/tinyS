@@ -215,4 +215,10 @@ public class TestTinyS {
         testTinyS("a-bubbleSortDouble");
     }
 
+    @Test
+    @DisplayName("Test LinkedList.s")
+    void testLinkedList() throws IOException, ErrorTiny {
+        testTinyS("LinkedList");
+    }
+
 }
