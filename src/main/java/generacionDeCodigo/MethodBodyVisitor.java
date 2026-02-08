@@ -1040,7 +1040,10 @@ public class MethodBodyVisitor extends NodeVisitor {
         int offset;
 
 
-        if (nodoVar.getEsEncadenado() && !nodoVar.getClaseEncadenadoPrev().equals(st.getClassActual().getLexema())) {
+        if (nodoVar.getEsEncadenado()) {
+
+            if (!nodoVar.getClaseEncadenadoPrev().equals(st.getClassActual().getLexema())
+                    || entradaMetodo.getLexema().equals("start")) {
                 //El caso de que el objeto sea el resultado de un encadenado previo
                 //El encadenado previo ya dejo la dirección de la CIR en $a0
 
@@ -1049,7 +1052,16 @@ public class MethodBodyVisitor extends NodeVisitor {
                 offset = (atributo.getPosicionAtributo() * (4)); //Calculamos ell offset dentro de la CIR del objeto del encadenado previo
 
                 codigo.agregarLinea("lw $a0 ," + offset + "($a0) #Buscamos el atributo en la CIR del encadenado previo");
+            } else {
+                // Caso de self.<atributo>
+                EntradaClase clase = st.getClassActual();
+                EntradaAtributo atributo = clase.buscarAtributo(nodoVar.getLexema());
 
+                codigo.agregarLinea("lw $t0  4($fp) #Buscamos el objeto self en la pila");
+
+                offset = atributo.getPosicionAtributo() * 4; //Buscamos el atributo del objeto pero el primer elemento de la cir es la vtable
+                codigo.agregarLinea("lw $a0 ," + offset + "($t0) #Buscamos el atributo en la CIR");
+            }
         }else {
             if(! nodoVar.getEsEstatico()){
                 //No es estatico
