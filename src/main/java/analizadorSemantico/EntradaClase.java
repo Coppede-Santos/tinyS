@@ -253,6 +253,15 @@ public class EntradaClase extends Entrada {
                 ;
     }
 
+    public boolean esTipoPrimitivo() {
+        return lexema.equals("Int") ||
+                lexema.equals("Double") ||
+                lexema.equals("Bool") ||
+                lexema.equals("Str") ||
+                lexema.equals("Array")
+                ;
+    }
+
     public int getTamanioObjeto() {
         // 4 bytes por la vtable
         int tamanio = 4;

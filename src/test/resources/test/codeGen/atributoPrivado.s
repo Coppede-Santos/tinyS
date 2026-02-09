@@ -12,8 +12,14 @@ ret saldo;
 }
 
 fn Int get_saldo(){
-ret saldo;
+ret saldo;}
+
+
+fn prueba(){
+ret;
 }
+
+
 
 .(){
 saldo = 57;
