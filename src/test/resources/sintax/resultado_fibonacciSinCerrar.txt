@@ -1,0 +1,4 @@
+ERROR: SINTACTICO
+
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
+|LINEA 43 | COLUMNA 6 | TOKEN INESPERADO - Se espera: una firma para metodo o constructor, o cerrar implementación - Se obtuvo: start |

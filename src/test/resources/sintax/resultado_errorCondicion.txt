@@ -1,0 +1,4 @@
+ERROR: SINTACTICO
+ 
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: | 
+|LINEA 9 | COLUMNA 29 | TOKEN INESPERADO - Se espera: una expresion - Se obtuvo: Bool |
