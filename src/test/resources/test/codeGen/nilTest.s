@@ -18,7 +18,7 @@ start{
 Nodo n;
 Int x;
 
-//n = nil;
+n = nil;
 
 if (n == nil){
 (IO.out_str("Nodo es nil\n"));

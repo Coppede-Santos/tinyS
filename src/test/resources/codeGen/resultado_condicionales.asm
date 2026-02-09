@@ -118,22 +118,6 @@ main:
 
 	sw $a0 4($v0) #Inicializamos el atributo a
 
-	li $v0, 9  # Solicitar espacio en memoria
-
-	li $a0, 8  # 4 bytes y su vtable
-
-	syscall 
-
-	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
-
-	sw $t0, 0($v0) #guardamos la dirección de la vtableInt en la CIR
-
-	li $t0, 0 # Guardamos el valor en la CIR en un temporal
-
-	sw $t0, 4($v0) #Guardamos el valor en la CIR
-
-	move $a0, $v0 # La dirección del objeto Int queda en $a0
-
 	lw $v0, 4($sp) #traemos la direccion de la cir del objeto de la pila
 
 	sw $a0 8($v0) #Inicializamos el atributo b

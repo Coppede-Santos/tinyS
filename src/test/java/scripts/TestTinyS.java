@@ -221,4 +221,10 @@ public class TestTinyS {
         testTinyS("LinkedList");
     }
 
+    @Test
+    @DisplayName("Test atributos.s")
+    void testAtributos() throws IOException, ErrorTiny {
+        testTinyS("atributos");
+    }
+
 }

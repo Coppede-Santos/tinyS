@@ -43,7 +43,7 @@ acc = acc + v[i];
 
 (++i);
 }
-
+(IO.out_array_int(v));
 ret acc;
 }
 
@@ -63,4 +63,6 @@ n = IO.in_int();
 
 (IO.out_int(s.run(n)));
 (IO.out_str("\n"));
+
+
 }

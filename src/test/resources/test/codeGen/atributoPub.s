@@ -1,3 +1,9 @@
+// Prueba de atributo público
+// Salida esperada:
+// 25
+// 26
+// 26
+
 class Persona {
 pub Int edad;
 pub Int dni;
