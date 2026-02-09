@@ -1,3 +1,5 @@
+// Prueba de nil
+
 class Nodo {
 pub Int valor;
 }
@@ -18,9 +20,20 @@ start{
 Nodo n;
 Int x;
 
+if (n == nil){
+(IO.out_str("Nodo es nil\n"));
+}
+else{
+(IO.out_str("Nodo no es nil\n"));
+x = n.get_valor();
+(IO.out_int(x));
+(IO.out_str("\n"));
+}
+
+
 n = nil;
 
-if (n == nil){
+if (nil == n){
 (IO.out_str("Nodo es nil\n"));
 }
 else{

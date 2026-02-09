@@ -55,7 +55,7 @@ public class NodoExpUn extends NodoExp{
 
         if (operador == TokenType.NOT){ if (!Objects.equals(tipo, "Bool")) throw new ErrorSemantico(posicion.getLinea(), posicion.getColumna(),"","");}
 
-        if(operador == TokenType.LEFT_PAREN){
+        if(operador == TokenType.INT){
             if (!Objects.equals(tipo, "Double")) throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             tipo = "Int";
         }

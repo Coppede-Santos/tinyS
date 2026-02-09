@@ -101,14 +101,14 @@ public class NodoExpBin extends NodoExpUn{
             if (!Objects.equals(tipoDer, tipoIz)){
                 if(!((Objects.equals(tipoDer, "Int") && Objects.equals(tipoIz, "Double"))
                         || (Objects.equals(tipoDer, "Double") && Objects.equals(tipoIz, "Int")))){
-                    if (! Objects.equals(tipoDer, "nil")){
+                    if (! Objects.equals(tipoDer, "nil") && !Objects.equals(tipoIz, "nil")){
                         throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
                     }
                 }
             }
 
             if(!Objects.equals(tipoDer, "Str") && !Objects.equals(tipoDer, "Int")
-                    && !Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Bool") && !Objects.equals(tipoDer, "nil")){
+                    && !Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Bool") && !Objects.equals(tipoDer, "nil") && !Objects.equals(tipoIz, "nil") ){
                 throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             }
             tipo = "Bool";
