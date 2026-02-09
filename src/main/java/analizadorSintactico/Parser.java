@@ -1374,10 +1374,9 @@ public class Parser {
         TokenType type = currentToken.getType();
         if(type == AND) {
             macheo(AND);
-
             NodoExp nodoLadoDer =  expIgual();
-            return new NodoExpBin(nodoLadoIzq,nodoLadoDer,AND,currentToken.getLine(), currentToken.getColumn());
-
+            NodoExpBin nodoResul = new NodoExpBin(nodoLadoIzq,nodoLadoDer,AND, currentToken.getLine(), currentToken.getColumn());
+            return expAndPrima(nodoResul);
         }else {
             if (type == SEMICOLON || type == COMMA || type == RIGHT_PAREN || type == RIGHT_BRACKET || type == OR) {
                 return nodoLadoIzq;
