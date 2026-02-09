@@ -46,6 +46,12 @@ if(("hola" == "hola") && (a == "esta" && b != "nada que ver")){
 (IO.out_str("problemon"));
 }
 
+if("hola" == "hola" && a == "esta" && b != "nada que ver"){
+(IO.out_str("funcionandooooo"));
+}else{
+(IO.out_str("problemon"));
+}
+
 
 (IO.out_str("\n"));
 (io.out_str(c + " " + c + " "+c));
