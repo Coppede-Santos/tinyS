@@ -131,6 +131,40 @@ public class MethodBodyVisitor extends NodeVisitor {
             codigo.agregarLinea("move $a0, $v0 # La dirección del objeto Double queda en $a0");
         }
 
+        // Si el tipo es primitivo, crea una copia del objeto para evitar pasar por referencia
+        if (nodoAsignacion.getIzquierda().getTipo().equals("Int") ||
+            nodoAsignacion.getIzquierda().getTipo().equals("Double") ||
+            nodoAsignacion.getIzquierda().getTipo().equals("Bool")) {
+
+            // Reservar espacio para el nuevo objeto
+            String tipo = nodoAsignacion.getIzquierda().getTipo();
+
+            // Crear copia del objeto primitivo
+            codigo.agregarLinea("move $a1, $a0 # Guardar la dirección del objeto original en $a1");
+
+            if (tipo.equals("Int") || tipo.equals("Bool")) {
+                codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                codigo.agregarLinea("li $a0, 8  # 4 bytes y su vtable");
+                codigo.agregarLinea("syscall");
+                codigo.agregarLinea("lw $t1, 0($a1) # Cargar la dirección de la vtable");
+                codigo.agregarLinea("sw $t1, 0($v0) # Guardar la vtable en la CIR");
+                codigo.agregarLinea("lw $t1, 4($a1) # Cargar el valor original");
+                codigo.agregarLinea("sw $t1, 4($v0) # Guardar el valor en la copia");
+                codigo.agregarLinea("move $a0, $v0 # La dirección de la copia queda en $a0");
+            } else if (tipo.equals("Double")) {
+                codigo.agregarLinea("li $v0, 9  # Solicitar espacio en memoria");
+                codigo.agregarLinea("li $a0, 12  # 8 bytes y su vtable");
+                codigo.agregarLinea("syscall ");
+                codigo.agregarLinea("lw $t1, 0($a1) # Cargar la dirección de la vtable");
+                codigo.agregarLinea("sw $t1, 0($v0) # Guardar la vtable en la CIR");
+                codigo.agregarLinea("lwc1 $f0, 4($a1) # Cargar el valor original (parte 1)");
+                codigo.agregarLinea("lwc1 $f1, 8($a1) # Cargar el valor original (parte 2)");
+                codigo.agregarLinea("swc1 $f0, 4($v0) # Guardar el valor en la copia (parte 1)");
+                codigo.agregarLinea("swc1 $f1, 8($v0) # Guardar el valor en la copia (parte 2)");
+                codigo.agregarLinea("move $a0, $v0 # La dirección de la copia queda en $a0");
+            }
+        }
+
         // *asignación real*
         codigo.agregarLinea("sw $a0, 0($t0)");
     }
