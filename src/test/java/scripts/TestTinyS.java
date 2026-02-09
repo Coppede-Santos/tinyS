@@ -245,6 +245,12 @@ public class TestTinyS {
         testTinyS("arregloNoInciali");
     }
 
+    @Test
+    @DisplayName("Test stressArrayDOuble.s")
+    void testStressArrayDouble() throws IOException, ErrorTiny {
+        testTinyS("stresArrayDouble");
+    }
+
 
 
 }

@@ -1310,19 +1310,19 @@ public class MethodBodyVisitor extends NodeVisitor {
 
 
 
-        if(Objects.equals(nodoArray.getTipo(), "int")){
+        if(Objects.equals(nodoArray.getSubtipo(), "int")){
             codigo.agregarLinea("la $t1, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal");
             codigo.agregarLinea("li $t3, 8 #Tamaño de la CIR de int");
         }else{
-            if(Objects.equals(nodoArray.getTipo(), "Double")){
+            if(Objects.equals(nodoArray.getSubtipo(), "Double")){
                 codigo.agregarLinea("la $t1, VTABLE_Int # Cargar la dirección de la vtable Double en un temporal");
                 codigo.agregarLinea("li $t3, 12 #Tamaño de la CIR de double");
             }else{
-                if(Objects.equals(nodoArray.getTipo(), "Bool")){
+                if(Objects.equals(nodoArray.getSubtipo(), "Bool")){
                     codigo.agregarLinea("la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal");
                     codigo.agregarLinea("li $t3, 8 #Tamaño de la CIR de bool");
                 }else{
-                    if (Objects.equals(nodoArray.getTipo(), "String")) {
+                    if (Objects.equals(nodoArray.getSubtipo(), "String")) {
                         codigo.agregarLinea("la $t1, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal");;
                         codigo.agregarLinea("li $t3, 8 #Tamaño de la CIR de String");
                     }

@@ -28,6 +28,10 @@ public class NodoConstructorArray extends NodoOperando{
         return dimension;
     }
 
+    public String getSubtipo() {
+        return subtipo;
+    }
+
     @Override
     public String chequeoDeSentencias(EntradaMetodo entradaMetodo, SymbolTable st, int profundidad) throws ErrorTiny {
         String salida = "";
