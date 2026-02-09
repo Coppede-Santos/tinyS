@@ -441,30 +441,19 @@ public class MethodBodyVisitor extends NodeVisitor {
                 break;
 
             case SLASH:
-                if (esDouble) {
-                    //El caso de que alguno de los dos sea double:
-                    expBinDouble(tipoIzq, tipoDer);
-                    codigo.agregarLinea("ldc1 $f4, db_cero #traemos el double cero para poder compararlo con el lado derecho");
-                    codigo.agregarLinea("c.eq.d $f4, $f2 #comparamos si el double es igual a cero");
-                    codigo.agregarLinea("bc1t DivisionByZeroException");
+
+                // EL resultado siempre es double
+                expBinDouble(tipoIzq, tipoDer);
+                codigo.agregarLinea("ldc1 $f4, db_cero #traemos el double cero para poder compararlo con el lado derecho");
+                codigo.agregarLinea("c.eq.d $f4, $f2 #comparamos si el double es igual a cero");
+                codigo.agregarLinea("bc1t DivisionByZeroException");
 
 
-                    // Una vez que tenemos ambos valores en $f0 y $f1, dividimos los dos
-                    codigo.agregarLinea("div.d $f0, $f0, $f2 #dividimos los dos doubles");
+                // Una vez que tenemos ambos valores en $f0 y $f1, dividimos los dos
+                codigo.agregarLinea("div.d $f0, $f0, $f2 #dividimos los dos doubles");
 
-                    expBinResultadoDouble();
-                } else {
-                    //El caso de que ambos sean int:
-                    codigo.agregarLinea("lw $t0 4($t0) #Cargar el valor del int izquierdo");
-                    codigo.agregarLinea("lw $t1 4($t1) #Cargar el valor del int derecho");
+                expBinResultadoDouble();
 
-                    codigo.agregarLinea("beqz $t1, DivisionByZeroException #Si el lado derecho es igual a cero saltamos un error");
-
-
-                    codigo.agregarLinea("div $t0, $t0, $t1 #dividimos los dos int");
-
-                    expBinResultadoInt();
-                }
                 break;
 
             case EQUAL_EQUAL:
@@ -501,7 +490,7 @@ public class MethodBodyVisitor extends NodeVisitor {
                             codigo.agregarLinea("xor $t0, $t0, 1 #Si ambas son iguales, seteamos el valor a 1, sino a 0");
                         }
                         else{
-                            // El caso de nil
+
                             codigo.agregarLinea("li $t2, 0 #cargamos el valor de true");
                             codigo.agregarLinea("beq $t0, $t1, true_" + nodoExpBin.posicion.getLinea() + "_" + nodoExpBin.posicion.getColumna() +" #Si ambos son true, seteamos el valor a 1, sino a 0");
                             codigo.agregarLinea("li $t2, 1 #cargamos el valor de false");
@@ -775,7 +764,7 @@ public class MethodBodyVisitor extends NodeVisitor {
         codigo.agregarLinea("jal eq_str #nos devuelve un bool, 1 si los string son iguales");
 
         codigo.agregarLinea("addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro");
-        codigo.agregarLinea("lw $fp, 0($sp) #Restauramos el valor de $fp en la pila");
+        codigo.agregarLinea("lw $fp, 4($sp) #Restauramos el valor de $fp en la pila");
         codigo.agregarLinea("addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior");
     }
 
@@ -814,15 +803,15 @@ public class MethodBodyVisitor extends NodeVisitor {
             codigo.agregarLinea("lwc1 $f3 8($t1) #guardamos el valor de derecha en $f3 para completar el double");
 
         } else {
-            if (tipoDer.equals("Int")) {
-                codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del int derecho");
-                codigo.agregarLinea("cvt.d.w $f2, $f2 #convertir el int a double");
-            } else {
-                codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del double izquierdo");
-                codigo.agregarLinea("lwc1 $f3, 8($t1) #cargar el valor del double derecho");
-            }
             codigo.agregarLinea("lwc1 $f0 4($t0) #guardamos el valor de izquierda en $f0");
             codigo.agregarLinea("lwc1 $f1 8($t0) #guardamos el valor de izquierda en $f1 para completar el double");
+        }
+        if (tipoDer.equals("Int")) {
+            codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del int derecho");
+            codigo.agregarLinea("cvt.d.w $f2, $f2 #convertir el int a double");
+        } else {
+            codigo.agregarLinea("lwc1 $f2, 4($t1) #cargar el valor del double izquierdo");
+            codigo.agregarLinea("lwc1 $f3, 8($t1) #cargar el valor del double derecho");
         }
     }
 

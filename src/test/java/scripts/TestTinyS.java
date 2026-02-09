@@ -221,4 +221,30 @@ public class TestTinyS {
         testTinyS("atributos");
     }
 
+    @Test
+    @DisplayName("Test polimorfismo.s")
+    void testPolimorfismo() throws IOException, ErrorTiny {
+        testTinyS("polimorfismo");
+    }
+
+    @Test
+    @DisplayName("Test asignacionDouble.s")
+    void testAsignacionDouble() throws IOException, ErrorTiny {
+        testTinyS("asignacionDouble");
+    }
+
+    @Test
+    @DisplayName("Test igualdadNoPrimitivos")
+    void testIgualdadNoPrimitivos() throws IOException, ErrorTiny {
+        testTinyS("igualdadNoPrimitivos");
+    }
+
+    @Test
+    @DisplayName("Test arregloNoInciali.s")
+    void testArregloNoIniciali() throws IOException, ErrorTiny {
+        testTinyS("arregloNoInciali");
+    }
+
+
+
 }

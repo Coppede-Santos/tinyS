@@ -57,12 +57,20 @@ public class NodoExpBin extends NodoExpUn{
             tipo = "Int";
         }
 
-        if  (operador == TokenType.MINUS || operador == TokenType.MULT || operador == TokenType.SLASH || operador == TokenType.PERCENTAGE){
+        if  (operador == TokenType.MINUS || operador == TokenType.MULT || operador == TokenType.PERCENTAGE){
             if (algunTipoNoEsNumerico)
                 throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
             if (tipoDer.equals("Double") || tipoIz.equals("Double")){
                 tipo = "Double";
             }else tipo = "Int";
+        }
+
+        if  (operador == TokenType.SLASH){
+            if (algunTipoNoEsNumerico)
+                throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
+            else {
+                tipo = "Double";
+            }
         }
 
 
@@ -107,10 +115,10 @@ public class NodoExpBin extends NodoExpUn{
                 }
             }
 
-            if(!Objects.equals(tipoDer, "Str") && !Objects.equals(tipoDer, "Int")
-                    && !Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Bool") && !Objects.equals(tipoDer, "nil") && !Objects.equals(tipoIz, "nil") ){
-                throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
-            }
+//            if(!Objects.equals(tipoDer, "Str") && !Objects.equals(tipoDer, "Int")
+//                    && !Objects.equals(tipoDer, "Double") && !Objects.equals(tipoDer, "Bool") && !Objects.equals(tipoDer, "nil") && !Objects.equals(tipoIz, "nil") ){
+//                throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
+//            }
             tipo = "Bool";
         }
         

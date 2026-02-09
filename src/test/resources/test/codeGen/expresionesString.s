@@ -30,6 +30,22 @@ io = new IO();
 (IO.out_str("\n"));
 (io.out_str("Tamanio de la cadena ab: "));
 (IO.out_int((a+b).length()));
+(IO.out_str("\n"));
+
+
+if("hola" == "hola"){
+(IO.out_str("bien"));
+(IO.out_str("\n"));
+}else{
+(IO.out_str("problemon"));
+}
+
+if(("hola" == "hola") && (a == "esta" && b != "nada que ver")){
+(IO.out_str("funcionandooooo"));
+}else{
+(IO.out_str("problemon"));
+}
+
 
 (IO.out_str("\n"));
 (io.out_str(c + " " + c + " "+c));

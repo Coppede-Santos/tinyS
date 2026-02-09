@@ -1968,13 +1968,13 @@ main:
 
 	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
 
-	lwc1 $f2, 4($t1) #cargar el valor del double izquierdo
-
-	lwc1 $f3, 8($t1) #cargar el valor del double derecho
-
 	lwc1 $f0 4($t0) #guardamos el valor de izquierda en $f0
 
 	lwc1 $f1 8($t0) #guardamos el valor de izquierda en $f1 para completar el double
+
+	lwc1 $f2, 4($t1) #cargar el valor del double izquierdo
+
+	lwc1 $f3, 8($t1) #cargar el valor del double derecho
 
 	c.le.d $f0, $f2 #comparamos si el double de la izquierda es menor o igual al lado derecho
 
