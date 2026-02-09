@@ -2,6 +2,7 @@ package scripts;
 
 import analizadorLexico.Errores.ErrorLex;
 import analizadorLexico.Etapa1;
+import analizadorLexico.OldEtapa1;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ public class TestEtapa1 {
         String outputFilePath = basePath + "/src/test/resources/output/" + fileName + ".txt";
 
         // Ejecutar el analizador léxico
-        Etapa1.main(new String[]{testFilePath, outputFilePath});
+        OldEtapa1.main(new String[]{testFilePath, outputFilePath});
 
         // Leer el archivo generado
         String actualOutput = Files.readString(Paths.get(outputFilePath));

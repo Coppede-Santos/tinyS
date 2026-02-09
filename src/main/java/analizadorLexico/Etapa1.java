@@ -41,7 +41,8 @@ public class Etapa1 {
             System.out.println("Por favor, proporciona la ruta del archivo de entrada debe terminar en '.s'.");
             return;
         }
-        String nombreArchivoSalida = args[0].replace(".s", ".txt");
+        String nombreArchivoSalida = "";
+
         if (args.length == 2) {
             nombreArchivoSalida = args[1];
         }else{
@@ -50,48 +51,50 @@ public class Etapa1 {
             }
         }
 
-        lector.lectorArchivo(rutaArchivoEntrada); // Usar el primer argumento como la ruta del archivo de entrada
-        BufferedWriter writer = null;
+        String salida = "";
+        boolean analisisCorrecto = true;
+        lector.lectorArchivo(rutaArchivoEntrada);
+
         try {
-            writer = new BufferedWriter(new FileWriter(nombreArchivoSalida));
-            try {
-                writer.write("CORRECTO: ANALISIS LEXICO\n");
-                source = lector.rechargeBuffer();
-                escaner.setBuffer(source);
-                List<Token> tokens = new ArrayList<>();
-                Token tokenActual;
-                do {
-                    try {
-                        tokenActual = escaner.nextToken();
-                        if (tokenActual != null) {
-                            tokens.add(tokenActual);
-                            writer.write(tokenActual.toString() + "\n"); // Escribir el token en el archivo
-                        } else {
-                            // Manejar el caso en que tokenActual es nulo
-                            //System.err.println("Error: tokenActual es nulo");
-                            break; // Salir del bucle si no se puede obtener un token válido
-                        }
-                    } catch (ErrorLex e) {
-                        writer.close();
-                        writer = new BufferedWriter(new FileWriter(nombreArchivoSalida, false));
-                        writer.write("ERROR: LEXICO\n" + e.getMessage());
-                        System.err.println("Error: " + e.getMessage()); // Mostrar el error en la consola
-                        tokenActual = new Token(TokenType.EOF, "", 0, 0);
+            salida += ("CORRECTO: ANALISIS LEXICO\n");
+            source = lector.rechargeBuffer();
+            escaner.setBuffer(source);
+            List<Token> tokens = new ArrayList<>();
+            Token tokenActual;
+            do {
+                try {
+                    tokenActual = escaner.nextToken();
+                    if (tokenActual != null) {
+                        tokens.add(tokenActual);
+                        salida += (tokenActual.toString() + "\n"); // Escribir el token en el archivo
+                    } else {
+                        // Manejar el caso en que tokenActual es nulo
+                        //System.err.println("Error: tokenActual es nulo");
+                        break; // Salir del bucle si no se puede obtener un token válido
                     }
-                } while (tokenActual.getType() != TokenType.EOF);
-            } catch (IOException e) {
-                System.err.println("Error al escribir en el archivo de salida: " + e.getMessage());
-            }
-        } catch (IOException e) {
-            System.err.println("Error al abrir el archivo de salida: " + e.getMessage());
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
+                } catch (ErrorLex e) {
+                    System.out.println("ERROR: LEXICO\n" + e.getMessage());
+                    tokenActual = new Token(TokenType.EOF, "", 0, 0);
+                    analisisCorrecto = false;
                 }
-            } catch (IOException e) {
-                System.err.println("Error al cerrar el archivo de salida: " + e.getMessage());
+            } while (tokenActual.getType() != TokenType.EOF);
+
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo de salida: " + e.getMessage());
+        } finally {
+            if (analisisCorrecto) {
+                if (args.length == 2) {
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivoSalida))) {
+                        writer.write(salida);
+                        System.out.println("CORRECTO: ANALISIS LEXICO");
+                    } catch (IOException e) {
+                        System.err.println("Error al escribir en el archivo de salida: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println(salida);
+                }
             }
         }
+
     }
 }
