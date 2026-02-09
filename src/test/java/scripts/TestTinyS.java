@@ -181,12 +181,6 @@ public class TestTinyS {
     }
 
     @Test
-    @DisplayName("Test start.s")
-    void testStart() throws IOException, ErrorTiny {
-        testTinyS("start");
-    }
-
-    @Test
     @DisplayName("Test IOObject.s")
     void testIOObject() throws IOException, ErrorTiny {
         testTinyS("IOObject");

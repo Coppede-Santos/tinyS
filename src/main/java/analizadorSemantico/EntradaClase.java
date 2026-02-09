@@ -2,6 +2,7 @@ package analizadorSemantico;
 
 import analizadorSemantico.Errores.*;
 import generacionDeCodigo.TopVisitor;
+import jdk.jshell.spi.ExecutionControl;
 
 import java.util.HashMap;
 
@@ -41,6 +42,14 @@ public class EntradaClase extends Entrada {
         atributos.put(nombreAtributo, entradaAtributo);
         return true;
     }
+
+    public EntradaMetodo getMetodoPorPosicion(int posicionMetodo){
+        for (EntradaMetodo metodo : metodos.values()) {
+            if (metodo.getPosicionMetodo() == posicionMetodo) return metodo;
+        }
+        return null;
+    }
+
     public HashMap<String, EntradaMetodo> getMetodos() {
         return metodos;
     }

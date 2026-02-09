@@ -64,7 +64,8 @@ public class TopVisitor extends NodeVisitor {
         codigo.agregarData("VTABLE_"+clase.getLexema()+": #Vtable de la clase "+clase.getLexema());
         codigo.agregarData(".word " + getLabel(constructor));
 
-        for(EntradaMetodo metodo : clase.getMetodos().values()){
+        for(int i = 1; i <= clase.getMetodos().size(); i++){
+            EntradaMetodo metodo = clase.getMetodoPorPosicion(i);
             codigo.agregarData(".word " + getLabel(metodo));
         }
 

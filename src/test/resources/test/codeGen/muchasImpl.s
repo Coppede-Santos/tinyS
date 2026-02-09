@@ -23,4 +23,6 @@ impl A{
     .(){}
 }
 
-start{}
+start{
+(IO.out_str("todo ok"));
+}

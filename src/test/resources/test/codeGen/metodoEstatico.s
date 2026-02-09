@@ -1,3 +1,7 @@
+// Test de metodo estatico
+// Salida esperada para -5:
+// 25
+// 7
 class MathUtils {
 }
 

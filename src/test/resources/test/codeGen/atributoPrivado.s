@@ -1,3 +1,5 @@
+// Test atributo privado
+
 class Cuenta {
 Int saldo;        // privado
 }
@@ -14,7 +16,7 @@ ret saldo;
 }
 
 .(){
-saldo = 0;
+saldo = 57;
 }
 
 }

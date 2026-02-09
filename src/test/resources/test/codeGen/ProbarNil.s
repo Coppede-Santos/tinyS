@@ -4,15 +4,18 @@ class A{
 impl A{
 .(){}
 
-fn void retornonil(){
-ret;
+st fn void retornonil(){
+ret nil;
 }
 
 }
 
 start{
 A a;
-a = nil;
+
+a = new A();
+
+a = A.retornonil();
 
 if (a == nil){
 (IO.out_str("ok"));

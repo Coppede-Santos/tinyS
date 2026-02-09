@@ -1,3 +1,7 @@
+// Probar los metodos para imprimir arreglos
+//Salida esperada:
+// [1,2,3,4,5][true,false,true,false,true][1.0,2.0,3.555555,4.0,5.55555]
+//[hola,que tal,que tal,como estas,adios]
 start{
 Array Int arraio;
 Array Bool arrboo;

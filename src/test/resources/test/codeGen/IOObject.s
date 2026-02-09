@@ -1,3 +1,4 @@
+// probar el objeto io y Programa que calcula la sucesion de fibonacci
 class Fibonacci{
  pub Int suma;
  pub Int i,j;

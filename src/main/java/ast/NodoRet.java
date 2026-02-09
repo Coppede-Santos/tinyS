@@ -49,14 +49,17 @@ public class NodoRet extends NodoSentencia{
         //if(exp.getTipo() == "nil") exp.setTipo(null);
 
         if (retornoDeclarado == null){
-            if(exp.getTipo() != null) throw new TipoInvalidoError(posicion, "ret",exp.tipo);
+            if(exp.getTipo() != null && !exp.getTipo().equals("nil")) throw new TipoInvalidoError(posicion, "ret",exp.tipo);
 
         }else{
             EntradaClase tipoRetorno = st.buscarClase(exp.getTipo());
 
             if (tipoRetorno == null){
-                throw new ClaseNoDeclaradaError(posicion.getLinea(), posicion.getColumna(), exp.getTipo());
+                if(retornoDeclarado.esClasePrimitiva()) {
+                    throw new ClaseNoDeclaradaError(posicion.getLinea(), posicion.getColumna(), exp.getTipo());
+                }
             }
+
 
             if (!tipoRetorno.buscarAncestro(st, retornoDeclarado.getLexema())){
                 throw new TipoInvalidoError(posicion, "ret", exp.getTipo());

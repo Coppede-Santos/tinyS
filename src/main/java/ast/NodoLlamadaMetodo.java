@@ -210,7 +210,7 @@ public class NodoLlamadaMetodo extends NodoVar{
             EntradaClase entradaTipoParametroAcutal = st.buscarClase(parametroActual.tipo);
 
             if (entradaTipoParametroAcutal == null){
-                throw new ClaseNoDeclaradaError(parametroActual.posicion.getColumna(),parametroActual.posicion.getLinea(), parametroActual.tipo);
+                throw new ClaseNoDeclaradaError(parametroActual.posicion.getLinea(),parametroActual.posicion.getColumna(), parametroActual.tipo);
             }
 
             if (!entradaTipoParametroAcutal.buscarAncestro(st,parametroReferenciado.getTipo())) {
