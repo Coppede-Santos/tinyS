@@ -404,7 +404,8 @@ public class Escaner {
             advance();
         }
         if (isAtEnd()) {
-            throw new StringSinCerrarError(line, column, buffer.substring(start, current));
+            String lexeme = recortarLexema(buffer.substring(start, current));
+            throw new StringSinCerrarError(line, column, lexeme);
         }
 
         advance();
@@ -461,7 +462,8 @@ public class Escaner {
                 advance();
                 isDouble = true;
             }else {
-                throw new DoubleInvalidoError(line, column, buffer.substring(start + 1, current - 1));
+                if (!isAtEnd()) advance();
+                throw new DoubleInvalidoError(line, column, buffer.substring(start, current + 1));
             }
         }
         if(isAlpha(look())) {
@@ -474,7 +476,12 @@ public class Escaner {
             return addToken(DOUBLE_LITERAL);
         }
         else{
-            return addToken(INTEGER_LITERAL);
+            try {
+                Integer.parseInt(buffer.substring(start, current));
+                return addToken(INTEGER_LITERAL);
+            } catch (NumberFormatException e) {
+                throw new IntegerInvalidoError(line, column, buffer.substring(start, current));
+            }
         }
 
     }
@@ -592,6 +599,22 @@ public class Escaner {
         }
     }
 
+    private String recortarLexema(String lexema){
+        String lexemaRecortado = lexema;
+
+        // Obtener solo la primera línea
+        int indiceSaltoLinea = lexema.indexOf('\n');
+        if (indiceSaltoLinea != -1) {
+            lexemaRecortado = lexema.substring(0, indiceSaltoLinea);
+        }
+
+        // Limitar a 10 caracteres
+        if (lexemaRecortado.length() > 10) {
+            lexemaRecortado = lexemaRecortado.substring(0, 10) + "...";
+        }
+
+        return lexemaRecortado;
+    }
 
 
 }
