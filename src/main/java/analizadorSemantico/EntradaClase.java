@@ -257,8 +257,7 @@ public class EntradaClase extends Entrada {
         return lexema.equals("Int") ||
                 lexema.equals("Double") ||
                 lexema.equals("Bool") ||
-                lexema.equals("Str") ||
-                lexema.equals("Array")
+                lexema.equals("Str")
                 ;
     }
 
