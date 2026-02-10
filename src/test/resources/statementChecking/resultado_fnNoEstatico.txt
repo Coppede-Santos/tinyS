@@ -1,0 +1,4 @@
+ERROR: SEMANTICO - SENTENCIAS
+
+| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
+|LINEA 14 | COLUMNA 27 | El metodo no fue declarado como estatico: getMod|

@@ -1,0 +1,396 @@
+{
+	"clases": [
+		{
+			"nombre": "Factorial",
+			"metodos": [
+				{
+					"nombre": "Factorial",
+					"sentencias": 
+						[
+							{
+								"tipoNodo": "NodoAsignacion",
+								"izquierda": {
+									"tipoNodo": "NodoVariable",
+									"lexema": "resultado",
+									"tipo": "Int",
+									"posicion": {
+										"linea": "17",
+										"columna": "10"
+									}
+								},
+								"derecha": {
+									"tipoNodo": "NodoInt",
+									"valor": "1",
+									"tipo": "Int",
+									"posicion": {
+										"linea": "17",
+										"columna": "15"
+									}
+								}
+							}
+						]
+				},
+				{
+					"nombre": "calcular",
+					"sentencias": 
+						[
+							{
+								"tipoNodo": "NodoAsignacion",
+								"izquierda": {
+									"tipoNodo": "NodoVariable",
+									"lexema": "resultado",
+									"tipo": "Int",
+									"posicion": {
+										"linea": "7",
+										"columna": "10"
+									}
+								},
+								"derecha": {
+									"tipoNodo": "NodoInt",
+									"valor": "1",
+									"tipo": "Int",
+									"posicion": {
+										"linea": "7",
+										"columna": "15"
+									}
+								}
+							},
+							{
+								"tipoNodo": "NodoAsignacion",
+								"izquierda": {
+									"tipoNodo": "NodoVariable",
+									"lexema": "i",
+									"tipo": "Int",
+									"posicion": {
+										"linea": "8",
+										"columna": "2"
+									}
+								},
+								"derecha": {
+									"tipoNodo": "NodoInt",
+									"valor": "2",
+									"tipo": "Int",
+									"posicion": {
+										"linea": "8",
+										"columna": "7"
+									}
+								}
+							},
+							{
+								"tipoNodo": "NodoWhile",
+								"condicion": {
+									"tipoNodo": "NodoExpBin",
+									"ladoIzquierdo": {
+										"tipoNodo": "NodoVariable",
+										"lexema": "i",
+										"tipo": "Int",
+										"posicion": {
+											"linea": "9",
+											"columna": "8"
+										}
+									},
+									"operador": "LESS_EQUAL",
+									"ladoDerecho": {
+										"tipoNodo": "NodoVariable",
+										"lexema": "n",
+										"tipo": "Int",
+										"posicion": {
+											"linea": "9",
+											"columna": "13"
+										}
+									},
+									"tipo": "Bool"
+								},
+								"sentencia": 
+									[
+										{
+											"tipoNodo": "NodoAsignacion",
+											"izquierda": {
+												"tipoNodo": "NodoVariable",
+												"lexema": "resultado",
+												"tipo": "Int",
+												"posicion": {
+													"linea": "10",
+													"columna": "12"
+												}
+											},
+											"derecha": {
+												"tipoNodo": "NodoExpBin",
+												"ladoIzquierdo": {
+													"tipoNodo": "NodoVariable",
+													"lexema": "resultado",
+													"tipo": "Int",
+													"posicion": {
+														"linea": "10",
+														"columna": "24"
+													}
+												},
+												"operador": "MULT",
+												"ladoDerecho": {
+													"tipoNodo": "NodoVariable",
+													"lexema": "i",
+													"tipo": "Int",
+													"posicion": {
+														"linea": "10",
+														"columna": "28"
+													}
+												},
+												"tipo": "Int"
+											}
+										},
+										{
+											"tipoNodo": "NodoExpUn",
+											"operador": "PLUS_PLUS",
+											"ladoDerecho": {
+												"tipoNodo": "NodoVariable",
+												"lexema": "i",
+												"tipo": "Int",
+												"posicion": {
+													"linea": "11",
+													"columna": "7"
+												}
+											},
+											"tipo": "Int"
+										}
+									]
+							},
+							{
+								"tipoNodo": "NodoLlamadaEncadenado",
+								"lexema": "mostrar",
+								"parametros": [
+									{
+										"tipoNodo": "NodoVariable",
+										"lexema": "resultado",
+										"tipo": "Int",
+										"posicion": {
+											"linea": "13",
+											"columna": "19"
+										}
+									}
+								],
+								"tipo": "nil",
+								"esEstatico": "false",
+								"posicion": {
+									"linea": "13",
+									"columna": "10"
+								}
+							},
+							{
+								"tipoNodo": "NodoRet",
+								"expresion": {
+									"tipoNodo": "NodoVariable",
+									"lexema": "resultado",
+									"tipo": "Int",
+									"posicion": {
+										"linea": "14",
+										"columna": "14"
+									}
+								}
+							}
+						]
+				},
+				{
+					"nombre": "mostrar",
+					"sentencias": 
+						[
+							{
+								"tipoNodo": "NodoVariable",
+								"lexema": "IO",
+								"esEstatico": "true",
+								"tipo": "IO",
+								"posicion": {
+									"linea": "20",
+									"columna": "4"
+								},
+								"encadenado": 
+									{
+										"tipoNodo": "NodoLlamadaEncadenado",
+										"lexema": "out_str",
+										"parametros": [
+											{
+												"tipoNodo": "NodoString",
+												"valor": "Resultado: ",
+												"tipo": "String",
+												"posicion": {
+													"linea": "20",
+													"columna": "27"
+												}
+											}
+										],
+										"tipo": "nil",
+										"esEstatico": "true",
+										"posicion": {
+											"linea": "20",
+											"columna": "12"
+										}
+									}
+							},
+							{
+								"tipoNodo": "NodoVariable",
+								"lexema": "IO",
+								"esEstatico": "true",
+								"tipo": "IO",
+								"posicion": {
+									"linea": "21",
+									"columna": "4"
+								},
+								"encadenado": 
+									{
+										"tipoNodo": "NodoLlamadaEncadenado",
+										"lexema": "out_int",
+										"parametros": [
+											{
+												"tipoNodo": "NodoVariable",
+												"lexema": "val",
+												"tipo": "Int",
+												"posicion": {
+													"linea": "21",
+													"columna": "16"
+												}
+											}
+										],
+										"tipo": "nil",
+										"esEstatico": "true",
+										"posicion": {
+											"linea": "21",
+											"columna": "12"
+										}
+									}
+							},
+							{
+								"tipoNodo": "NodoVariable",
+								"lexema": "IO",
+								"esEstatico": "true",
+								"tipo": "IO",
+								"posicion": {
+									"linea": "22",
+									"columna": "4"
+								},
+								"encadenado": 
+									{
+										"tipoNodo": "NodoLlamadaEncadenado",
+										"lexema": "out_str",
+										"parametros": [
+											{
+												"tipoNodo": "NodoString",
+												"valor": "\n",
+												"tipo": "String",
+												"posicion": {
+													"linea": "22",
+													"columna": "18"
+												}
+											}
+										],
+										"tipo": "nil",
+										"esEstatico": "true",
+										"posicion": {
+											"linea": "22",
+											"columna": "12"
+										}
+									}
+							}
+						]
+				}
+			]
+		}
+	],
+	"bloqueStart": {
+		"posicion": {
+			"linea": 26,
+			"columna": 5
+		},
+		"sentencias": 
+			[
+				{
+					"tipoNodo": "NodoAsignacion",
+					"izquierda": {
+						"tipoNodo": "NodoVariable",
+						"lexema": "fact",
+						"tipo": "Factorial",
+						"posicion": {
+							"linea": "29",
+							"columna": "5"
+						}
+					},
+					"derecha": {
+						"tipoNodo": "NodoLlamadaEncadenado",
+						"lexema": "Factorial",
+						"parametros": [
+						],
+						"tipo": "Factorial",
+						"esEstatico": "false",
+						"posicion": {
+							"linea": "29",
+							"columna": "21"
+						}
+					}
+				},
+				{
+					"tipoNodo": "NodoAsignacion",
+					"izquierda": {
+						"tipoNodo": "NodoVariable",
+						"lexema": "num",
+						"tipo": "Int",
+						"posicion": {
+							"linea": "30",
+							"columna": "4"
+						}
+					},
+					"derecha": {
+						"tipoNodo": "NodoVariable",
+						"lexema": "IO",
+						"esEstatico": "true",
+						"tipo": "IO",
+						"posicion": {
+							"linea": "30",
+							"columna": "9"
+						},
+						"encadenado": 
+							{
+								"tipoNodo": "NodoLlamadaEncadenado",
+								"lexema": "in_int",
+								"parametros": [
+								],
+								"tipo": "Int",
+								"esEstatico": "true",
+								"posicion": {
+									"linea": "30",
+									"columna": "16"
+								}
+							}
+					}
+				},
+				{
+					"tipoNodo": "NodoVariable",
+					"lexema": "fact",
+					"tipo": "Factorial",
+					"posicion": {
+						"linea": "31",
+						"columna": "6"
+					},
+					"encadenado": 
+						{
+							"tipoNodo": "NodoLlamadaEncadenado",
+							"lexema": "calcular",
+							"parametros": [
+								{
+									"tipoNodo": "NodoVariable",
+									"lexema": "num",
+									"tipo": "Int",
+									"posicion": {
+										"linea": "31",
+										"columna": "19"
+									}
+								}
+							],
+							"tipo": "Int",
+							"esEstatico": "false",
+							"posicion": {
+								"linea": "31",
+								"columna": "16"
+							}
+						}
+				}
+			]
+	}
+}

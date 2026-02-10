@@ -55,6 +55,14 @@ public class EntradaVariables extends Entrada {
         this.subtipo = subtipo;
     }
 
+    /** Getter del subtipo de la variable
+     *
+     * @return Subtipo de la variable
+     */
+    public String getSubtipo() {
+        return subtipo;
+    }
+
     /** Método para consolidar la información de la variable en formato JSON
      *
      * @param profundidad Profundidad de la variable en la tabla de símbolos

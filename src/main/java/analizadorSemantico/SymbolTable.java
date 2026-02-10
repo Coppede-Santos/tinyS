@@ -333,4 +333,8 @@ public class SymbolTable
         salida += "\n}";
         return salida;
     }
+
+    public EntradaMetodo getStartMethod() {
+        return startMethod;
+    }
 }
