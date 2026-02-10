@@ -298,4 +298,12 @@ public class EntradaClase extends Entrada {
 
         return salida;
     }
+
+    public boolean esTipoPrimitivo() {
+        return lexema.equals("Int") ||
+                lexema.equals("Double") ||
+                lexema.equals("Bool") ||
+                lexema.equals("Str")
+                ;
+    }
 }

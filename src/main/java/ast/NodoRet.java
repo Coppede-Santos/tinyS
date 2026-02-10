@@ -5,6 +5,7 @@ import analizadorSemantico.EntradaClase;
 import analizadorSemantico.EntradaMetodo;
 import analizadorSemantico.Errores.ClaseNoDeclaradaError;
 import analizadorSemantico.SymbolTable;
+import ast.Errores.RetInvalidoError;
 import ast.Errores.TipoInvalidoError;
 
 import static ast.AstJsonBuilder.*;
@@ -32,6 +33,10 @@ public class NodoRet extends NodoSentencia{
         String salida = "";
         EntradaClase retornoDeclarado = entradaMetodo.getTipoRetorno();
 
+        if (retornoDeclarado == null){
+            throw new RetInvalidoError(posicion, entradaMetodo.getLexema());
+        }
+
         salida += tabs(profundidad + 1) + claveJson("tipoNodo") +
                 valorJson("NodoRet") + ",\n";
         salida += tabs(profundidad + 1) + claveJson("expresion") +
@@ -39,7 +44,7 @@ public class NodoRet extends NodoSentencia{
 
         if (exp == null){
             salida += "";
-            if (retornoDeclarado == null){
+            if (!retornoDeclarado.esTipoPrimitivo()){
                 return salida;
             }
             else {
@@ -51,29 +56,25 @@ public class NodoRet extends NodoSentencia{
         }
         salida += tabs(profundidad + 1) + "}\n";
 
-        if (retornoDeclarado == null) {
-            if(exp.getTipo() != null) {
-                throw new TipoInvalidoError(posicion, "ret",exp.tipo);
-            }
-        } else {
-            EntradaClase tipoRetorno = st.buscarClase(exp.getTipo());
 
-            if (tipoRetorno == null){
-                throw new ClaseNoDeclaradaError(
-                        posicion.getLinea(),
-                        posicion.getColumna(),
-                        exp.getTipo()
-                );
-            }
+        EntradaClase tipoRetorno = st.buscarClase(exp.getTipo());
 
-            if (!tipoRetorno.buscarAncestro(st, retornoDeclarado.getLexema())){
-                throw new TipoInvalidoError(
-                        posicion,
-                        "ret",
-                        exp.getTipo()
-                );
-            }
+        if (tipoRetorno == null){
+            throw new ClaseNoDeclaradaError(
+                    posicion.getLinea(),
+                    posicion.getColumna(),
+                    exp.getTipo()
+            );
         }
+
+        if (!tipoRetorno.buscarAncestro(st, retornoDeclarado.getLexema())){
+            throw new TipoInvalidoError(
+                    posicion,
+                    "ret",
+                    exp.getTipo()
+            );
+        }
+
 
         return salida;
     }

@@ -92,7 +92,11 @@ public class NodoVar extends NodoOperando {
                             valorJson("true") + ",\n";
 
                 } else {
-                    throw new VariableNoDeclaradaError(posicion,lexema);
+                    if (!lexema.equals(st.getClassActual().getLexema())) {
+                        throw new VariableNoDeclaradaError(posicion,lexema);
+                    } else {
+                        this.tipo = st.getClassActual().getLexema();
+                    }
                 }
             } else {
                 this.tipo = st.getClassActual().getLexema();
