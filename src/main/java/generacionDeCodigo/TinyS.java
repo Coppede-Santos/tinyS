@@ -47,6 +47,10 @@ public class TinyS {
             return;
         }
 
+        String nombreArchivoSalida = args.length == 2
+                ? args[1]
+                : rutaArchivoEntrada.replace(".s", ".txt");
+
         String resultadoAnalisis;
 
         String tablaSimbolos = "";
@@ -109,9 +113,35 @@ public class TinyS {
         // ────────────── Escritura de resultados ──────────────
         // Este bloque ahora solo se encarga de escribir el resultado final en el archivo.
 
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivoSalida))) {
+            writer.write(resultadoAnalisis);
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo de salida '" + nombreArchivoSalida + "': " + e.getMessage());
+        }
+
+        String nombreJsonSalida = rutaArchivoEntrada.replace(".s", ".ts.json");
+
+        String nombreAstSalida = rutaArchivoEntrada.replace(".s", ".ast.json");
+
         String nombreAsmSalida = rutaArchivoEntrada.replace(".s", ".asm");
 
         // ────────────── Escritura de resultados JSON ──────────────
+
+        if (!tablaSimbolos.isEmpty()) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreJsonSalida))) {
+                writer.write(tablaSimbolos);
+            } catch (IOException e) {
+                System.err.println("Error al escribir en el archivo de salida '" + nombreJsonSalida + "': " + e.getMessage());
+            }
+        }
+
+        if(!astJson.isEmpty()) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreAstSalida))) {
+                writer.write(astJson);
+            } catch (IOException e) {
+                System.err.println("Error al escribir en el archivo de salida '" + nombreAstSalida + "': " + e.getMessage());
+            }
+        }
 
         if (resultadoAnalisis.startsWith("ERROR")) {
             System.err.println(resultadoAnalisis.trim());
