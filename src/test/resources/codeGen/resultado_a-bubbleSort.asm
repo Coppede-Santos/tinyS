@@ -179,6 +179,24 @@ main:
 
 	addi $sp, $sp, 4
 
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
+
 	sw $a0, 0($t0)
 
 	addiu $a0 $fp , -4 #Devolvemos la direccion de la variable en la pila arr_1
@@ -246,6 +264,24 @@ main:
 	lw $t0, 4($sp)
 
 	addi $sp, $sp, 4
+
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
 
 	sw $a0, 0($t0)
 
@@ -315,6 +351,24 @@ main:
 
 	addi $sp, $sp, 4
 
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
+
 	sw $a0, 0($t0)
 
 	addiu $a0 $fp , -4 #Devolvemos la direccion de la variable en la pila arr_1
@@ -383,6 +437,24 @@ main:
 
 	addi $sp, $sp, 4
 
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
+
 	sw $a0, 0($t0)
 
 	addiu $a0 $fp , -4 #Devolvemos la direccion de la variable en la pila arr_1
@@ -450,6 +522,24 @@ main:
 	lw $t0, 4($sp)
 
 	addi $sp, $sp, 4
+
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
 
 	sw $a0, 0($t0)
 
@@ -965,6 +1055,24 @@ main:
 
 	addi $sp, $sp, 4
 
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
+
 	sw $a0, 0($t0)
 
 	addiu $a0 $fp , -12 #Devolvemos la direccion de la variable en la pila i_3
@@ -992,6 +1100,24 @@ main:
 	lw $t0, 4($sp)
 
 	addi $sp, $sp, 4
+
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
 
 	sw $a0, 0($t0)
 
@@ -1068,6 +1194,24 @@ main:
 	lw $t0, 4($sp)
 
 	addi $sp, $sp, 4
+
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
 
 	sw $a0, 0($t0)
 
@@ -1397,6 +1541,24 @@ main:
 
 	addi $sp, $sp, 4
 
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
+
 	sw $a0, 0($t0)
 
 	addiu $a0 $fp , -4 #Devolvemos la direccion de la variable en la pila arr_1
@@ -1515,6 +1677,24 @@ main:
 
 	addi $sp, $sp, 4
 
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
+
 	sw $a0, 0($t0)
 
 	addiu $a0 $fp , -4 #Devolvemos la direccion de la variable en la pila arr_1
@@ -1607,6 +1787,24 @@ main:
 
 	addi $sp, $sp, 4
 
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
+
 	sw $a0, 0($t0)
 
 	j doneIS_26_18 #Salta al doneLabel, se termina el if
@@ -1679,6 +1877,24 @@ main:
 
 	addi $sp, $sp, 4
 
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
+
 	sw $a0, 0($t0)
 
 	j loopS_25_17 #Volvemos al loop
@@ -1748,6 +1964,24 @@ main:
 	lw $t0, 4($sp)
 
 	addi $sp, $sp, 4
+
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
 
 	sw $a0, 0($t0)
 
@@ -2092,6 +2326,8 @@ main:
             sw $ra 0($sp)
             addiu $sp $sp -4
 
+            beqz $t1 NullPointerArrayException
+
             lw $t1 8($fp)
 
             # 1. Recupero la longitud del arreglo
@@ -2150,6 +2386,8 @@ main:
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
+
+            beqz $t1 NullPointerArrayException
 
             lw $t1 8($fp)
 
@@ -2225,6 +2463,8 @@ main:
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
+
+            beqz $t1 NullPointerArrayException
 
             lw $t1 8($fp)
 
@@ -2303,6 +2543,8 @@ main:
             addiu $sp $sp -4
 
             lw $t1 8($fp)
+
+            beqz $t1 NullPointerArrayException
 
             # 1. Recupero la longitud del arreglo
             lw $t0 4($t1)
@@ -2631,8 +2873,19 @@ main:
     	.asciiz "ERROR: LONGITUD DE ARRAY NEGATIVO"
     nullPointerExceptionMessage:
         .asciiz "ERROR: OBJETO NULO"
+    NullPointerArrayMessage:
+        .asciiz "ERROR: El arreglo no se encuentra inicializado"
     
     .text
+    NullPointerArrayException:
+        	la $a0 NullPointerArrayMessage
+        	li $v0, 4
+        	syscall
+
+        	li $v0, 17
+    	    li $a0, 1
+    	    syscall
+        
     DivisionByZeroException:
     	la $a0 DivisionByZeroExceptionMessage
     	li $v0, 4

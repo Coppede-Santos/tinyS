@@ -71,7 +71,7 @@ main:
 
 	li $a0, 8 #su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_LinkedList # Cargar la dirección de la vtable en un temporal
 
@@ -85,7 +85,7 @@ main:
 
 	li $a0, 12 #su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Node # Cargar la dirección de la vtable en un temporal
 
@@ -103,7 +103,7 @@ main:
 
 	li $a0, 8  # 4 bytes y su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
 
@@ -179,7 +179,7 @@ main:
 
 	li $a0, 8  # 4 bytes y su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
 
@@ -231,7 +231,7 @@ main:
 
 	li $a0, 8  # 4 bytes y su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
 
@@ -283,7 +283,7 @@ main:
 
 	li $a0, 8  # 4 bytes y su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
 
@@ -511,6 +511,24 @@ main:
 
 	addi $sp, $sp, 4
 
+	move $a1, $a0 # Guardar la dirección del objeto original en $a1
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	syscall
+
+	lw $t1, 0($a1) # Cargar la dirección de la vtable
+
+	sw $t1, 0($v0) # Guardar la vtable en la CIR
+
+	lw $t1, 4($a1) # Cargar el valor original
+
+	sw $t1, 4($v0) # Guardar el valor en la copia
+
+	move $a0, $v0 # La dirección de la copia queda en $a0
+
 	sw $a0, 0($t0)
 
 	li $a0, 0 # Valor de retorno por defecto
@@ -601,7 +619,7 @@ main:
 
 	li $a0, 12 #su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Node # Cargar la dirección de la vtable en un temporal
 
@@ -619,7 +637,7 @@ main:
 
 	li $a0, 8  # 4 bytes y su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Int # Cargar la dirección de la vtable de Int en un temporal
 
@@ -767,7 +785,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -791,7 +809,7 @@ main:
 
 	li $a0, 16  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -829,7 +847,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -909,7 +927,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -933,7 +951,7 @@ main:
 
 	li $a0, 8  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -971,7 +989,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -995,7 +1013,7 @@ main:
 
 	li $a0, 12  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -1033,7 +1051,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1115,7 +1133,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1139,7 +1157,7 @@ main:
 
 	li $a0, 8  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -1219,7 +1237,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1243,7 +1261,7 @@ main:
 
 	li $a0, 24  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -1281,7 +1299,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1305,7 +1323,7 @@ main:
 
 	li $a0, 32  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -1343,7 +1361,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1367,7 +1385,7 @@ main:
 
 	li $a0, 12  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -1405,7 +1423,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1487,7 +1505,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1511,7 +1529,7 @@ main:
 
 	li $a0, 8  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -1549,7 +1567,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1573,7 +1591,7 @@ main:
 
 	li $a0, 20  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -1611,7 +1629,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1691,7 +1709,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1715,7 +1733,7 @@ main:
 
 	li $a0, 8  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -1753,7 +1771,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1807,7 +1825,7 @@ main:
 
 	li $v0, 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	move $a0 $v0 #La dirección del objeto Bool queda en $a0
 
@@ -1845,7 +1863,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1869,7 +1887,7 @@ main:
 
 	li $a0, 24  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -1941,7 +1959,7 @@ main:
 
 	li $v0, 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	move $a0 $v0 #La dirección del objeto Bool queda en $a0
 
@@ -1961,7 +1979,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -1985,7 +2003,7 @@ main:
 
 	li $a0, 8  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -2023,7 +2041,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -2103,7 +2121,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -2127,7 +2145,7 @@ main:
 
 	li $a0, 8  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -2243,7 +2261,7 @@ main:
 
 	li $v0, 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	move $a0 $v0 #La dirección del objeto Bool queda en $a0
 
@@ -2263,7 +2281,7 @@ main:
 
 	li $v0 9  # Solicitar espacio en memoria
 
-	syscall
+	syscall 
 
 	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
 
@@ -2287,7 +2305,7 @@ main:
 
 	li $a0, 12  #  len() bytes + padding + su vtable
 
-	syscall
+	syscall 
 
 	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
 
@@ -2349,7 +2367,7 @@ main:
 
 	syscall  # salir del programa
 
-
+	
 .data
         VTABLE_IO:
                 .word IO
@@ -2642,6 +2660,8 @@ main:
             sw $ra 0($sp)
             addiu $sp $sp -4
 
+            beqz $t1 NullPointerArrayException
+
             lw $t1 8($fp)
 
             # 1. Recupero la longitud del arreglo
@@ -2700,6 +2720,8 @@ main:
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
+
+            beqz $t1 NullPointerArrayException
 
             lw $t1 8($fp)
 
@@ -2775,6 +2797,8 @@ main:
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
+
+            beqz $t1 NullPointerArrayException
 
             lw $t1 8($fp)
 
@@ -2854,6 +2878,8 @@ main:
 
             lw $t1 8($fp)
 
+            beqz $t1 NullPointerArrayException
+
             # 1. Recupero la longitud del arreglo
             lw $t0 4($t1)
 
@@ -2923,98 +2949,98 @@ main:
             lw $ra 4($sp)
             addiu $sp $sp 4
             jr $ra
-
+    	
     .data
-
+    
     VTABLE_Array:
         .word array
     	.word array_length
-
+    
     .text
     array:
     array_length:
     	move $fp $sp
     	sw $ra 0($sp)
     	addiu $sp $sp -4
-
+    
     	# 1. Recupero CIR Array
     	lw $t0, 4($fp)
-
+    
     	# 2. Recupero longitud del array
     	lw $t0, 4($t0)
-
+    
     	# 3. Creo nuevo CIR Int
     	li $v0, 9
     	li $a0, 8
     	syscall
-
+    
     	lw $t1, VTABLE_Int
     	sw $t1, 0($v0)
     	sw $t0, 4($v0)
-
+    
     	move $a0, $v0
-
+    
     	# --
     	lw $ra 4($sp)
     	addiu $sp $sp 4
     	jr $ra
-
+    	
     .data
         VTABLE_Str:
             .word str
         	.word length
         	.word concat
-
+    
     .text
-
+    
     str:
-
+    
     length:
     	# Comienzo de start
     	move $fp $sp
     	sw $ra 0($sp)
     	addiu $sp $sp -4
-
+    
     	# Cuerpo de length
     	lw $a0 4($fp) # Cargo el objeto
     	addiu $a0 $a0 4
     	li $t1 -1 # Guardo un contador
-
+    
     	loop:
     		lb $t0 ($a0) # t0 = char actual
     		addi $a0 $a0 1 # Sumo un byte al valor str
     		addi $t1 $t1 1 # Sumo en uno el contador
     		bne $t0 $zero loop # Si llego a \0, salgo
-
+    
     	# Creo CIR Int
     	#addiu $t2, $t1, 4 # Sumo len + 4 VT
     	li $a0, 8 # reservo 4 bytes para VT y 4 bytes para el int
     	li $v0, 9 # Reservo bytes
     	syscall
-
+    
     	lw $t0, VTABLE_Int
     	sw $t0, 0($v0)
     	sw $t1, 4($v0)
-
+    
     	move $a0, $v0
-
+    
     	# Final de start
     	lw $ra 4($sp)
     	addiu $sp $sp 4
     	lw $fp 0($sp)
     	jr $ra
-
+    
     concat: #----------------------------------------------------------
     	move $fp $sp
     	sw $ra 0($sp)
     	addiu $sp $sp -4
-
+    
     	# Cuerpo de concat
-
+    
     	## Paso1: Calcular longitud de la primer cadena
     	sw $fp 0($sp)
     	addiu $sp $sp -4
-
+    
     	lw $a0 4($fp) # Buscamos el primer param de concat
     	sw $a0 0($sp) # Lo guardamos en la pila
     	addiu $sp $sp -4
@@ -3023,14 +3049,14 @@ main:
     	addiu $sp $sp 4
     	lw $fp 4($sp)
     	addiu $sp $sp 4
-
+    
     	sw $a0, 0($sp) # Guardamos l1 en la pila
     	addiu $sp $sp -4
-
+    
     	## Paso2: Calcular longitud de la segunda cadena
     	sw $fp 0($sp)
     	addiu $sp $sp -4
-
+    
     	lw $a0 8($fp) # Buscamos el segundo param de concat
     	sw $a0 0($sp) # Lo guardamos en la pila
     	addiu $sp $sp -4
@@ -3039,39 +3065,39 @@ main:
     	addiu $sp $sp 4
     	lw $fp 4($sp)
     	addiu $sp $sp 4
-
+    
     	sw $a0, 0($sp) # Guardamos l2 en la pila
     	addiu $sp $sp -4
-
+    
     	## Paso3: Reservar memoria len1 + len2
     	## - Guardar la dirección de v0 en un registro para no perderlo
     	## - Crear CIR de Str nuevo, incluye guardar la VT
-
+    
     	lw $t0, 4($sp) # Obtengo el CIR de L1
     	lw $t0, 4($t0) # Obtengo el len de L1
     	lw $t1, 8($sp) # Obtengo L2
     	lw $t1, 4($t1) # Obtengo el len de l2
-
+    
     	#move $a0, $zero
     	add $a0, $t0, $t1 # a0 = l1 + l2
     	addi $a0, $a0, 5 # a0 = vt + len + padding
-
+    
     	li $v0, 9
     	syscall
-
+    
     	move $a0, $v0 # Guardo la CIR
-
+    
     	la $t0, VTABLE_Str
     	sw $t0, 0($v0) # Guardo la VT en el heap
-
+    
     	## Paso4: Escribir cadena 1 en v0
-
+    
     	lw $t0 4($fp) # Obtengo CIR de s1
     	addiu $t0 $t0 4 # Apunto t0 a s1.val
-
+    
     	move $t2 $v0 # Apunto t2 al CIR de s1
     	addiu $t2 $t2 4 # Apunto t2 a s2.val
-
+    
     	concat_loop_1:
     		lb $t1 ($t0) # Catga byte de s1
     		beq $t1 $zero exit_concat_loop_1# Si es \0, salgo del loop para no escribirlo
@@ -3079,29 +3105,29 @@ main:
     		addiu $t0 $t0 1
     		addiu $t2 $t2 1
     		b concat_loop_1
-
+    
     	exit_concat_loop_1:
-
+    
     	## Paso5: Escribir cadena 2 en v0 + len1
-
+    
     	lw $t0 8($fp) # Obtengo CIR de s2
     	addiu $t0 $t0 4 # Apunto t0 a s2.val
-
+    
     	concat_loop_2:
     		lb $t1 ($t0) # Catga byte de s2
     		sb $t1 ($t2) # Escribe byte en rta
     		addiu $t0 $t0 1
     		addiu $t2 $t2 1
     		bne $t1 $zero concat_loop_2 # Si es \0, termino
-
+    
     	# desalojo variables locales
     	addiu $sp $sp 8
-
+    
     	# Final del concat
     	lw $ra 4($sp)
     	addiu $sp $sp 4
     	jr $ra
-
+    
     save_str: # Escribe el contenido de $a0 en la direccion apuntada por v0 + 4 #----------------------------------------------------------
     	move $t0 $a0
     	move $t2 $v0
@@ -3113,49 +3139,49 @@ main:
     		addiu $t2 $t2 1
     		bne $t1 $zero save_str_loop
     	jr $ra
-
+    
     eq_str: # Compara dos strings, devuelve un CIR Bool
     	lw $t0 4($sp) # Cargo CIR1
     	lw $t1 8($sp) # Cargo CIR2
-
+    
     	addiu $t0 $t0 4 # Obtengo str1
     	addiu $t1 $t1 4 # Obtengo str2
-
+    
     	move $t2 $zero
     	addiu $t2 $t2 1 # areEqual = true
-
+    
     	li $v0 9
     	li $a0 8
     	syscall
-
+    
     	la $t4 VTABLE_Bool
     	sw $t4 0($v0)
-
+    
     	eq_str_loop:
     		lb $t3 ($t0)
     		lb $t4 ($t1)
-
+    
     		bne $t3 $t4 eq_str_false
-
+    
     		addiu $t0 $t0 1
     		addiu $t1 $t1 1
-
+    
     		beq $t3 $zero eq_str_true
     		b eq_str_loop
-
+    
     	eq_str_false:
     		move $t2 $zero
     		sw $t2 4($v0)
-
+    
     		b eq_str_return
-
+    
     	eq_str_true:
     		sw $t2 4($v0)
-
+    
     	eq_str_return:
     		move $a0 $v0
     		jr $ra
-
+    		
     .data
     VTABLE_Int:
     VTABLE_Double:
@@ -3168,10 +3194,10 @@ main:
     	jr $ra
 
     .data
-
+    
     db_one: .double 1.0
     db_cero: .double 0.0
-
+    
     .data
     DivisionByZeroExceptionMessage:
     	.asciiz "ERROR: DIVISION POR CERO"
@@ -3181,31 +3207,42 @@ main:
     	.asciiz "ERROR: LONGITUD DE ARRAY NEGATIVO"
     nullPointerExceptionMessage:
         .asciiz "ERROR: OBJETO NULO"
-
+    NullPointerArrayMessage:
+        .asciiz "ERROR: El arreglo no se encuentra inicializado"
+    
     .text
+    NullPointerArrayException:
+        	la $a0 NullPointerArrayMessage
+        	li $v0, 4
+        	syscall
+
+        	li $v0, 17
+    	    li $a0, 1
+    	    syscall
+        
     DivisionByZeroException:
     	la $a0 DivisionByZeroExceptionMessage
     	li $v0, 4
     	syscall
-
+    
     	li $v0, 17
     	li $a0, 1
     	syscall
-
+    
     ArrayIndexOutOfBoundsException:
     	la $a0 ArrayIndexOutOfBoundsExceptionMessage
     	li $v0, 4
     	syscall
-
+    
     	li $v0, 17
     	li $a0, 1
     	syscall
-
+    
     NegativeArraySizeException:
     	la $a0 NegativeArraySizeExceptionMessage
     	li $v0, 4
     	syscall
-
+    
     	li $v0, 17
     	li $a0, 1
     	syscall
@@ -3214,9 +3251,9 @@ main:
         	la $a0 nullPointerExceptionMessage
         	li $v0, 4
         	syscall
-
+        
         	li $v0, 17
         	li $a0, 1
         	syscall
-
-
+        
+    

@@ -16,7 +16,6 @@ ret saldo;}
 
 
 fn prueba(){
-ret;
 }
 
 

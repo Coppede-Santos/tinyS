@@ -519,6 +519,8 @@ main:
             sw $ra 0($sp)
             addiu $sp $sp -4
 
+            beqz $t1 NullPointerArrayException
+
             lw $t1 8($fp)
 
             # 1. Recupero la longitud del arreglo
@@ -577,6 +579,8 @@ main:
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
+
+            beqz $t1 NullPointerArrayException
 
             lw $t1 8($fp)
 
@@ -652,6 +656,8 @@ main:
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
+
+            beqz $t1 NullPointerArrayException
 
             lw $t1 8($fp)
 
@@ -730,6 +736,8 @@ main:
             addiu $sp $sp -4
 
             lw $t1 8($fp)
+
+            beqz $t1 NullPointerArrayException
 
             # 1. Recupero la longitud del arreglo
             lw $t0 4($t1)
@@ -1058,8 +1066,19 @@ main:
     	.asciiz "ERROR: LONGITUD DE ARRAY NEGATIVO"
     nullPointerExceptionMessage:
         .asciiz "ERROR: OBJETO NULO"
+    NullPointerArrayMessage:
+        .asciiz "ERROR: El arreglo no se encuentra inicializado"
     
     .text
+    NullPointerArrayException:
+        	la $a0 NullPointerArrayMessage
+        	li $v0, 4
+        	syscall
+
+        	li $v0, 17
+    	    li $a0, 1
+    	    syscall
+        
     DivisionByZeroException:
     	la $a0 DivisionByZeroExceptionMessage
     	li $v0, 4

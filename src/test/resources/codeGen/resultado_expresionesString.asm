@@ -12,9 +12,27 @@ str_const_26_23: .asciiz "Concat: "
 str_const_28_17: .asciiz "\n"
 str_const_30_17: .asciiz "\n"
 str_const_31_40: .asciiz "Tamanio de la cadena ab: "
-str_const_34_17: .asciiz "\n"
-str_const_35_21: .asciiz " "
-str_const_35_30: .asciiz " "
+str_const_33_17: .asciiz "\n"
+str_const_36_12: .asciiz "hola"
+str_const_36_20: .asciiz "hola"
+str_const_37_19: .asciiz "bien"
+str_const_38_17: .asciiz "\n"
+str_const_40_24: .asciiz "problemon"
+str_const_43_13: .asciiz "hola"
+str_const_43_21: .asciiz "hola"
+str_const_43_40: .asciiz "esta"
+str_const_43_61: .asciiz "nada que ver"
+str_const_44_30: .asciiz "funcionandooooo"
+str_const_46_24: .asciiz "problemon"
+str_const_49_12: .asciiz "hola"
+str_const_49_22: .asciiz "hola"
+str_const_49_37: .asciiz "esta"
+str_const_49_58: .asciiz "nada que ver"
+str_const_50_30: .asciiz "funcionandooooo"
+str_const_52_24: .asciiz "problemon"
+str_const_56_17: .asciiz "\n"
+str_const_57_21: .asciiz " "
+str_const_57_30: .asciiz " "
 
 .text
 main:
@@ -1347,7 +1365,1115 @@ main:
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
-	la $a0, str_const_34_17 # Guardamos el valor en la CIR en un temporal
+	la $a0, str_const_33_17 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	#Empieza codigo para IF
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_36_12 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_36_20 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	sw $fp 0($sp) # Guardar el valor de $fp en la pila antes de la llamada a eq_string)
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t1 0($sp) #Guardamos el valor de la expresión derecha en el la pila como un parametro de eq_string
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t0 0($sp) #Guardamos el valor de la expresión izquierda en el la pila como self
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	jal eq_str #nos devuelve un bool, 1 si los string son iguales
+
+	addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro
+
+	lw $fp, 4($sp) #Restauramos el valor de $fp en la pila
+
+	addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior
+
+	#Termina codigo para expBin
+
+	lw $a0, 4($a0) # Carga el valor de la condicion if
+
+	bne $a0, 1, falseIS_36_2 # Si no se cumple la condición salta a la labelFalse
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_37_19 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_38_17 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	j doneIS_36_2 #Salta al doneLabel, se termina el if
+
+	falseIS_36_2: #labelFalse de if
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 16  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_40_24 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	doneIS_36_2: #labelDone del if
+
+	#Empieza codigo para IF
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_43_13 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_43_21 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	sw $fp 0($sp) # Guardar el valor de $fp en la pila antes de la llamada a eq_string)
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t1 0($sp) #Guardamos el valor de la expresión derecha en el la pila como un parametro de eq_string
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t0 0($sp) #Guardamos el valor de la expresión izquierda en el la pila como self
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	jal eq_str #nos devuelve un bool, 1 si los string son iguales
+
+	addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro
+
+	lw $fp, 4($sp) #Restauramos el valor de $fp en la pila
+
+	addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior
+
+	#Termina codigo para expBin
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	lw $a0 ,-4($fp) #Buscamos la variable en la pila
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_43_40 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	sw $fp 0($sp) # Guardar el valor de $fp en la pila antes de la llamada a eq_string)
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t1 0($sp) #Guardamos el valor de la expresión derecha en el la pila como un parametro de eq_string
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t0 0($sp) #Guardamos el valor de la expresión izquierda en el la pila como self
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	jal eq_str #nos devuelve un bool, 1 si los string son iguales
+
+	addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro
+
+	lw $fp, 4($sp) #Restauramos el valor de $fp en la pila
+
+	addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior
+
+	#Termina codigo para expBin
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	lw $a0 ,-8($fp) #Buscamos la variable en la pila
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 20  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_43_61 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	sw $fp 0($sp) # Guardar el valor de $fp en la pila antes de la llamada a eq_string)
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t1 0($sp) #Guardamos el valor de la expresión derecha en el la pila como un parametro de eq_string
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t0 0($sp) #Guardamos el valor de la expresión izquierda en el la pila como self
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	jal eq_str #nos devuelve un bool, 1 si los string son iguales
+
+	addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro
+
+	lw $fp, 4($sp) #Restauramos el valor de $fp en la pila
+
+	addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior
+
+	lw $t0, 4($a0) #Cargar el valor resultado
+
+	xor $t0, $t0, 1 #negamos el valor
+
+	sw $t0 4($a0) #Guardar el nuevo valor
+
+	#Termina codigo para expBin
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	lw $t0 4($t0) #Cargar el valor del int o bool izquierdo
+
+	lw $t1 4($t1) #Cargar el valor del int o bool derecho
+
+	and $t0 $t0 $t1 #Hacemos la operacion and entre exp izq y exp der
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	move $a0 $v0 #La dirección del objeto Bool queda en $a0
+
+	la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal
+
+	sw $t1, 0($a0) #guardamos la dirección de la vtableBool en la CIR
+
+	sw $t0, 4($a0) #guardar el valor del Bool en la CIR
+
+	#Termina codigo para expBin
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	lw $t0 4($t0) #Cargar el valor del int o bool izquierdo
+
+	lw $t1 4($t1) #Cargar el valor del int o bool derecho
+
+	and $t0 $t0 $t1 #Hacemos la operacion and entre exp izq y exp der
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	move $a0 $v0 #La dirección del objeto Bool queda en $a0
+
+	la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal
+
+	sw $t1, 0($a0) #guardamos la dirección de la vtableBool en la CIR
+
+	sw $t0, 4($a0) #guardar el valor del Bool en la CIR
+
+	#Termina codigo para expBin
+
+	lw $a0, 4($a0) # Carga el valor de la condicion if
+
+	bne $a0, 1, falseIS_43_2 # Si no se cumple la condición salta a la labelFalse
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 24  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_44_30 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	j doneIS_43_2 #Salta al doneLabel, se termina el if
+
+	falseIS_43_2: #labelFalse de if
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 16  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_46_24 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	doneIS_43_2: #labelDone del if
+
+	#Empieza codigo para IF
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_49_12 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_49_22 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	sw $fp 0($sp) # Guardar el valor de $fp en la pila antes de la llamada a eq_string)
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t1 0($sp) #Guardamos el valor de la expresión derecha en el la pila como un parametro de eq_string
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t0 0($sp) #Guardamos el valor de la expresión izquierda en el la pila como self
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	jal eq_str #nos devuelve un bool, 1 si los string son iguales
+
+	addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro
+
+	lw $fp, 4($sp) #Restauramos el valor de $fp en la pila
+
+	addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior
+
+	#Termina codigo para expBin
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	lw $a0 ,-4($fp) #Buscamos la variable en la pila
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 12  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_49_37 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	sw $fp 0($sp) # Guardar el valor de $fp en la pila antes de la llamada a eq_string)
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t1 0($sp) #Guardamos el valor de la expresión derecha en el la pila como un parametro de eq_string
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t0 0($sp) #Guardamos el valor de la expresión izquierda en el la pila como self
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	jal eq_str #nos devuelve un bool, 1 si los string son iguales
+
+	addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro
+
+	lw $fp, 4($sp) #Restauramos el valor de $fp en la pila
+
+	addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior
+
+	#Termina codigo para expBin
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	lw $t0 4($t0) #Cargar el valor del int o bool izquierdo
+
+	lw $t1 4($t1) #Cargar el valor del int o bool derecho
+
+	and $t0 $t0 $t1 #Hacemos la operacion and entre exp izq y exp der
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	move $a0 $v0 #La dirección del objeto Bool queda en $a0
+
+	la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal
+
+	sw $t1, 0($a0) #guardamos la dirección de la vtableBool en la CIR
+
+	sw $t0, 4($a0) #guardar el valor del Bool en la CIR
+
+	#Termina codigo para expBin
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	#Empieza la expresion binaria
+
+	#Empieza codigo para expBin
+
+	lw $a0 ,-8($fp) #Buscamos la variable en la pila
+
+	sw $a0, 0($sp) #Guarda la CIR de la expresión izq en la pila
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 20  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_49_58 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	sw $fp 0($sp) # Guardar el valor de $fp en la pila antes de la llamada a eq_string)
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t1 0($sp) #Guardamos el valor de la expresión derecha en el la pila como un parametro de eq_string
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	sw $t0 0($sp) #Guardamos el valor de la expresión izquierda en el la pila como self
+
+	addi $sp, $sp, -4 #movemos el puntero de la pila
+
+	jal eq_str #nos devuelve un bool, 1 si los string son iguales
+
+	addi $sp, $sp, 8 #movemos el puntero de la pila para sacar el self y el parametro
+
+	lw $fp, 4($sp) #Restauramos el valor de $fp en la pila
+
+	addi $sp, $sp, 4 #movemos el puntero de la pila para sacar el framepointer anterior
+
+	lw $t0, 4($a0) #Cargar el valor resultado
+
+	xor $t0, $t0, 1 #negamos el valor
+
+	sw $t0 4($a0) #Guardar el nuevo valor
+
+	#Termina codigo para expBin
+
+	lw $t0, 4($sp) # cargamos la CIR de la exp izquierda en t0
+
+	addi $sp, $sp, 4 # sacamos de la pila la exp izquierda
+
+	move $t1, $a0 #guardamos la direccon de la CIR de exp derecha en t1
+
+	lw $t0 4($t0) #Cargar el valor del int o bool izquierdo
+
+	lw $t1 4($t1) #Cargar el valor del int o bool derecho
+
+	and $t0 $t0 $t1 #Hacemos la operacion and entre exp izq y exp der
+
+	li $a0, 8  # 4 bytes y su vtable
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	move $a0 $v0 #La dirección del objeto Bool queda en $a0
+
+	la $t1, VTABLE_Bool # Cargar la dirección de la vtable de Bool en un temporal
+
+	sw $t1, 0($a0) #guardamos la dirección de la vtableBool en la CIR
+
+	sw $t0, 4($a0) #guardar el valor del Bool en la CIR
+
+	#Termina codigo para expBin
+
+	lw $a0, 4($a0) # Carga el valor de la condicion if
+
+	bne $a0, 1, falseIS_49_2 # Si no se cumple la condición salta a la labelFalse
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 24  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_50_30 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	j doneIS_49_2 #Salta al doneLabel, se termina el if
+
+	falseIS_49_2: #labelFalse de if
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 16  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_52_24 # Guardamos el valor en la CIR en un temporal
+
+	jal save_str #Guardamos el valor en la CIR
+
+	move $a0, $v0 # La dirección del objeto Int queda en $a0
+
+	sw $a0 8($sp) # Guardar el argumento en la pila
+
+	lw $t0 4($sp) # Cargar el objeto self desde la pila
+
+	beqz $t0, nullPointerException # Verificar si el objeto es null
+
+	lw $t0, 0($t0) # Cargar la vtable del objeto
+
+	lw $t0, 32($t0) # Calcular la dirección del método en la vtable
+
+	jalr $t0 # Llamar al método out_str
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar los parametros
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el self
+
+	lw $fp 4($sp) # Restauramos el frame pointer
+
+	addi $sp $sp 4 # movemos el puntero de la pila para sacar el frame pointer anterior
+
+	#Termina codigo para llamada de metodo
+
+	doneIS_49_2: #labelDone del if
+
+	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
+
+	li $v0 9  # Solicitar espacio en memoria
+
+	syscall 
+
+	la $a0, VTABLE_IO # Cargar la dirección de la vtable de la clase IO
+
+	sw $a0, 0($v0) # Guardar la vtable en la CIR
+
+	move $a0, $v0 # La dirección del objeto queda en $a0
+
+	#Comienza codigo para llamada de metodo out_str
+
+	sw $fp 0($sp) # Guardar el frame pointer anterior en la pila
+
+	addiu $sp $sp -4 # movemos el puntero de la pila
+
+	addi $sp, $sp, -4 # guardamos en la pila el espacio para todos los argumentos
+
+	sw $a0, 0($sp) #Guardar el encadenado previo en la pila como self
+
+	addiu $sp $sp -4 #movemos el puntero de la pila
+
+	li $v0, 9  # Solicitar espacio en memoria
+
+	li $a0, 8  #  len() bytes + padding + su vtable
+
+	syscall 
+
+	la $t0, VTABLE_Str # Cargar la dirección de la vtable de String en un temporal
+
+	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
+
+	la $a0, str_const_56_17 # Guardamos el valor en la CIR en un temporal
 
 	jal save_str #Guardamos el valor en la CIR
 
@@ -1421,7 +2547,7 @@ main:
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
-	la $a0, str_const_35_21 # Guardamos el valor en la CIR en un temporal
+	la $a0, str_const_57_21 # Guardamos el valor en la CIR en un temporal
 
 	jal save_str #Guardamos el valor en la CIR
 
@@ -1507,7 +2633,7 @@ main:
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
-	la $a0, str_const_35_30 # Guardamos el valor en la CIR en un temporal
+	la $a0, str_const_57_30 # Guardamos el valor en la CIR en un temporal
 
 	jal save_str #Guardamos el valor en la CIR
 
@@ -1912,6 +3038,8 @@ main:
             sw $ra 0($sp)
             addiu $sp $sp -4
 
+            beqz $t1 NullPointerArrayException
+
             lw $t1 8($fp)
 
             # 1. Recupero la longitud del arreglo
@@ -1970,6 +3098,8 @@ main:
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
+
+            beqz $t1 NullPointerArrayException
 
             lw $t1 8($fp)
 
@@ -2045,6 +3175,8 @@ main:
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
+
+            beqz $t1 NullPointerArrayException
 
             lw $t1 8($fp)
 
@@ -2123,6 +3255,8 @@ main:
             addiu $sp $sp -4
 
             lw $t1 8($fp)
+
+            beqz $t1 NullPointerArrayException
 
             # 1. Recupero la longitud del arreglo
             lw $t0 4($t1)
@@ -2451,8 +3585,19 @@ main:
     	.asciiz "ERROR: LONGITUD DE ARRAY NEGATIVO"
     nullPointerExceptionMessage:
         .asciiz "ERROR: OBJETO NULO"
+    NullPointerArrayMessage:
+        .asciiz "ERROR: El arreglo no se encuentra inicializado"
     
     .text
+    NullPointerArrayException:
+        	la $a0 NullPointerArrayMessage
+        	li $v0, 4
+        	syscall
+
+        	li $v0, 17
+    	    li $a0, 1
+    	    syscall
+        
     DivisionByZeroException:
     	la $a0 DivisionByZeroExceptionMessage
     	li $v0, 4

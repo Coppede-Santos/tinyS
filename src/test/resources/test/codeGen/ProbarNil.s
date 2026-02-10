@@ -5,7 +5,6 @@ impl A{
 .(){}
 
 st fn void retornonil(){
-ret nil;
 }
 
 }

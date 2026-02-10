@@ -1,6 +1,6 @@
 .data
-str_const_21_17: .asciiz "ok"
-str_const_23_19: .asciiz "fail"
+str_const_20_17: .asciiz "ok"
+str_const_22_19: .asciiz "fail"
 VTABLE_A: #Vtable de la clase A
 .word m_A_5_1
 .word m_retornonil_7_21
@@ -12,7 +12,7 @@ main:
 
 	addiu $sp $sp -4
 
-	jal m_start_13_5
+	jal m_start_12_5
 
 	lw $fp 0($sp)
 
@@ -20,7 +20,7 @@ main:
 
 	b exit
 
-	m_start_13_5: # Label del metodo
+	m_start_12_5: # Label del metodo
 
 	move $fp $sp #El frame apunta al enlace dinamico
 
@@ -174,11 +174,11 @@ main:
 
 	li $t2, 0 #cargamos el valor de true
 
-	beq $t0, $t1, true_20_13 #Si ambos son true, seteamos el valor a 1, sino a 0
+	beq $t0, $t1, true_19_13 #Si ambos son true, seteamos el valor a 1, sino a 0
 
 	li $t2, 1 #cargamos el valor de false
 
-	true_20_13:
+	true_19_13:
 
 	li $t1, 1
 
@@ -202,7 +202,7 @@ main:
 
 	lw $a0, 4($a0) # Carga el valor de la condicion if
 
-	bne $a0, 1, falseIS_20_2 # Si no se cumple la condición salta a la labelFalse
+	bne $a0, 1, falseIS_19_2 # Si no se cumple la condición salta a la labelFalse
 
 	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
 
@@ -238,7 +238,7 @@ main:
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
-	la $a0, str_const_21_17 # Guardamos el valor en la CIR en un temporal
+	la $a0, str_const_20_17 # Guardamos el valor en la CIR en un temporal
 
 	jal save_str #Guardamos el valor en la CIR
 
@@ -266,9 +266,9 @@ main:
 
 	#Termina codigo para llamada de metodo
 
-	j doneIS_20_2 #Salta al doneLabel, se termina el if
+	j doneIS_19_2 #Salta al doneLabel, se termina el if
 
-	falseIS_20_2: #labelFalse de if
+	falseIS_19_2: #labelFalse de if
 
 	li $a0, 4 #Es un objeto estatico, reservamos 4 bytes en memoria para la VTABLE
 
@@ -304,7 +304,7 @@ main:
 
 	sw $t0, 0($v0) #guardamos la dirección de la vtableString en la CIR
 
-	la $a0, str_const_23_19 # Guardamos el valor en la CIR en un temporal
+	la $a0, str_const_22_19 # Guardamos el valor en la CIR en un temporal
 
 	jal save_str #Guardamos el valor en la CIR
 
@@ -332,11 +332,11 @@ main:
 
 	#Termina codigo para llamada de metodo
 
-	doneIS_20_2: #labelDone del if
+	doneIS_19_2: #labelDone del if
 
 	li $a0, 0 # Valor de retorno por defecto
 
-	m_start_13_5_end: # Label para el return del metodo
+	m_start_12_5_end: # Label para el return del metodo
 
 	lw $ra 0($fp) #cargamos el return address
 
@@ -381,10 +381,6 @@ main:
 	addiu $sp $sp -4 #restamos 4 bytes para guardar el return address
 
 	addi $sp $sp 0 #restamos 4 bytes para cada variable local
-
-	li $a0 , 0 #Guardamos el valor en la CIR en un temporal
-
-	j m_retornonil_7_21_end # Salta al epilogo del método
 
 	li $a0, 0 # Valor de retorno por defecto
 
@@ -697,6 +693,8 @@ main:
             sw $ra 0($sp)
             addiu $sp $sp -4
 
+            beqz $t1 NullPointerArrayException
+
             lw $t1 8($fp)
 
             # 1. Recupero la longitud del arreglo
@@ -755,6 +753,8 @@ main:
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
+
+            beqz $t1 NullPointerArrayException
 
             lw $t1 8($fp)
 
@@ -830,6 +830,8 @@ main:
             move $fp $sp
             sw $ra 0($sp)
             addiu $sp $sp -4
+
+            beqz $t1 NullPointerArrayException
 
             lw $t1 8($fp)
 
@@ -908,6 +910,8 @@ main:
             addiu $sp $sp -4
 
             lw $t1 8($fp)
+
+            beqz $t1 NullPointerArrayException
 
             # 1. Recupero la longitud del arreglo
             lw $t0 4($t1)
@@ -1236,8 +1240,19 @@ main:
     	.asciiz "ERROR: LONGITUD DE ARRAY NEGATIVO"
     nullPointerExceptionMessage:
         .asciiz "ERROR: OBJETO NULO"
+    NullPointerArrayMessage:
+        .asciiz "ERROR: El arreglo no se encuentra inicializado"
     
     .text
+    NullPointerArrayException:
+        	la $a0 NullPointerArrayMessage
+        	li $v0, 4
+        	syscall
+
+        	li $v0, 17
+    	    li $a0, 1
+    	    syscall
+        
     DivisionByZeroException:
     	la $a0 DivisionByZeroExceptionMessage
     	li $v0, 4
