@@ -85,7 +85,6 @@ public class NodoExpBin extends NodoExpUn{
 
         if (operador == TokenType.MINUS
                 || operador == TokenType.MULT
-                || operador == TokenType.SLASH
                 || operador == TokenType.PERCENTAGE){
             if (algunTipoNoEsNumerico) {
                 throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
@@ -94,6 +93,14 @@ public class NodoExpBin extends NodoExpUn{
                 tipo = "Double";
             } else {
                 tipo = "Int";
+            }
+        }
+
+        if  (operador == TokenType.SLASH){
+            if (algunTipoNoEsNumerico)
+                throw new ExpresionInvalidaError (posicion, String.valueOf(operador));
+            else {
+                tipo = "Double";
             }
         }
 
