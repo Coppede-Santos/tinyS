@@ -66,8 +66,4 @@ public class EntradaParametro extends EntradaVariables{
                 ",\n" + tabs + "\"posicionParametro\": " + posicionParametro;
         return salida;
     }
-
-    public int getPosicionParametro() {
-        return posicionParametro;
-    }
 }

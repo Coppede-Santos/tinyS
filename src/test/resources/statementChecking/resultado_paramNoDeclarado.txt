@@ -1,4 +1,0 @@
-ERROR: SEMANTICO - SENTENCIAS
-
-| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: |
-|LINEA 13 | COLUMNA 17 | La variable no ha sido declarado: e|

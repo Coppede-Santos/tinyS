@@ -1,4 +1,0 @@
-ERROR: SEMANTICO - SENTENCIAS
- 
-| NUMERO DE LINEA: | NUMERO DE COLUMNA: | DESCRIPCION: | 
-|LINEA 7 | COLUMNA 5 | El tipo Double es invalido: ret|
