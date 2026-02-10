@@ -23,7 +23,7 @@ import java.io.IOException;
  * incluyendo mensajes de error y la tabla de símbolos en formato JSON.
  * <p>
  */
-public class Etapa3 {
+public class OldEtapa3 {
 
     /**
      * Metodo principal que ejecuta el análisis sintáctico y léxico, y chequeo de declaraciones del archivo de entrada.
@@ -36,9 +36,9 @@ public class Etapa3 {
      */
     public static void main(String[] args) {
         // ────────────── Validación de argumentos ──────────────
-        if (args.length != 1) {
+        if (args.length < 1 || args.length > 2) {
             System.out.println(
-                    "Uso: java --jar etapa3.jar <archivo_entrada.s>"
+                    "Uso: java analizadorSemantico.Etapa3 <archivo_entrada.s>"
             );
             return;
         }
@@ -50,6 +50,10 @@ public class Etapa3 {
             );
             return;
         }
+
+        String nombreArchivoSalida = args.length == 2
+                ? args[1]
+                : rutaArchivoEntrada.replace(".s", ".txt");
 
         String resultadoAnalisis;
 
@@ -99,11 +103,23 @@ public class Etapa3 {
             e.printStackTrace();
         }
 
+        // ────────────── Escritura de resultados ──────────────
+        // Este bloque ahora solo se encarga de escribir el resultado final en el archivo.
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter(nombreArchivoSalida))
+        ) {
+            writer.write(resultadoAnalisis);
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo de salida '" +
+                    nombreArchivoSalida + "': " + e.getMessage()
+            );
+        }
+
         String nombreJsonSalida = rutaArchivoEntrada.replace(".s", ".ts.json");
 
-         // ────────────── Escritura de resultados JSON ──────────────
+        // ────────────── Escritura de resultados JSON ──────────────
 
-        if (!tablaSimbolos.isEmpty() && !resultadoAnalisis.startsWith("ERROR")) {
+        if (!tablaSimbolos.isEmpty()) {
             try (BufferedWriter writer = new BufferedWriter(
                     new FileWriter(nombreJsonSalida))
             ) {
