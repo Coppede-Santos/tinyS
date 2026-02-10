@@ -1627,6 +1627,7 @@ public class Parser {
         if(type == AND) {
             macheo(AND);
             expIgual();
+            expAndPrima();
         }else {
             if (!(type == SEMICOLON || type == COMMA || type == RIGHT_PAREN
                     || type == RIGHT_BRACKET || type == OR)) {
